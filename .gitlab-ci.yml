@@ -2,7 +2,6 @@
 # see https://docs.gitlab.com/ce/ci/yaml/README.html for all available options
 
 deb_package_builder:
-
   tags:
     - deb
 
@@ -52,25 +51,25 @@ deb_package_builder:
     - PREINST=${PREINST/DMVERSION=\'@@VERSION@@\'/DMVERSION=\'${VERSION}\'}
     - echo "${PREINST}" >debian/preinst
 
-  build:
-    stage: build
-    script:
-      - dch --bin-nmu "DeepMehta debian package build from ${DMX}."
-      - gbp dch --ignore-branch --auto --new-version ${VERSION}-${CI_PIPELINE_ID} --git-author --release --commit --spawn-editor=never
-      - dpkg-buildpackage -A -us -p'gpg --no-tty --passphrase-file ~/.gnupg/passphrase' --force-sign -k'6457D548'
-    after_script:
+build:
+  stage: build
+  script:
+    - dch --bin-nmu "DeepMehta debian package build from ${DMX}."
+    - gbp dch --ignore-branch --auto --new-version ${VERSION}-${CI_PIPELINE_ID} --git-author --release --commit --spawn-editor=never
+    - dpkg-buildpackage -A -us -p'gpg --no-tty --passphrase-file ~/.gnupg/passphrase' --force-sign -k'6457D548'
+  after_script:
       - echo "Do other things afterwards here"
 
-  test:
-    stage: test
-    script:
-      - echo "Running test - lintian -i -I --show-overrides ../deepamehta_${VERSION}-${CI_PIPELINE_ID}_all.changes"
-      - lintian -i -I --show-overrides ../deepamehta_${VERSION}-${CI_PIPELINE_ID}_all.changes
+test:
+  stage: test
+  script:
+    - echo "Running test - lintian -i -I --show-overrides ../deepamehta_${VERSION}-${CI_PIPELINE_ID}_all.changes"
+    - lintian -i -I --show-overrides ../deepamehta_${VERSION}-${CI_PIPELINE_ID}_all.changes
 
-  deploy:
-    stage: deploy
-    script:
-      - mv ../deepamehta_${VERSION}-${CI_PIPELINE_ID}_* ${REPODIR}/mini-dinstall/incoming/
-      - mini-dinstall --batch
-      - echo "Running test2 - debc /${REPODIR}/${TARGET}/deepamehta_${VERSION}-${CI_PIPELINE_ID}_all.changes"
-      - debc /${REPODIR}/${TARGET}/deepamehta_${VERSION}-${CI_PIPELINE_ID}_all.changes
+deploy:
+  stage: deploy
+  script:
+    - mv ../deepamehta_${VERSION}-${CI_PIPELINE_ID}_* ${REPODIR}/mini-dinstall/incoming/
+    - mini-dinstall --batch
+    - echo "Running test2 - debc /${REPODIR}/${TARGET}/deepamehta_${VERSION}-${CI_PIPELINE_ID}_all.changes"
+    - debc /${REPODIR}/${TARGET}/deepamehta_${VERSION}-${CI_PIPELINE_ID}_all.changes
