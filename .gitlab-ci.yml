@@ -1,0 +1,76 @@
+# This file is a template, and might need editing before it works on your project.
+# see https://docs.gitlab.com/ce/ci/yaml/README.html for all available options
+
+tags:
+   - deb
+
+before_script:
+   - DMX='deepamehta'
+   - VERSION='4.9.1'
+   - DEBFULLNAME='GitLab Runner'
+   - DEBEMAIL='GitLab Runner (econauten CI) <gitlab.runner@econauten.de>'
+   - REPODIR='/var/www/repo'
+   - TARGET="$(lsb_release -sc)"
+   - echo "Starting job ${CI_JOB_ID} in pipeline ${CI_PIPELINE_ID}"
+   - wget -q http://download.deepamehta.de/${DMX}-${VERSION}.zip
+   - unzip -q ${DMX}-${VERSION}.zip
+   - rm -rf ${DMX}-${VERSION}/bundle/org.apache.felix.gogo.*
+   - mkdir bin/bin bin/bundle \bin/bundle-deploy bin/bundle-available
+   - wget -q http://download.deepamehta.de/dm48-images-0.9.10.jar -P bin/bundle-available
+   - wget -q http://download.deepamehta.de/dm48-websockets-0.4.jar -P bin/bundle-available
+   - wget -q http://download.deepamehta.de/dm48-thymeleaf-0.6.1.jar -P bin/bundle-available
+   - wget -q http://download.deepamehta.de/dm48-sign-up-1.5.2.jar -P bin/bundle-available
+   - wget -q http://download.deepamehta.de/dm48-littlehelpers-0.3.0.jar -P bin/bundle-available
+   - wget -q http://download.deepamehta.de/dm48-import-export-0.5.jar -P bin/bundle-available
+   - wget -q http://github.com/junes/py4dmx/archive/master.zip -O examples/py4dmx.zip
+   - mv ${DMX}-${VERSION}/bin/* bin/bin/
+   - mv ${DMX}-${VERSION}/bundle/deepamehta-* bin/bundle-deploy/
+   - mv ${DMX}-${VERSION}/bundle/* bin/bundle/
+   - mv ${DMX}-${VERSION}/*.txt ./
+   - mkdir etc/deepamehta
+   - CONFIG=$(<${DMX}-${VERSION}/conf/config.properties)
+   - CONFIG=${CONFIG/dm4.security.anonymous_read_allowed = ALL/dm4.security.anonymous_read_allowed = NONE}
+   - CONFIG=${CONFIG/dm4.security.initial_admin_password = /dm4.security.initial_admin_password = YOUR_SECRET_PASSWORD_HERE}
+   - CONFIG=${CONFIG/dm4.filerepo.path = \//dm4.filerepo.path = \/var\/lib\/deepamehta\/deepamehta-filedir}
+   - CONFIG=${CONFIG/dm4.filerepo.per_workspace = false/dm4.filerepo.per_workspace = true}
+   - CONFIG=${CONFIG/felix.fileinstall.dir = bundle-deploy/felix.fileinstall.dir = \/usr\/share\/deepamehta\/bundle-deploy}
+   - CONFIG=${CONFIG/dm4.database.path = deepamehta-db/dm4.database.path = \/var\/lib\/deepamehta\/deepamehta-db}
+   - CONFIG=${CONFIG/java.util.logging.config.file = conf\/logging.properties/java.util.logging.config.file = \/etc\/deepamehta\/deepamehta-logging.conf}
+   - CONFIG=${CONFIG/org.osgi.framework.storage = bundle-cache/org.osgi.framework.storage = \/var\/cache\/deepamehta\/deepamehta-bundle-cache}
+   - echo "${CONFIG}" >etc/deepamehta/deepamehta.conf
+   - LOGGING=$(<${DMX}-${VERSION}/conf/logging.properties)
+   - LOGGING=${LOGGING/handlers=java.util.logging.ConsoleHandler/\# handlers=java.util.logging.ConsoleHandler}
+   - LOGGING=${LOGGING/java.util.logging.ConsoleHandler.level=ALL/\# java.util.logging.ConsoleHandler.level=ALL}
+   - LOGGING=${LOGGING/\# handlers=java.util.logging.FileHandler/handlers=java.util.logging.FileHandler}
+   - LOGGING=${LOGGING/java.util.logging.FileHandler.pattern=deepamehta.log/java.util.logging.FileHandler.pattern=\/var\/log\/deepamehta\/deepamehta.log}
+   - echo "${LOGGING}" >etc/deepamehta/deepamehta-logging.conf
+   - COPYRIGHT=$(<debian/copyright)
+   - echo "${COPYRIGHT/@@NUNC@@/$(date -R)}" >debian/copyright
+   - PREINST=$(<debian/preinst)
+   - PREINST=${PREINST/DMVERSION=\'@@VERSION@@\'/DMVERSION=\'${VERSION}\'}
+   - echo "${PREINST}" >debian/preinst
+
+build:
+ stage: build
+ script:
+   - dch --bin-nmu "DeepMehta debian package build from ${DMX}."
+   - gbp dch --ignore-branch --auto --new-version ${VERSION}-${CI_PIPELINE_ID} --git-author --release --commit --spawn-editor=never
+   - dpkg-buildpackage -A -us -p'gpg --no-tty --passphrase-file ~/.gnupg/passphrase' --force-sign -k'6457D548'
+
+after_script:
+   - echo "Do other things afterwards here"
+
+test:
+ stage: test
+ script:
+   - echo "Running test - lintian -i -I --show-overrides ../deepamehta_${VERSION}-${CI_PIPELINE_ID}_all.changes"
+   - lintian -i -I --show-overrides ../deepamehta_${VERSION}-${CI_PIPELINE_ID}_all.changes
+
+deploy:
+ stage: deploy
+ script:
+   - mv ../deepamehta_${VERSION}-${CI_PIPELINE_ID}_* ${REPODIR}/mini-dinstall/incoming/
+   - mini-dinstall --batch
+   - echo "Running test2 - debc /${REPODIR}/${TARGET}/deepamehta_${VERSION}-${CI_PIPELINE_ID}_all.changes"
+   - debc /${REPODIR}/${TARGET}/deepamehta_${VERSION}-${CI_PIPELINE_ID}_all.changes
+
