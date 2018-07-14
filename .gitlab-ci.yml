@@ -47,7 +47,7 @@ setup:
     - echo "${LOGGING}" >etc/deepamehta/deepamehta-logging.conf
     - COPYRIGHT=$(<debian/copyright)
     - echo "${COPYRIGHT/@@NUNC@@/$(date -R)}" >debian/copyright
-    - PREINST=$(<debian/preinst)
+    - PREINST="$(<debian/preinst)"
     - PREINST=${PREINST/DMVERSION=\'@@VERSION@@\'/DMVERSION=\'${VERSION}\'}
     - echo "${PREINST}" >debian/preinst
 
@@ -57,8 +57,8 @@ build:
   stage: build
   script:
     - dch --bin-nmu "DeepMehta debian package build from ${DMX}."
-    - gbp dch --ignore-branch --auto --new-version ${VERSION}-${CI_PIPELINE_ID} --git-author --release --commit --spawn-editor=never
-    - dpkg-buildpackage -A -us -p'gpg' --force-sign -k'671B7719' 
+    - gbp dch --ignore-branch --auto --new-version "${VERSION}-${CI_PIPELINE_ID}" --git-author --release --commit --spawn-editor=never
+    - dpkg-buildpackage -A -us --force-sign -k'671B7719' 
   after_script:
       - echo "Do other things afterwards here"
 
