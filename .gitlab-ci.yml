@@ -7,7 +7,7 @@ build:
   stage: build
   before_script:
     - DMX='deepamehta'
-    - VERSION='4.9.1'
+    - export VERSION='4.9.1'
     - DEBFULLNAME='GitLab Runner'
     - DEBEMAIL='Gitlab Runner (DMX CI) <gitlab.runner@dmx.systems>'
     - REPODIR='/var/www/download.dmx.systems/repos'
