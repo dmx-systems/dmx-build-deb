@@ -1,0 +1,15 @@
+# /etc/default/deepamehta
+# This file is utilized by init script /etc/init.d/deepamehta.
+# Set START_DEEPAMEHTA to 'yes' to start DeepaMehta daemon.
+#
+START_DEEPAMEHTA=no
+
+# Memory setting for JVM
+#
+DM_JAVA_XMS=128
+DM_JAVA_XMX=256
+
+# Log init.d actions to logfile
+# (default: /var/log/deepamehta/deepamehta.log)
+#
+LOG_DEEPAMEHTA_INIT=/var/log/deepamehta/deepamehta.log

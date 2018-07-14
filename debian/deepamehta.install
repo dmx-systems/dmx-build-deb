@@ -1,0 +1,8 @@
+bin/bin/* /usr/share/deepamehta/bin
+bin/bundle/* /usr/share/deepamehta/bundle
+bin/bundle-deploy/* /usr/share/deepamehta/bundle-deploy
+bin/bundle-available/* /usr/share/deepamehta/bundle-available
+bin/deepamehta.sh /usr/share/deepamehta
+etc/deepamehta/* /etc/deepamehta
+etc/init.d/deepamehta /etc/init.d
+etc/default/deepamehta /etc/default

@@ -1,0 +1,21 @@
+Add file /etc/apt/sources.list.d/econauten-deepamehta.list
+ * deb http://www.econauten.de/deb/ trusty/
+
+Add key:
+ * curl -fsSL http://www.econauten.de/deb/gpg | sudo apt-key add -
+ 
+Install deepamehta:
+ * sudo apt update && sudo apt install deepamehta
+
+Known Issues:
+
+ * After a fresh installation or update you need to restart deepamehta a few times bfore it comes up properly.
+
+Outlook:
+
+ * A future version should come without adduser und perl-mosules depencies (deluser).
+
+
+Juergen Neumann
+
+
