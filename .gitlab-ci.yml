@@ -84,3 +84,4 @@ deploy:
     - mini-dinstall --batch
     - echo "Running test2 - debc /${REPODIR}/${TARGET}/deepamehta_${VERSION}-${CI_PIPELINE_ID}_all.changes"
     - debc /${REPODIR}/${TARGET}/deepamehta_${VERSION}-${CI_PIPELINE_ID}_all.changes
+    
