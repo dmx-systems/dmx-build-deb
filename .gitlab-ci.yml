@@ -50,14 +50,13 @@ build:
     - PREINST="$(<debian/preinst)"
     - PREINST=${PREINST/DMVERSION=\'@@VERSION@@\'/DMVERSION=\'${VERSION}\'}
     - echo "${PREINST}" >debian/preinst
-    - echo "${VERSION}" >version
-    
   script:
     - dch --bin-nmu "DeepMehta debian package build from ${DMX}."
     - gbp dch --ignore-branch --auto --new-version "${VERSION}-${CI_PIPELINE_ID}" --git-author --release --commit --spawn-editor=never
     - dpkg-buildpackage -A -us --force-sign -k'671B7719' 
   after_script:
-      - echo "Do other things afterwards here"
+      - echo "${VERSION}"
+      - echo "${VERSION}" >version
 
 test:
   tags:
