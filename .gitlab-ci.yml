@@ -7,7 +7,7 @@ build:
   stage: build
   before_script:
     - DMX='deepamehta'
-    - export VERSION='4.9.1'
+    - VERSION='4.9.1'
     - DEBFULLNAME='GitLab Runner'
     - DEBEMAIL='Gitlab Runner (DMX CI) <gitlab.runner@dmx.systems>'
     - REPODIR='/var/www/download.dmx.systems/repos'
@@ -50,7 +50,8 @@ build:
     - PREINST="$(<debian/preinst)"
     - PREINST=${PREINST/DMVERSION=\'@@VERSION@@\'/DMVERSION=\'${VERSION}\'}
     - echo "${PREINST}" >debian/preinst
-
+    - echo "${VERSION}" >version
+    
   script:
     - dch --bin-nmu "DeepMehta debian package build from ${DMX}."
     - gbp dch --ignore-branch --auto --new-version "${VERSION}-${CI_PIPELINE_ID}" --git-author --release --commit --spawn-editor=never
@@ -62,6 +63,9 @@ test:
   tags:
     - deb
   stage: test
+  
+  before_script:
+    - VERSION="$(<version)"
   script:
     - echo "Running test - lintian -i -I --show-overrides ../deepamehta_${VERSION}-${CI_PIPELINE_ID}_all.changes"
     - lintian -i -I --show-overrides ../deepamehta_${VERSION}-${CI_PIPELINE_ID}_all.changes
@@ -70,8 +74,13 @@ deploy:
   tags:
     - deb
   stage: deploy
+  before_script:
+    - VERSION="$(<version)"
   script:
     - mv ../deepamehta_${VERSION}-${CI_PIPELINE_ID}_* ${REPODIR}/mini-dinstall/incoming/
     - mini-dinstall --batch
     - echo "Running test2 - debc /${REPODIR}/${TARGET}/deepamehta_${VERSION}-${CI_PIPELINE_ID}_all.changes"
     - debc /${REPODIR}/${TARGET}/deepamehta_${VERSION}-${CI_PIPELINE_ID}_all.changes
+  after_script:
+    - rm version
+    
