@@ -58,7 +58,7 @@ build:
   script:
     - dch --bin-nmu "DeepMehta debian package build from ${DMX}."
     - gbp dch --ignore-branch --auto --new-version ${VERSION}-${CI_PIPELINE_ID} --git-author --release --commit --spawn-editor=never
-    - dpkg-buildpackage -A -us --force-sign -k'671B7719' --sign-command='gpg --no-tty --passphrase-file ~/.gnupg/passphrase' -sgpg
+    - dpkg-buildpackage -A -us --sign-command"gpg --no-tty --passphrase-file ~/.gnupg/passphrase" -sgpg --force-sign -k'671B7719' 
   after_script:
       - echo "Do other things afterwards here"
 
