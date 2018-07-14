@@ -8,7 +8,7 @@ setup:
     - DMX='deepamehta'
     - VERSION='4.9.1'
     - DEBFULLNAME='GitLab Runner'
-    - DEBEMAIL='GitLab Runner (econauten CI) <gitlab.runner@econauten.de>'
+    - DEBEMAIL='Gitlab Runner (DMX CI) <gitlab.runner@dmx.systems>'
     - REPODIR='/var/www/download.dmx.systems/repos'
     - TARGET="$(lsb_release -sc)"
   script:
@@ -58,6 +58,7 @@ build:
   script:
     - dch --bin-nmu "DeepMehta debian package build from ${DMX}."
     - gbp dch --ignore-branch --auto --new-version ${VERSION}-${CI_PIPELINE_ID} --git-author --release --commit --spawn-editor=never
+    - which gpg
     - dpkg-buildpackage -A -us -p'gpg --no-tty --passphrase-file ~/.gnupg/passphrase' --force-sign -k'671B7719'
   after_script:
       - echo "Do other things afterwards here"
