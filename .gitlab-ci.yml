@@ -80,7 +80,7 @@ deploy:
     - REPODIR='/var/www/download.dmx.systems/repos'  
   script:
     - pwd
-    - mv ../deepamehta_${VERSION}-${CI_PIPELINE_ID}_* ${REPODIR}/mini-dinstall/incoming/
+    - mv ../deepamehta_${VERSION}-${CI_PIPELINE_ID}_* ${REPODIR}/ubuntu/mini-dinstall/incoming/
     - mini-dinstall --batch
     - debc ${REPODIR}/ubuntu/${TARGET}/deepamehta_${VERSION}-${CI_PIPELINE_ID}_all.changes
     
