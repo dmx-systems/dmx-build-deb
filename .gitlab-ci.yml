@@ -64,7 +64,7 @@ test:
   stage: test
   
   before_script:
-    - VERSION="$(<version)"
+    - VERSION='4.9.1'
   script:
     - echo "Running test - lintian -i -I --show-overrides ../deepamehta_${VERSION}-${CI_PIPELINE_ID}_all.changes"
     - lintian -i -I --show-overrides ../deepamehta_${VERSION}-${CI_PIPELINE_ID}_all.changes
@@ -74,7 +74,7 @@ deploy:
     - deb
   stage: deploy
   before_script:
-    - VERSION="$(<version)"
+    - VERSION='4.9.1'
   script:
     - mv ../deepamehta_${VERSION}-${CI_PIPELINE_ID}_* ${REPODIR}/mini-dinstall/incoming/
     - mini-dinstall --batch
