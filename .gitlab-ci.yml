@@ -86,5 +86,6 @@ deploy:
     - mini-dinstall --batch
     - debc ${REPODIR}/ubuntu/${TARGET}/deepamehta_${VERSION}-${CI_PIPELINE_ID}_all.changes
   after_script:
+    # trigger pipeline to re-deploy docker image fo dmx demo
     - curl --request POST --form token=493093c8f82e3968756bece46ab68a --form ref=master https://git.dmx.systems/api/v4/projects/17/trigger/pipeline
     
