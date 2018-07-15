@@ -8,12 +8,14 @@ build:
   before_script:
     - pwd
     - DMX='deepamehta'
-    - VERSION='4.9.1'
+    - VERSION='5.0-SNAPSHOT'
     - DEBFULLNAME='GitLab Runner'
     - DEBEMAIL='Gitlab Runner (DMX CI) <gitlab.runner@dmx.systems>'
     - echo "Starting job ${CI_JOB_ID} in pipeline ${CI_PIPELINE_ID}"
-    - wget -q http://download.deepamehta.de/${DMX}-${VERSION}.zip
-    - unzip -q ${DMX}-${VERSION}.zip
+    ## - wget -q http://download.deepamehta.de/${DMX}-${VERSION}.zip
+    - wget -q https://download.dmx.systems/ci/dmx-latest.zip
+    ## - unzip -q ${DMX}-${VERSION}.zip
+    - unzip -q dmx-latest.zip
     - rm -rf ${DMX}-${VERSION}/bundle/org.apache.felix.gogo.*
     - mkdir bin/bin bin/bundle \bin/bundle-deploy bin/bundle-available
     - wget -q http://download.deepamehta.de/dm48-images-0.9.10.jar -P bin/bundle-available
@@ -64,7 +66,7 @@ test:
   stage: test
   
   before_script:
-    - VERSION='4.9.1'
+    - VERSION='5.0-SNAPSHOT'
   script:
     - pwd
     - echo "Running test - lintian -i -I --show-overrides ../deepamehta_${VERSION}-${CI_PIPELINE_ID}_all.changes"
@@ -75,7 +77,7 @@ deploy:
     - deb
   stage: deploy
   before_script:
-    - VERSION='4.9.1'
+    - VERSION='5.0-SNAPSHOT'
     - TARGET="$(lsb_release -sc)"
     - REPODIR='/var/www/download.dmx.systems/repos'  
   script:
