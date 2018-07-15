@@ -86,5 +86,5 @@ deploy:
     - mini-dinstall --batch
     - debc ${REPODIR}/ubuntu/${TARGET}/deepamehta_${VERSION}-${CI_PIPELINE_ID}_all.changes
   after_script:
-    - curl --request POST --form "token=$CI_JOB_TOKEN" --form ref=master https://git.dmx.systems/api/v4/projects/17/ref/master/trigger/pipeline
+    - curl --request POST --form "token=$CI_JOB_TOKEN" --form ref=master https://git.dmx.systems/api/v4/projects/17/trigger/pipeline
     
