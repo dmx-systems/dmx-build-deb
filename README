@@ -1,8 +1,8 @@
-Add file /etc/apt/sources.list.d/econauten-deepamehta.list
- * deb http://www.econauten.de/deb/ trusty/
+Add file /etc/apt/sources.list.d/dmx-repo.list
+ * deb https://download.dmx.systems/repos/ubuntu/ xenial/
 
 Add key:
- * curl -fsSL http://www.econauten.de/deb/gpg | sudo apt-key add -
+ * curl -fsSL https://download.dmx.systems/repos/gpg | sudo apt-key add -
  
 Install deepamehta:
  * sudo apt update && sudo apt install deepamehta
