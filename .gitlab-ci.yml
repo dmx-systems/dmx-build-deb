@@ -32,12 +32,12 @@ build:
     - mv ${DMX}-${VERSION}/*.txt ./
     - mkdir etc/deepamehta
     - CONFIG=$(<${DMX}-${VERSION}/conf/config.properties)
-    - CONFIG=${CONFIG/dm4.security.anonymous_read_allowed = ALL/dm4.security.anonymous_read_allowed = NONE}
-    - CONFIG=${CONFIG/dm4.security.initial_admin_password = /dm4.security.initial_admin_password = YOUR_SECRET_PASSWORD_HERE}
-    - CONFIG=${CONFIG/dm4.filerepo.path = \//dm4.filerepo.path = \/var\/lib\/deepamehta\/deepamehta-filedir}
-    - CONFIG=${CONFIG/dm4.filerepo.per_workspace = false/dm4.filerepo.per_workspace = true}
+    - CONFIG=${CONFIG/dmx.security.anonymous_read_allowed = ALL/dmx.security.anonymous_read_allowed = NONE}
+    - CONFIG=${CONFIG/dmx.security.initial_admin_password = /dmx.security.initial_admin_password = YOUR_SECRET_PASSWORD_HERE}
+    - CONFIG=${CONFIG/dmx.filerepo.path = \//dmx.filerepo.path = \/var\/lib\/deepamehta\/deepamehta-filedir}
+    - CONFIG=${CONFIG/dmx.filerepo.per_workspace = false/dmx.filerepo.per_workspace = true}
     - CONFIG=${CONFIG/felix.fileinstall.dir = bundle-deploy/felix.fileinstall.dir = \/usr\/share\/deepamehta\/bundle-deploy}
-    - CONFIG=${CONFIG/dm4.database.path = deepamehta-db/dm4.database.path = \/var\/lib\/deepamehta\/deepamehta-db}
+    - CONFIG=${CONFIG/dmx.database.path = deepamehta-db/dmx.database.path = \/var\/lib\/deepamehta\/deepamehta-db}
     - CONFIG=${CONFIG/java.util.logging.config.file = conf\/logging.properties/java.util.logging.config.file = \/etc\/deepamehta\/deepamehta-logging.conf}
     - CONFIG=${CONFIG/org.osgi.framework.storage = bundle-cache/org.osgi.framework.storage = \/var\/cache\/deepamehta\/deepamehta-bundle-cache}
     - echo "${CONFIG}" >etc/deepamehta/deepamehta.conf
