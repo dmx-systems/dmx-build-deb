@@ -27,7 +27,7 @@ build:
     #- wget -q http://download.deepamehta.de/dm48-import-export-0.5.jar -P bin/bundle-available
     #- wget -q http://github.com/junes/py4dmx/archive/master.zip -O examples/py4dmx.zip
     - mv ${DMX}-${VERSION}/bin/* bin/bin/
-    # - mv ${DMX}-${VERSION}/bundle/${DMX}-* bin/bundle-deploy/
+    - mv ${DMX}-${VERSION}/bundle/${DMX}-* bin/bundle-deploy/
     - mv ${DMX}-${VERSION}/bundle/* bin/bundle/
     - mv ${DMX}-${VERSION}/*.txt ./
     - mkdir etc/deepamehta
