@@ -18,13 +18,14 @@ build:
     - unzip -q dmx-latest.zip
     - rm -rf ${DMX}-${VERSION}/bundle/org.apache.felix.gogo.*
     - mkdir bin/bin bin/bundle \bin/bundle-deploy bin/bundle-available
-    # - wget -q http://download.deepamehta.de/dm48-images-0.9.10.jar -P bin/bundle-available
-    # - wget -q http://download.deepamehta.de/dm48-websockets-0.4.jar -P bin/bundle-available
-    # - wget -q http://download.deepamehta.de/dm48-thymeleaf-0.6.1.jar -P bin/bundle-available
-    # - wget -q http://download.deepamehta.de/dm48-sign-up-1.5.2.jar -P bin/bundle-available
-    # - wget -q http://download.deepamehta.de/dm48-littlehelpers-0.3.0.jar -P bin/bundle-available
-    # - wget -q http://download.deepamehta.de/dm48-import-export-0.5.jar -P bin/bundle-available
-    # - wget -q http://github.com/junes/py4dmx/archive/master.zip -O examples/py4dmx.zip
+    ## These Plugins are outdated and need to be updated at some point
+    - wget -q http://download.deepamehta.de/dm48-images-0.9.10.jar -P bin/bundle-available
+    #- wget -q http://download.deepamehta.de/dm48-websockets-0.4.jar -P bin/bundle-available
+    #- wget -q http://download.deepamehta.de/dm48-thymeleaf-0.6.1.jar -P bin/bundle-available
+    #- wget -q http://download.deepamehta.de/dm48-sign-up-1.5.2.jar -P bin/bundle-available
+    #- wget -q http://download.deepamehta.de/dm48-littlehelpers-0.3.0.jar -P bin/bundle-available
+    #- wget -q http://download.deepamehta.de/dm48-import-export-0.5.jar -P bin/bundle-available
+    #- wget -q http://github.com/junes/py4dmx/archive/master.zip -O examples/py4dmx.zip
     - mv ${DMX}-${VERSION}/bin/* bin/bin/
     - mv ${DMX}-${VERSION}/bundle/${DMX}-* bin/bundle-deploy/
     - mv ${DMX}-${VERSION}/bundle/* bin/bundle/
