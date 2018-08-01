@@ -1,20 +1,20 @@
-# This file is a template, and might need editing before it works on your project.
-# see https://docs.gitlab.com/ce/ci/yaml/README.html for all available options
+stages:
+  - build
+  - test
+  - deploy
 
 build:
   tags:
     - deb
   stage: build
-  before_script:
+  script:
     - pwd
     - DMX='dmx'
     - VERSION='5.0-SNAPSHOT'
     - DEBFULLNAME='GitLab Runner'
     - DEBEMAIL='Gitlab Runner (DMX CI) <gitlab.runner@dmx.systems>'
     - echo "Starting job ${CI_JOB_ID} in pipeline ${CI_PIPELINE_ID}"
-    ## - wget -q http://download.deepamehta.de/${DMX}-${VERSION}.zip
     - wget -q https://download.dmx.systems/ci/dmx-latest.zip
-    ## - unzip -q ${DMX}-${VERSION}.zip
     - unzip -q dmx-latest.zip
     - rm -rf ${DMX}-${VERSION}/bundle/org.apache.felix.gogo.*
     - mkdir bin/bin bin/bundle \bin/bundle-deploy bin/bundle-available
@@ -51,23 +51,20 @@ build:
     - PREINST="$(<debian/preinst)"
     - PREINST=${PREINST/DMVERSION=\'@@VERSION@@\'/DMVERSION=\'${VERSION}\'}
     - echo "${PREINST}" >debian/preinst
-  script:
     - pwd
     - dch --bin-nmu "DMX debian package build from ${DMX}-${VERSION}."
     - gbp dch --ignore-branch --auto --new-version "${VERSION}-${CI_PIPELINE_ID}" --git-author --release --commit --spawn-editor=never
     - dpkg-buildpackage -A -us --force-sign -k'671B7719' 
-  after_script:
-      - echo "${VERSION}"
-      - echo "${VERSION}" >version
+    - echo "${VERSION}"
+    - echo "${VERSION}" >version
 
 test:
   tags:
     - deb
   stage: test
-  
-  before_script:
-    - VERSION='5.0-SNAPSHOT'
+
   script:
+    - VERSION='5.0-SNAPSHOT'
     - pwd
     - echo "Running test - lintian -i -I --show-overrides ../deepamehta_${VERSION}-${CI_PIPELINE_ID}_all.changes"
     - lintian -i -I --show-overrides ../deepamehta_${VERSION}-${CI_PIPELINE_ID}_all.changes
@@ -76,16 +73,14 @@ deploy:
   tags:
     - deb
   stage: deploy
-  before_script:
+  script:
     - VERSION='5.0-SNAPSHOT'
     - TARGET="$(lsb_release -sc)"
     - REPODIR='/var/www/download.dmx.systems/repos'  
-  script:
     - pwd
     - mv ../deepamehta_${VERSION}-${CI_PIPELINE_ID}_* ${REPODIR}/ubuntu/mini-dinstall/incoming/
     - mini-dinstall --batch
     - debc ${REPODIR}/ubuntu/${TARGET}/deepamehta_${VERSION}-${CI_PIPELINE_ID}_all.changes
-  after_script:
     # trigger pipeline to re-deploy docker image for dmx demo
     - MY_JOB_TOKEN="$(</home/gitlab-runner/.after-deb-repo.token)"
     - curl --request POST --form token="${MY_JOB_TOKEN}" --form ref=master https://git.dmx.systems/api/v4/projects/17/trigger/pipeline
