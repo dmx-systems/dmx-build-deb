@@ -7,7 +7,7 @@ build:
   stage: build
   before_script:
     - pwd
-    - DMX='deepamehta'
+    - DMX='dmx'
     - VERSION='5.0-SNAPSHOT'
     - DEBFULLNAME='GitLab Runner'
     - DEBEMAIL='Gitlab Runner (DMX CI) <gitlab.runner@dmx.systems>'
@@ -18,15 +18,15 @@ build:
     - unzip -q dmx-latest.zip
     - rm -rf ${DMX}-${VERSION}/bundle/org.apache.felix.gogo.*
     - mkdir bin/bin bin/bundle \bin/bundle-deploy bin/bundle-available
-    - wget -q http://download.deepamehta.de/dm48-images-0.9.10.jar -P bin/bundle-available
-    - wget -q http://download.deepamehta.de/dm48-websockets-0.4.jar -P bin/bundle-available
-    - wget -q http://download.deepamehta.de/dm48-thymeleaf-0.6.1.jar -P bin/bundle-available
-    - wget -q http://download.deepamehta.de/dm48-sign-up-1.5.2.jar -P bin/bundle-available
-    - wget -q http://download.deepamehta.de/dm48-littlehelpers-0.3.0.jar -P bin/bundle-available
-    - wget -q http://download.deepamehta.de/dm48-import-export-0.5.jar -P bin/bundle-available
-    - wget -q http://github.com/junes/py4dmx/archive/master.zip -O examples/py4dmx.zip
+    # - wget -q http://download.deepamehta.de/dm48-images-0.9.10.jar -P bin/bundle-available
+    # - wget -q http://download.deepamehta.de/dm48-websockets-0.4.jar -P bin/bundle-available
+    # - wget -q http://download.deepamehta.de/dm48-thymeleaf-0.6.1.jar -P bin/bundle-available
+    # - wget -q http://download.deepamehta.de/dm48-sign-up-1.5.2.jar -P bin/bundle-available
+    # - wget -q http://download.deepamehta.de/dm48-littlehelpers-0.3.0.jar -P bin/bundle-available
+    # - wget -q http://download.deepamehta.de/dm48-import-export-0.5.jar -P bin/bundle-available
+    # - wget -q http://github.com/junes/py4dmx/archive/master.zip -O examples/py4dmx.zip
     - mv ${DMX}-${VERSION}/bin/* bin/bin/
-    - mv ${DMX}-${VERSION}/bundle/deepamehta-* bin/bundle-deploy/
+    - mv ${DMX}-${VERSION}/bundle/${DMX}-* bin/bundle-deploy/
     - mv ${DMX}-${VERSION}/bundle/* bin/bundle/
     - mv ${DMX}-${VERSION}/*.txt ./
     - mkdir etc/deepamehta
@@ -53,7 +53,7 @@ build:
     - echo "${PREINST}" >debian/preinst
   script:
     - pwd
-    - dch --bin-nmu "DeepMehta debian package build from ${DMX}."
+    - dch --bin-nmu "DMX debian package build from ${DMX}-${VERSION}."
     - gbp dch --ignore-branch --auto --new-version "${VERSION}-${CI_PIPELINE_ID}" --git-author --release --commit --spawn-editor=never
     - dpkg-buildpackage -A -us --force-sign -k'671B7719' 
   after_script:
