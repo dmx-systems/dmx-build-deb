@@ -1,5 +1,5 @@
 /var/cache/deepamehta
 /var/lib/deepamehta
-/var/lib/deepamehta/deepamehta-db
-/var/lib/deepamehta/deepamehta-filedir
+/var/lib/deepamehta/dmx-db
+/var/lib/deepamehta/dmx-filedir
 /var/log/deepamehta
