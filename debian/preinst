@@ -23,7 +23,7 @@ fi
 
 case "$1" in
     install)
-    adduser --system --home /var/lib/deepamehta --group --disabled-password --disabled-login --gecos DeepaMehta deepamehta
+    useradd --system --user-group -d'/var/lib/deepamehta' -s'/bin/false' -c'DeepaMehta - Cope With Complexity' deepamehta
     if [ -d /var/lib/deepamehta/deepamehta-db ]; then
 	    if [ ! -f /var/lib/deepamehta/deepamehta-db/.dm-version.$DMVERSION ]; then
 		    mv /var/lib/deepamehta/deepamehta-db /var/lib/deepamehta/deepamehta-db-$PREVIOUSVERSION-backup-$BACKUPDATE
