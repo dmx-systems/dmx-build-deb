@@ -67,8 +67,6 @@ build:
     - git log -1
     - gbp dch --ignore-branch --new-version "${VERSION}-${CI_PIPELINE_ID}" --commit --since=${LASTCOMMIT} --release --spawn-editor=never --full --meta
     - dpkg-buildpackage -A -us --force-sign -k'671B7719' 
-    - echo "${VERSION}"
-    - echo "${VERSION}" >version
 
 test:
   tags:
@@ -77,6 +75,7 @@ test:
 
   script:
     - pwd
+    - ls -l
     - echo "Running test - lintian -i -I --show-overrides ../deepamehta_${VERSION}-${CI_PIPELINE_ID}_all.changes"
     - lintian -i -I --show-overrides ../deepamehta_*-${CI_PIPELINE_ID}_all.changes
 
