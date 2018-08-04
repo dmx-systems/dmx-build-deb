@@ -8,7 +8,7 @@ Homepage: http://www.deepamehta.de
 
 Package: deepamehta
 Architecture: all
-Depends: default-jre-headless, adduser, perl-modules
+Depends: default-jre-headless
 Description: semantic web platform for knowledge management and collaboration
  DeepaMehta is a software platform for collaboration and knowledge management.
  Knowledge is represented in a semantic network and is handled collaboratively.
