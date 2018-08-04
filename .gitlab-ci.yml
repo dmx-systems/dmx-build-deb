@@ -55,8 +55,9 @@ build:
     - echo "${PREINST}" >debian/preinst
     - pwd
     - dch --create --package "deepamehta" --controlmaint --distribution ${TARGET} --newversion ${VERSION} "A Debian Package for DMX"
-    - dch "Based on the great work of Jörg Richter <jri@deepamehta.de>"
-    - dch "Thanks to Silke <silke@silkemeyer.net> for the initial work on the debian package." 
+    - dch - ${VERSION} "Based on the great work of Jörg Richter <jri@deepamehta.de>"
+    - dch - ${VERSION} "Thanks to Silke <silke@silkemeyer.net> for the initial work on the debian package."
+    - dch -r --distribution stable ignored
     - LASTCOMMIT="$( git rev-parse HEAD )"
     - git add debian/changelog
     - 'git commit -m"DMX debian package build from ${DMX}-${VERSION} - Build Pipeline ${CI_PIPELINE_ID}" -m"Binaries from https://download.dmx.systems/ci/dmx-latest.zip" -m"Thanks: GitLab Team for making this great software!"'
