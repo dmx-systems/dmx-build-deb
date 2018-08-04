@@ -74,7 +74,7 @@ test:
   stage: test
 
   script:
-    - tree
+    - echo "${CI_ENVIRONMENT_NAME}"
     - echo "Running test - lintian -i -I --show-overrides ../deepamehta_${VERSION}-${CI_PIPELINE_ID}_all.changes"
     - lintian -i -I --show-overrides ../deepamehta_*-${CI_PIPELINE_ID}_all.changes
 
