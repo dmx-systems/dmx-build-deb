@@ -17,6 +17,7 @@ build:
     - wget -q https://download.dmx.systems/ci/dmx-latest.zip
     - unzip -q dmx-latest.zip
     - VERSION="$( ls -d dmx-* | cut -d'-' -f2- )"
+    - echo "VERSION=${VERSION}"
     - rm -rf ${DMX}-${VERSION}/bundle/org.apache.felix.gogo.*
     - mkdir bin/bin bin/bundle \bin/bundle-deploy bin/bundle-available
     ## These Plugins are outdated and need to be updated at some point
