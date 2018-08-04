@@ -53,7 +53,8 @@ build:
     - PREINST=${PREINST/DMVERSION=\'@@VERSION@@\'/DMVERSION=\'${VERSION}\'}
     - echo "${PREINST}" >debian/preinst
     - pwd
-    #- dch --create --controlmaint --bin-nmu "DMX debian package build from ${DMX}-${VERSION}."
+    - dch --create --controlmaint --newversion ${DMX}-${VERSION}
+    #--bin-nmu "DMX debian package build from ${DMX}-${VERSION}."
     - gbp dch --ignore-branch --auto --new-version "${VERSION}-${CI_PIPELINE_ID}" --git-author --release --commit --spawn-editor=never
     - dpkg-buildpackage -A -us --force-sign -k'671B7719' 
     - echo "${VERSION}"
