@@ -74,9 +74,9 @@ test:
   stage: test
 
   script:
-    - cat .git/COMMIT_EDITMSG
-    - echo "Running test - lintian -i -I --show-overrides ../deepamehta_${VERSION}-${CI_PIPELINE_ID}_all.changes"
-    - lintian -i -I --show-overrides ../deepamehta_*-${CI_PIPELINE_ID}_all.changes
+    - COMMIT_VERSION="$( cat .git/COMMIT_EDITMSG | cut -d' ' -f4 )"
+    - echo "Running test - lintian -i -I --show-overrides ../deepamehta_${COMMIT_VERSION}_all.changes"
+    - lintian -i -I --show-overrides ../deepamehta_${COMMIT_VERSION}_all.changes
 
 deploy:
   tags:
