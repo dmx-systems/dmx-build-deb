@@ -75,6 +75,7 @@ test:
 
   script:
     - COMMIT_VERSION="$( cat .git/COMMIT_EDITMSG | cut -d' ' -f4 )"
+    - cat ../deepamehta_${COMMIT_VERSION}_all.changes
     - echo "Running test - lintian -i -I --show-overrides ../deepamehta_${COMMIT_VERSION}_all.changes"
     - lintian -i -I --show-overrides ../deepamehta_${COMMIT_VERSION}_all.changes
 
