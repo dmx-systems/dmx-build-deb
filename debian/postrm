@@ -34,7 +34,7 @@ if [ "$1" = purge ]; then
     if [ -f /var/log/deepamehta/deepamehta.log ]; then
 	rm /var/log/deepamehta/*
     fi
-    deluser --system --remove-home deepamehta
+    deluser --system --backup backup-to '/home' deluser --system --remove-home deepamehta
     update-rc.d deepamehta remove >/dev/null
 fi
 
