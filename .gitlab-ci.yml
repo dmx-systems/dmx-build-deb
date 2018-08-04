@@ -54,10 +54,10 @@ build:
     - PREINST=${PREINST/DMVERSION=\'@@VERSION@@\'/DMVERSION=\'${VERSION}\'}
     - echo "${PREINST}" >debian/preinst
     - pwd
-    - LASTCOMMIT="$( git rev-parse HEAD )"
-    - dch --create --package "deepamehta" --controlmaint --distribution ${TARGET} --newversion ${VERSION} "DMX debian package build from ${DMX}-${VERSION}." "Test"
+    - dch --create --package "deepamehta" --controlmaint --distribution ${TARGET} --newversion ${VERSION} --empty
     - git add debian/changelog
-    - 'git commit -m"DMX CI - Build Pipeline ${CI_PIPELINE_ID}" -m"This package was build from https://download.dmx.systems/ci/dmx-latest.zip" -m"Thanks: Silke <silke@silkemeyer.net> for the initial work on the debian package." --author="${DEBEMAIL}"'
+    - 'git commit -m"DMX debian package build from ${DMX}-${VERSION} - Build Pipeline ${CI_PIPELINE_ID}" -m"build from https://download.dmx.systems/ci/dmx-latest.zip" -m"Thanks: Silke <silke@silkemeyer.net> for the initial work on the debian package." --author="${DEBEMAIL}"'
+    - LASTCOMMIT="$( git rev-parse HEAD )"
     - git log -1
     - gbp dch --ignore-branch --new-version "${VERSION}-${CI_PIPELINE_ID}" --git-author --commit --since=${LASTCOMMIT} --release --spawn-editor=never --full --meta
     - dpkg-buildpackage -A -us --force-sign -k'671B7719' 
