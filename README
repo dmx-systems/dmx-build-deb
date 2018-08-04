@@ -11,10 +11,6 @@ Known Issues:
 
  * After a fresh installation or update you need to restart deepamehta a few times before it comes up properly.
 
-Outlook:
-
- * A future version should come without adduser und perl-mosules depencies (deluser).
-
 
 Juergen Neumann
 
