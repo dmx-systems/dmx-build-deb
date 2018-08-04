@@ -56,7 +56,7 @@ build:
     - pwd
     - dch --create --package "deepamehta" --controlmaint --distribution ${TARGET} --newversion ${VERSION} "DMX debian package build from ${DMX}-${VERSION}."
     - git add debian/changelog
-    - 'git commit -m "DMX CI - Build Pipeline ${CI_PIPELINE_ID} Thanks: Silke <silke@silkemeyer.net> for the initial work on this package." --author="${DEBEMAIL}"'
+    - 'git commit -m "DMX CI - Build Pipeline ${CI_PIPELINE_ID}\nThanks: Silke <silke@silkemeyer.net> for the initial work on this package." --author="${DEBEMAIL}"'
     - gbp dch --ignore-branch --auto --new-version "${VERSION}-${CI_PIPELINE_ID}" --git-author --release --commit --spawn-editor=never --meta
     - dpkg-buildpackage -A -us --force-sign -k'671B7719' 
     - echo "${VERSION}"
