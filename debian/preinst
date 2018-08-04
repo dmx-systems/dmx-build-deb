@@ -23,7 +23,7 @@ fi
 
 case "$1" in
     install)
-    useradd --system --user-group -d'/var/lib/deepamehta' -s'/bin/false' -c'DeepaMehta - Cope With Complexity' deepamehta
+    useradd --system --user-group --create-home -d'/var/lib/deepamehta' -s'/bin/false' -c'DeepaMehta - Cope With Complexity' deepamehta
     if [ -d /var/lib/deepamehta/dmx-db ]; then
 	    if [ ! -f /var/lib/deepamehta/dmx-db/.dm-version.$DMVERSION ]; then
 		    mv /var/lib/deepamehta/dmx-db /var/lib/deepamehta/dmx-db-$PREVIOUSVERSION-backup-$BACKUPDATE
