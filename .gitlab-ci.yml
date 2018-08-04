@@ -75,7 +75,7 @@ test:
 
   script:
     - pwd
-    - ls -l
+    - cat debian/changelog
     - echo "Running test - lintian -i -I --show-overrides ../deepamehta_${VERSION}-${CI_PIPELINE_ID}_all.changes"
     - lintian -i -I --show-overrides ../deepamehta_*-${CI_PIPELINE_ID}_all.changes
 
