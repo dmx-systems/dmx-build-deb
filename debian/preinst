@@ -24,7 +24,7 @@ fi
 case "$1" in
     install)
     useradd --system --user-group -d'/var/lib/deepamehta' -s'/bin/false' -c'DeepaMehta - Cope With Complexity' deepamehta
-    if [ -d /var/lib/deepamehta/deepamehta-db ]; then
+    if [ -d /var/lib/deepamehta/dmx-db ]; then
 	    if [ ! -f /var/lib/deepamehta/dmx-db/.dm-version.$DMVERSION ]; then
 		    mv /var/lib/deepamehta/dmx-db /var/lib/deepamehta/dmx-db-$PREVIOUSVERSION-backup-$BACKUPDATE
 		    mkdir /var/lib/deepamehta/dmx-db
@@ -55,7 +55,7 @@ case "$1" in
 	    echo "Your existing database has been moved to /var/lib/deepamehta/dmx-db-$PREVIOUSVERSION-backup-$BACKUPDATE."
 	    rm /var/lib/deepamehta/dmx-db/.dm-version.$PREVIOUSVERSION
     # existing DB is >= DM 4.1
-    elif [ -d /var/lib/deepamehta/dmx-db ] && [ ! -f /var/lib/deepamehta/dmx-db/.dm-version.$DMVERSION ] && [ -f /var/lib/deepamehta/deepamehta-db/.dm-version.4.1* ]; then
+    elif [ -d /var/lib/deepamehta/dmx-db ] && [ ! -f /var/lib/deepamehta/dmx-db/.dm-version.$DMVERSION ] && [ -f /var/lib/deepamehta/dmx-db/.dm-version.4.1* ]; then
         cp -a /var/lib/deepamehta/dmx-db /var/lib/deepamehta/dmx-db-$PREVIOUSVERSION-backup-$BACKUPDATE
         touch /var/lib/deepamehta/dmx-db/.dm-version.$DMVERSION
 		echo "Your existing database has been copied to /var/lib/deepamehta/deepamehta-db-$PREVIOUSVERSION-backup-$BACKUPDATE."
