@@ -31,7 +31,7 @@ case "$1" in
     chown -R deepamehta:deepamehta /var/lib/deepamehta
     chown -R deepamehta:deepamehta /var/cache/deepamehta
     chown -R deepamehta:deepamehta /var/log/deepamehta
-    cp /usr/share/doc/deepamehta/examples/deepamehta.filedir /var/lib/deepamehta/deepamehta-filedir/README.txt
+    cp /usr/share/doc/deepamehta/examples/deepamehta.filedir /var/lib/deepamehta/dmx-filedir/README.txt
     invoke-rc.d deepamehta start
     ;;
     abort-upgrade|abort-remove|abort-deconfigure)
