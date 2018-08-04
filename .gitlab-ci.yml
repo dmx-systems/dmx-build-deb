@@ -94,4 +94,4 @@ deploy:
     - MY_JOB_TOKEN="$(</home/gitlab-runner/.after-deb-repo.token)"
     - TRIGGER="$(curl --silent --write-out '%{http_code}' --output /dev/null --request POST --form token="${MY_JOB_TOKEN}" --form ref=master https://git.dmx.systems/api/v4/projects/17/trigger/pipeline)"
     - echo "${TRIGGER}"
-    - if [ ${TRIGGER} -ne 201 ]; then exit 1; fi
+    - if [ ${TRIGGER} -ne 201 ]; then echo "Failed to trigger subsequent project."; exit 1; fi
