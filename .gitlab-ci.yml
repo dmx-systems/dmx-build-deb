@@ -54,11 +54,11 @@ build:
     - PREINST=${PREINST/DMVERSION=\'@@VERSION@@\'/DMVERSION=\'${VERSION}\'}
     - echo "${PREINST}" >debian/preinst
     - pwd
-    - dch --create --package "deepamehta" --newversion ${VERSION} --empty
-    - dch -v ${VERSION} "A Debian Package for DMX - The Context Engine"
-    - dch -v ${VERSION} "Based on the great work of Jörg Richter <jri@deepamehta.de>"
-    - dch -v ${VERSION} "Thanks to Silke <silke@silkemeyer.net> for the initial work on the debian package."
-    - dch -r --controlmaint --distribution "${TARGET}" ignored 
+    - dch --controlmaint --create --package "deepamehta" --newversion ${VERSION} --empty
+    - dch --controlmaint -v ${VERSION} "A Debian Package for DMX - The Context Engine"
+    - dch --controlmaint -v ${VERSION} "Based on the great work of Jörg Richter <jri@deepamehta.de>"
+    - dch --controlmaint -v ${VERSION} "Thanks to Silke <silke@silkemeyer.net> for the initial work on the debian package."
+    - dch --controlmaint -r --distribution "${TARGET}" ignored 
     - LASTCOMMIT="$( git rev-parse HEAD )"
     - git add debian/changelog
     - 'git commit -m"DMX debian package build from ${DMX}-${VERSION} - Build Pipeline ${CI_PIPELINE_ID}" -m"Binaries from https://download.dmx.systems/ci/dmx-latest.zip" -m"Thanks: GitLab Team for providing great CI infrastructure!"'
