@@ -31,7 +31,7 @@ build:
     #- wget -q http://github.com/junes/py4dmx/archive/master.zip -O examples/py4dmx.zip
     - mv ${DMX}-${VERSION}/bin/* bin/bin/
     - mv ${DMX}-${VERSION}/bundle/* bin/bundle/
-    - mv ${DMX}-${VERSION}/bundle-deploy/* /bin/bundle-deploy/
+    - mv ${DMX}-${VERSION}/bundle-deploy/* bin/bundle-deploy/
     - mv ${DMX}-${VERSION}/*.txt ./
     - mkdir etc/deepamehta
     - CONFIG=$(<${DMX}-${VERSION}/conf/config.properties)
