@@ -20,7 +20,7 @@ build:
     - VERSION="$( ls -d dmx-* | grep -v ${ZIPFILE} | cut -d'-' -f2- )"
     - echo "VERSION=${VERSION}"
     - rm -rf ${DMX}-${VERSION}/bundle/org.apache.felix.gogo.*
-    - mkdir bin/bin bin/bundle \bin/bundle-deploy bin/bundle-available
+    - mkdir bin/bin bin/bundle bin/bundle-deploy bin/bundle-available
     ## These Plugins are outdated and need to be updated at some point
     - wget -q http://download.deepamehta.de/dm48-images-0.9.10.jar -P bin/bundle-available
     #- wget -q http://download.deepamehta.de/dm48-websockets-0.4.jar -P bin/bundle-available
