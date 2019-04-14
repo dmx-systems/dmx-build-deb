@@ -1,5 +1,5 @@
 #!/bin/sh
-# postinst script for deepamehta
+# postinst script for dmx
 #
 # see: dh_installdeb(1)
 
@@ -21,18 +21,18 @@ set -e
 
 case "$1" in
     configure)
-    chmod 755 /etc/init.d/deepamehta
-    chmod 755 /usr/share/deepamehta/deepamehta.sh
-    chmod 644 /etc/default/deepamehta
-    chmod 750 /etc/deepamehta
-    chmod 640 /etc/deepamehta/*
-    update-rc.d deepamehta defaults >/dev/null
-    chown -R root:deepamehta /etc/deepamehta
-    chown -R deepamehta:deepamehta /var/lib/deepamehta
-    chown -R deepamehta:deepamehta /var/cache/deepamehta
-    chown -R deepamehta:deepamehta /var/log/deepamehta
-    cp /usr/share/doc/deepamehta/examples/deepamehta.filedir /var/lib/deepamehta/dmx-filedir/README.txt
-    invoke-rc.d deepamehta start
+    chmod 755 /etc/init.d/dmx
+    chmod 755 /usr/share/dmx/dmx.sh
+    chmod 644 /etc/default/dmx
+    chmod 750 /etc/dmx
+    chmod 640 /etc/dmx/*
+    update-rc.d dmx defaults >/dev/null
+    chown -R root:dmx /etc/dmx
+    chown -R dmx:dmx /var/lib/dmx
+    chown -R dmx:dmx /var/cache/dmx
+    chown -R dmx:dmx /var/log/dmx
+    cp /usr/share/doc/dmx/examples/dmx.filedir /var/lib/dmx/dmx-filedir/README.txt
+    invoke-rc.d dmx start
     ;;
     abort-upgrade|abort-remove|abort-deconfigure)
     ;;

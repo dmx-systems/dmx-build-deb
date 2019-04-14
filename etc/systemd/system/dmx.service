@@ -1,0 +1,25 @@
+[Unit]
+Description=DMX - The Context Machine
+Documentation=https://docs.dmx.systems
+Requires=
+After=network.target syslog.target
+
+[Service]
+User=dmx
+Group=dmx
+# use /etc/dmx/dmx.conf
+# source /etc/default/dmx
+ExecStartPre=
+ExecStart=/usr/bin/java -Xms${DM_JAVA_XMS}M -Xmx${DM_JAVA_XMX}M -Dfile.encoding=UTF-8 -Dfelix.system.properties=file:${CONFIG} -jar bin/felix.jar
+ExecStop=
+PIDFile=/var/run/dmx/dmx.pid
+# forkt nicht, oder?
+Type=simple
+
+[Install]
+WantedBy=multi-user.target
+
+[Path]
+PathExists=
+MakeDirectory=
+DirectoryMode=

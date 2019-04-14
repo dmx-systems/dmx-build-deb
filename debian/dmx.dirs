@@ -1,0 +1,5 @@
+/var/cache/dmx
+/var/lib/dmx
+/var/lib/dmx/dmx-db
+/var/lib/dmx/dmx-filedir
+/var/log/dmx

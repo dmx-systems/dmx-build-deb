@@ -1,12 +1,12 @@
-This is the debianized package of DeepaMehta. 
+This is the debianized package of DMX.
 
 The first versions were built by Silke Meyer <silke@silkemeyer.net> in 2011.
-This package was debianized by Juergen Neumann <juergen.neumann@econauten.de>
+This package was debianized by Juergen Neumann <juergen.neumann@dmx.berlin>
 on @@NUNC@@.
 
 The binary files were downloaded from http://www.deepamehta.de/
 
-Upstream Author is Joerg Richter <jri@deepamehta.de>
+Upstream Author is Joerg Richter <jri@dmx.berlin>
 
 Copyright (C) 2017 Joerg Richter
 
@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 On Debian systems, the complete text of the GNU General
 Public License version 3 can be found in `/usr/share/common-licenses/GPL-3'.
 
-The Debian packaging is Copyright (C) 2017 
-Juergen Neumann <juergen.neumann@econauten.de> 
+The Debian packaging is Copyright (C) 2019
+Juergen Neumann <juergen.neumann@dmx.berlin>
 and is licensed under the GPL version 3, see above.
 

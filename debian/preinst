@@ -1,5 +1,5 @@
 #!/bin/sh
-# preinst script for deepamehta
+# preinst script for dmx
 #
 # see: dh_installdeb(1)
 
@@ -15,57 +15,49 @@ set -e
 
 BACKUPDATE=$( date +%F-%H:%M:%S )
 DMVERSION='@@VERSION@@'
-PREVIOUSVERSION=$( find /var/lib/deepamehta/dmx-db/ -name "*.dm-version.*" | cut -d'.' -f'3-' | sort -V | tail -n1 )
+PREVIOUSVERSION=$( find /var/lib/dmx/dmx-db/ -name "*.dm-version.*" | cut -d'.' -f'3-' | sort -V | tail -n1 )
 
-if [ -f /var/run/deepamehta/deepamehta.pid ]; then
-    invoke-rc.d deepamehta stop
+if [ -f /var/run/dmx/dmx.pid ]; then
+    invoke-rc.d dmx stop
 fi
 
 case "$1" in
     install)
-    useradd --system --user-group --create-home -d'/var/lib/deepamehta' -s'/bin/false' -c'DeepaMehta - Cope With Complexity' deepamehta
-    if [ -d /var/lib/deepamehta/dmx-db ]; then
-	    if [ ! -f /var/lib/deepamehta/dmx-db/.dm-version.$DMVERSION ]; then
-		    mv /var/lib/deepamehta/dmx-db /var/lib/deepamehta/dmx-db-$PREVIOUSVERSION-backup-$BACKUPDATE
-		    mkdir /var/lib/deepamehta/dmx-db
-		    chown deepamehta:deepamehta /var/lib/deepamehta/dmx-db
-		    touch /var/lib/deepamehta/dmx-db/.dm-version.$DMVERSION
-		    echo "Your existing database has been moved to /var/lib/deepamehta/dmx-db-$PREVIOUSVERSION-backup-$BACKUPDATE."
+    useradd --system --user-group --create-home -d'/var/lib/dmx' -s'/bin/false' -c'DMX - The Context Machine' dmx
+    if [ -d /var/lib/dmx/dmx-db ]; then
+	    if [ ! -f /var/lib/dmx/dmx-db/.dm-version.$DMVERSION ]; then
+		    mv /var/lib/dmx/dmx-db /var/lib/dmx/dmx-db-$PREVIOUSVERSION-backup-$BACKUPDATE
+		    mkdir /var/lib/dmx/dmx-db
+		    chown dmx:dmx /var/lib/dmx/dmx-db
+		    touch /var/lib/dmx/dmx-db/.dm-version.$DMVERSION
+		    echo "Your existing database has been moved to /var/lib/dmx/dmx-db-$PREVIOUSVERSION-backup-$BACKUPDATE."
 	    fi
     else
-	    mkdir /var/lib/deepamehta/dmx-db
-	    chown deepamehta:deepamehta /var/lib/deepamehta/dmx-db
-	    touch /var/lib/deepamehta/dmx-db/.dm-version.$DMVERSION
+	    mkdir /var/lib/dmx/dmx-db
+	    chown dmx:dmx /var/lib/dmx/dmx-db
+	    touch /var/lib/dmx/dmx-db/.dm-version.$DMVERSION
     fi
-    if [ -d /var/cache/deepamehta/bundle-cache ]; then
-	    rm -rf /var/cache/deepamehta/bundle-cache
+    if [ -d /var/cache/dmx/bundle-cache ]; then
+	    rm -rf /var/cache/dmx/bundle-cache
     fi
-    if [ -d /var/cache/deepamehta/deepamehta-bundle-cache ]; then
-	    rm -rf /var/cache/deepamehta/deepamehta-bundle-cache
+    if [ -d /var/cache/dmx/dmx-bundle-cache ]; then
+	    rm -rf /var/cache/dmx/dmx-bundle-cache
     fi
     ;;
 
     upgrade)
-    # existing DB is < DM 4.1
-    if [ -d /var/lib/deepamehta/dmx-db ] && [ ! -f /var/lib/deepamehta/dmx-db/.dm-version.$DMVERSION ] && [ -f /var/lib/deepamehta/dmx-db/.dm-version.4.0* ]; then
-	    mv /var/lib/deepamehta/dmx-db /var/lib/deepamehta/dmx-db-$PREVIOUSVERSION-backup-$BACKUPDATE
-	    mkdir /var/lib/deepamehta/dmx-db
-	    chown deepamehta:deepamehta /var/lib/deepamehta/dmx-db
-	    touch /var/lib/deepamehta/dmx-db/.dm-version.$DMVERSION
-	    echo "Your existing database has been moved to /var/lib/deepamehta/dmx-db-$PREVIOUSVERSION-backup-$BACKUPDATE."
-	    rm /var/lib/deepamehta/dmx-db/.dm-version.$PREVIOUSVERSION
     # existing DB is >= DM 4.1
-    elif [ -d /var/lib/deepamehta/dmx-db ] && [ ! -f /var/lib/deepamehta/dmx-db/.dm-version.$DMVERSION ] && [ -f /var/lib/deepamehta/dmx-db/.dm-version.4.1* ]; then
-        cp -a /var/lib/deepamehta/dmx-db /var/lib/deepamehta/dmx-db-$PREVIOUSVERSION-backup-$BACKUPDATE
-        touch /var/lib/deepamehta/dmx-db/.dm-version.$DMVERSION
-		echo "Your existing database has been copied to /var/lib/deepamehta/deepamehta-db-$PREVIOUSVERSION-backup-$BACKUPDATE."
-		rm /var/lib/deepamehta/dmx-db/.dm-version.$PREVIOUSVERSION
+    elif [ -d /var/lib/dmx/dmx-db ] && [ ! -f /var/lib/dmx/dmx-db/.dm-version.$DMVERSION ] && [ -f /var/lib/dmx/dmx-db/.dm-version.4.1* ]; then
+        cp -a /var/lib/dmx/dmx-db /var/lib/dmx/dmx-db-$PREVIOUSVERSION-backup-$BACKUPDATE
+        touch /var/lib/dmx/dmx-db/.dm-version.$DMVERSION
+		echo "Your existing database has been copied to /var/lib/dmx/dmx-db-$PREVIOUSVERSION-backup-$BACKUPDATE."
+		rm /var/lib/dmx/dmx-db/.dm-version.$PREVIOUSVERSION
     fi
-    if [ -d /var/cache/deepamehta/bundle-cache ]; then
-	    rm -rf /var/cache/deepamehta/bundle-cache
+    if [ -d /var/cache/dmx/bundle-cache ]; then
+	    rm -rf /var/cache/dmx/bundle-cache
     fi
-    if [ -d /var/cache/deepamehta/deepamehta-bundle-cache ]; then
-	    rm -rf /var/cache/deepamehta/deepamehta-bundle-cache
+    if [ -d /var/cache/dmx/dmx-bundle-cache ]; then
+	    rm -rf /var/cache/dmx/dmx-bundle-cache
     fi
     ;;
 

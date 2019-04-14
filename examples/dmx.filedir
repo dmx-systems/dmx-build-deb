@@ -1,0 +1,1 @@
+The default files directory is /var/lib/dmx/dmx-filedir. To change this, edit /etc/dmx/dmx.conf.

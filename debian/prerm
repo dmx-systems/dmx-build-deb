@@ -1,5 +1,5 @@
 #!/bin/sh
-# prerm script for deepamehta
+# prerm script for dmx
 #
 # see: dh_installdeb(1)
 
@@ -19,15 +19,15 @@ set -e
 
 case "$1" in
     remove|upgrade|deconfigure)
-    if [ -f /var/run/deepamehta/deepamehta.pid ]; then
-	    invoke-rc.d deepamehta stop
+    if [ -f /var/run/dmx/dmx.pid ]; then
+	    invoke-rc.d dmx stop
     fi
 
-    if [ -d /var/cache/deepamehta/bundle-cache ]; then
-	    rm -rf /var/cache/deepamehta/bundle-cache
+    if [ -d /var/cache/dmx/bundle-cache ]; then
+	    rm -rf /var/cache/dmx/bundle-cache
     fi
-    if [ -d /var/cache/deepamehta/deepamehta-bundle-cache ]; then
-	    rm -rf /var/cache/deepamehta/deepamehta-bundle-cache
+    if [ -d /var/cache/dmx/dmx-bundle-cache ]; then
+	    rm -rf /var/cache/dmx/dmx-bundle-cache
     fi
     ;;
 
