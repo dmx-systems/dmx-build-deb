@@ -86,6 +86,9 @@ test:
     - lintian -i -I --show-overrides ../deepamehta_${COMMIT_VERSION}_all.changes
 
 deploy:
+  only:
+    refs:
+      - master
   tags:
     - deb
   stage: deploy
