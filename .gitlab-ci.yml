@@ -4,6 +4,9 @@ stages:
   - deploy
 
 build:
+  only:
+    refs:
+      - master
   tags:
     - deb
   stage: build
