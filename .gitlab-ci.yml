@@ -4,6 +4,9 @@ stages:
   - deploy
 
 build:
+  only:
+    refs:
+      - master
   tags:
     - deb
   stage: build
@@ -69,6 +72,9 @@ build:
     - dpkg-buildpackage -A -us --force-sign -k'671B7719' 
 
 test:
+  only:
+    refs:
+      - master
   tags:
     - deb
   stage: test
