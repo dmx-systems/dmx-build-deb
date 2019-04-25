@@ -19,4 +19,4 @@ See /usr/share/doc/dmx/examples/dmx.apache for a sample Apache2 config file (for
 
 +++ Security +++
 
-To secure your installation with iptables see https://trac.deepamehta.de/wiki/UbuntuSecuringDeepaMehta.
+To secure your installation with iptables see https://dmx.readthedocs.io/en/latest/admin.html#securing-dmx.
