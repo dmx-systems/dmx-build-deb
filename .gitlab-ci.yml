@@ -36,30 +36,30 @@ build:
     - mv ${DMX}-${VERSION}/bundle/* bin/bundle/
     - mv ${DMX}-${VERSION}/bundle-deploy/* bin/bundle-deploy/
     - mv ${DMX}-${VERSION}/*.txt ./
-    - mkdir etc/deepamehta
+    - mkdir etc/dmx
     - CONFIG=$(<${DMX}-${VERSION}/conf/config.properties)
     - CONFIG=${CONFIG/dmx.security.anonymous_read_allowed = ALL/dmx.security.anonymous_read_allowed = NONE}
     - CONFIG=${CONFIG/dmx.security.initial_admin_password = /dmx.security.initial_admin_password = YOUR_SECRET_PASSWORD_HERE}
-    - CONFIG=${CONFIG/dmx.filerepo.path = \//dmx.filerepo.path = \/var\/lib\/deepamehta\/dmx-filedir}
+    - CONFIG=${CONFIG/dmx.filerepo.path = \//dmx.filerepo.path = \/var\/lib\/dmx\/dmx-filedir}
     - CONFIG=${CONFIG/dmx.filerepo.per_workspace = false/dmx.filerepo.per_workspace = true}
-    - CONFIG=${CONFIG/felix.fileinstall.dir = bundle-deploy/felix.fileinstall.dir = \/usr\/share\/deepamehta\/bundle-deploy}
-    - CONFIG=${CONFIG/dmx.database.path = dmx-db/dmx.database.path = \/var\/lib\/deepamehta\/dmx-db}
-    - CONFIG=${CONFIG/java.util.logging.config.file = conf\/logging.properties/java.util.logging.config.file = \/etc\/deepamehta\/deepamehta-logging.conf}
-    - CONFIG=${CONFIG/org.osgi.framework.storage = bundle-cache/org.osgi.framework.storage = \/var\/cache\/deepamehta\/deepamehta-bundle-cache}
-    - echo "${CONFIG}" >etc/deepamehta/deepamehta.conf
+    - CONFIG=${CONFIG/felix.fileinstall.dir = bundle-deploy/felix.fileinstall.dir = \/usr\/share\/dmx\/bundle-deploy}
+    - CONFIG=${CONFIG/dmx.database.path = dmx-db/dmx.database.path = \/var\/lib\/dmx\/dmx-db}
+    - CONFIG=${CONFIG/java.util.logging.config.file = conf\/logging.properties/java.util.logging.config.file = \/etc\/dmx\/dmx-logging.conf}
+    - CONFIG=${CONFIG/org.osgi.framework.storage = bundle-cache/org.osgi.framework.storage = \/var\/cache\/dmx\/dmx-bundle-cache}
+    - echo "${CONFIG}" >etc/dmx/dmx.conf
     - LOGGING=$(<${DMX}-${VERSION}/conf/logging.properties)
     - LOGGING=${LOGGING/handlers=java.util.logging.ConsoleHandler/\# handlers=java.util.logging.ConsoleHandler}
     - LOGGING=${LOGGING/java.util.logging.ConsoleHandler.level=ALL/\# java.util.logging.ConsoleHandler.level=ALL}
     - LOGGING=${LOGGING/\# handlers=java.util.logging.FileHandler/handlers=java.util.logging.FileHandler}
-    - LOGGING=${LOGGING/java.util.logging.FileHandler.pattern=deepamehta.log/java.util.logging.FileHandler.pattern=\/var\/log\/deepamehta\/deepamehta.log}
-    - echo "${LOGGING}" >etc/deepamehta/deepamehta-logging.conf
+    - LOGGING=${LOGGING/java.util.logging.FileHandler.pattern=dmx.log/java.util.logging.FileHandler.pattern=\/var\/log\/dmx\/dmx.log}
+    - echo "${LOGGING}" >etc/dmx/dmx-logging.conf
     - COPYRIGHT=$(<debian/copyright)
     - echo "${COPYRIGHT/@@NUNC@@/$(date -R)}" >debian/copyright
     - PREINST="$(<debian/preinst)"
     - PREINST=${PREINST/DMVERSION=\'@@VERSION@@\'/DMVERSION=\'${VERSION}\'}
     - echo "${PREINST}" >debian/preinst
     - pwd
-    - dch --controlmaint --create --package "deepamehta" --newversion ${VERSION} --empty
+    - dch --controlmaint --create --package "dmx" --newversion ${VERSION} --empty
     - dch --controlmaint -v ${VERSION} "A Debian Package for DMX - The Context Engine"
     - dch --controlmaint -v ${VERSION} "Based on the great work of Jörg Richter <jri@deepamehta.de>"
     - dch --controlmaint -v ${VERSION} "Thanks to Silke <silke@silkemeyer.net> for the initial work on the debian package."
@@ -81,9 +81,9 @@ test:
 
   script:
     - COMMIT_VERSION="$( cat .git/COMMIT_EDITMSG | cut -d' ' -f4 )"
-    - cat ../deepamehta_${COMMIT_VERSION}_all.changes
-    - echo "Running test - lintian -i -I --show-overrides ../deepamehta_${COMMIT_VERSION}_all.changes"
-    - lintian -i -I --show-overrides ../deepamehta_${COMMIT_VERSION}_all.changes
+    - cat ../dmx_${COMMIT_VERSION}_all.changes
+    - echo "Running test - lintian -i -I --show-overrides ../dmx_${COMMIT_VERSION}_all.changes"
+    - lintian -i -I --show-overrides ../dmx_${COMMIT_VERSION}_all.changes
 
 deploy:
   only:
@@ -96,9 +96,9 @@ deploy:
     - TARGET="$(lsb_release -sc)"
     - REPODIR='/var/www/download.dmx.systems/repos'  
     - pwd
-    - mv ../deepamehta_*-${CI_PIPELINE_ID}_* ${REPODIR}/ubuntu/mini-dinstall/incoming/
+    - mv ../dmx_*-${CI_PIPELINE_ID}_* ${REPODIR}/ubuntu/mini-dinstall/incoming/
     - mini-dinstall --batch
-    - debc ${REPODIR}/ubuntu/${TARGET}/deepamehta_*-${CI_PIPELINE_ID}_all.changes
+    - debc ${REPODIR}/ubuntu/${TARGET}/dmx_*-${CI_PIPELINE_ID}_all.changes
     # trigger pipeline to re-deploy docker image for dmx demo
     - MY_JOB_TOKEN="$(</home/gitlab-runner/.after-deb-repo.token)"
     - TRIGGER="$(curl --silent --write-out '%{http_code}' --output /dev/null --request POST --form token="${MY_JOB_TOKEN}" --form ref=master https://git.dmx.systems/api/v4/projects/17/trigger/pipeline)"

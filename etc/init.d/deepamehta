@@ -1,12 +1,12 @@
 #!/bin/sh
 ### BEGIN INIT INFO
-# Provides:          deepamehta
+# Provides:          dmx
 # Required-Start:    $remote_fs $syslog
 # Required-Stop:     $remote_fs $syslog
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: DeepaMehta initscript
-# Description:       This file should be used to start and stop DeepaMehta.
+# Short-Description: DMX initscript
+# Description:       This file should be used to start and stop DMX.
 #                    Copyright (c) 2016 Juergen Neumann <juergen@junes.eu>
 ### END INIT INFO
 
@@ -15,13 +15,13 @@
 # PATH should only include /usr/* if it runs after the mountnfs.sh script
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
 
-# NAME is the name of the instance of deepamehta
-NAME="deepamehta"
-DESC="DeepaMehta init script"
-USER="deepamehta"
-DAEMON=/usr/share/deepamehta/deepamehta.sh
+# NAME is the name of the instance of dmx
+NAME="dmx"
+DESC="DMX init script"
+USER="dmx"
+DAEMON=/usr/share/dmx/dmx.sh
 EXTRA_ARGS="--chuid ${USER}:${USER} --background --make-pidfile"
-DAEMON_ARGS="/etc/deepamehta/${NAME}.conf"
+DAEMON_ARGS="/etc/dmx/${NAME}.conf"
 PIDFILE=/var/run/${USER}/${NAME}.pid
 SCRIPTNAME=/etc/init.d/${NAME}
 
@@ -101,7 +101,7 @@ do_start()
     # to handle requests from services started subsequently which depend
     # on this one.  As a last resort, sleep for some time.
     
-    # Sleep at least 8 seconds to check if deepamehta is running!
+    # Sleep at least 8 seconds to check if dmx is running!
     sleep 8
     # Now check if we can find the according java process.
     status_of_daemon && echo "done." || ( echo "   stopped!"; [ -f ${PIDFILE} ] && rm ${PIDFILE} )
