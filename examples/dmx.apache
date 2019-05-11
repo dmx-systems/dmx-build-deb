@@ -4,7 +4,7 @@
 ## - proxy_http_module
 ## - proxy_wstunnel_module
 ## - rewrite_module
-## - ssl_module (shared)
+## - ssl_module
 
 <VirtualHost *:443>
 
