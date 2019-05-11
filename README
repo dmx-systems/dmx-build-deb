@@ -8,9 +8,10 @@ Install dmx:
  * sudo apt update && sudo apt install dmx
 
 Known Issues:
-
  * DMX is still in beta stage and clearly needs further improvement.
-
+    
+Feedback:
+ * Join https://forum.dmx.systems to help us improve.
 
 Juergen Neumann
 
