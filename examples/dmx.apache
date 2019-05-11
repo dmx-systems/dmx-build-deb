@@ -1,5 +1,5 @@
 ## Example configuration for apache 2.4
-## The following modules are required
+## The following modules are required:
 ## - proxy_module
 ## - proxy_http_module
 ## - proxy_wstunnel_module
