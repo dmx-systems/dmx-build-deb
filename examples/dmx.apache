@@ -1,3 +1,11 @@
+## Example configuration for apache 2.4
+## The following modules are required
+## - proxy_module
+## - proxy_http_module
+## - proxy_wstunnel_module
+## - rewrite_module
+## - ssl_module (shared)
+
 <VirtualHost *:443>
 
     ServerName dmx.yourdomain.tld
@@ -10,24 +18,29 @@
     ErrorLog /var/log/apache2/dmx-ssl-error.log
     CustomLog /var/log/apache2/dmx-ssl-access.log combined
 
-    RewriteEngine On 
-    RewriteRule ^/?$ http://localhost:8080/de.dmx.webclient [P]
-    RewriteLog /var/log/apache2/dmx-ssl-rewrite.log
-
-    ProxyRequests Off
+    ProxyStatus On
     ProxyPreserveHost Off
     AllowEncodedSlashes NoDecode
 
     <Proxy *>
-    Order deny,allow
+        Order deny,allow
         Allow from all
     </Proxy>
 
-    <location />
-        Order allow,deny
-        Allow from all
-        ProxyPass http://localhost:8080/ nocanon
-        ProxyPassReverse http://localhost:8080/
-    </location>
+    # This is the forwarding for the websockets. Always keep it the first rule.
+    # Do not forget to enabele module proxy_wstunnel
+
+    RewriteEngine On
+
+    RewriteCond %{HTTP:Upgrade} =websocket
+    RewriteRule /(.*)           ws://127.0.0.1:8081/$1 [NE,P,L]
+
+    # This is the default rewrite for the webclient
+    RewriteRule ^/$ https://%{HTTP_HOST}/systems.dmx.webclient/ [R,L]
+
+    <Location />
+        ProxyPass http://127.0.0.1:8080/ nocanon
+        ProxyPassReverse http://127.0.0.1:8080/
+    </Location>
 
 </VirtualHost>
