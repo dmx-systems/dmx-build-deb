@@ -24,14 +24,8 @@ build:
     - echo "VERSION=${VERSION}"
     - rm -rf ${DMX}-${VERSION}/bundle/org.apache.felix.gogo.*
     - mkdir bin/bin bin/bundle bin/bundle-deploy bin/bundle-available
-    ## These Plugins are outdated and need to be updated at some point
-    - wget -q http://download.deepamehta.de/dm48-images-0.9.10.jar -P bin/bundle-available
-    #- wget -q http://download.deepamehta.de/dm48-websockets-0.4.jar -P bin/bundle-available
-    #- wget -q http://download.deepamehta.de/dm48-thymeleaf-0.6.1.jar -P bin/bundle-available
-    #- wget -q http://download.deepamehta.de/dm48-sign-up-1.5.2.jar -P bin/bundle-available
-    #- wget -q http://download.deepamehta.de/dm48-littlehelpers-0.3.0.jar -P bin/bundle-available
-    #- wget -q http://download.deepamehta.de/dm48-import-export-0.5.jar -P bin/bundle-available
-    #- wget -q http://github.com/junes/py4dmx/archive/master.zip -O examples/py4dmx.zip
+    - wget -q https://download.dmx.systems/ci/dmx-tableview-command/dmx-tableview-command-latest.jar -P bin/bundle-available
+    - wget -q https://download.dmx.systems/ci/dmx-tableview-command/dmx-tableview-latest.jar -P bin/bundle-available
     - mv ${DMX}-${VERSION}/bin/* bin/bin/
     - mv ${DMX}-${VERSION}/bundle/* bin/bundle/
     - mv ${DMX}-${VERSION}/bundle-deploy/* bin/bundle-deploy/
@@ -44,15 +38,15 @@ build:
     - CONFIG=${CONFIG/dmx.filerepo.per_workspace = false/dmx.filerepo.per_workspace = true}
     - CONFIG=${CONFIG/felix.fileinstall.dir = bundle-deploy/felix.fileinstall.dir = \/usr\/share\/dmx\/bundle-deploy}
     - CONFIG=${CONFIG/dmx.database.path = dmx-db/dmx.database.path = \/var\/lib\/dmx\/dmx-db}
-    - CONFIG=${CONFIG/java.util.logging.config.file = conf\/logging.properties/java.util.logging.config.file = \/etc\/dmx\/dmx-logging.conf}
-    - CONFIG=${CONFIG/org.osgi.framework.storage = bundle-cache/org.osgi.framework.storage = \/var\/cache\/dmx\/dmx-bundle-cache}
-    - echo "${CONFIG}" >etc/dmx/dmx.conf
+    - CONFIG=${CONFIG/java.util.logging.config.file = conf\/logging.properties/java.util.logging.config.file = \/etc\/dmx\/logging.properties}
+    - CONFIG=${CONFIG/org.osgi.framework.storage = bundle-cache/org.osgi.framework.storage = \/var\/cache\/dmx\/bundle-cache}
+    - echo "${CONFIG}" >etc/dmx/config.properties
     - LOGGING=$(<${DMX}-${VERSION}/conf/logging.properties)
     - LOGGING=${LOGGING/handlers=java.util.logging.ConsoleHandler/\# handlers=java.util.logging.ConsoleHandler}
     - LOGGING=${LOGGING/java.util.logging.ConsoleHandler.level=ALL/\# java.util.logging.ConsoleHandler.level=ALL}
     - LOGGING=${LOGGING/\# handlers=java.util.logging.FileHandler/handlers=java.util.logging.FileHandler}
     - LOGGING=${LOGGING/java.util.logging.FileHandler.pattern=dmx.log/java.util.logging.FileHandler.pattern=\/var\/log\/dmx\/dmx.log}
-    - echo "${LOGGING}" >etc/dmx/dmx-logging.conf
+    - echo "${LOGGING}" >etc/dmx/logging.properties
     - COPYRIGHT=$(<debian/copyright)
     - echo "${COPYRIGHT/@@NUNC@@/$(date -R)}" >debian/copyright
     - PREINST="$(<debian/preinst)"
