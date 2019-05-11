@@ -54,7 +54,7 @@ build:
     - echo "${PREINST}" >debian/preinst
     - pwd
     - dch --controlmaint --create --package "dmx" --newversion ${VERSION} --empty
-    - dch --controlmaint -v ${VERSION} "A Debian Package for DMX - The Context Engine"
+    - dch --controlmaint -v ${VERSION} "A Debian Package for DMX - The Context Machine"
     - dch --controlmaint -v ${VERSION} "Based on the great work of Jörg Richter <jri@deepamehta.de>"
     - dch --controlmaint -v ${VERSION} "Thanks to Silke <silke@silkemeyer.net> for the initial work on the debian package."
     - dch --controlmaint -r --distribution "${TARGET}" ignored 
