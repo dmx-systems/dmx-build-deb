@@ -3,7 +3,7 @@
 cd "$(dirname "$0")"
 
 if [ -z $1 ]; then
-    CONFIG="/etc/dmx/dmx.conf"
+    CONFIG="/etc/dmx/config.properties"
 else
     CONFIG="$1"
 fi
