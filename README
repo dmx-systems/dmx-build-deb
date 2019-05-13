@@ -4,13 +4,14 @@ Add file /etc/apt/sources.list.d/dmx-repo.list
 Add key:
  * curl -fsSL https://download.dmx.systems/repos/gpg | sudo apt-key add -
  
-Install deepamehta:
- * sudo apt update && sudo apt install deepamehta
+Install dmx:
+ * sudo apt update && sudo apt install dmx
 
 Known Issues:
-
- * After a fresh installation or update you need to restart deepamehta a few times before it comes up properly.
-
+ * DMX is still in beta stage and clearly needs further improvement.
+    
+Feedback:
+ * Join https://forum.dmx.systems to help us improve.
 
 Juergen Neumann
 

@@ -1,0 +1,8 @@
+bin/bin/* /usr/share/dmx/bin
+bin/bundle/* /usr/share/dmx/bundle
+bin/bundle-deploy/* /usr/share/dmx/bundle-deploy
+bin/bundle-available/* /usr/share/dmx/bundle-available
+bin/dmx.sh /usr/share/dmx
+etc/dmx/* /etc/dmx
+etc/init.d/dmx /etc/init.d
+etc/default/dmx /etc/default

@@ -1,0 +1,15 @@
+# /etc/default/dmx
+# This file is utilized by init script /etc/init.d/dmx.
+# Set START_DMX to 'yes' to start DMX daemon.
+#
+START_DMX=no
+
+# Memory setting for JVM
+#
+DM_JAVA_XMS=128
+DM_JAVA_XMX=256
+
+# Log init.d actions to logfile
+# (default: /var/log/dmx/dmx.log)
+#
+LOG_DMX=/var/log/dmx/dmx.log

@@ -1,5 +1,5 @@
 #!/bin/sh
-# postrm script for deepamehta
+# postrm script for dmx
 #
 # see: dh_installdeb(1)
 
@@ -31,11 +31,11 @@ case "$1" in
 esac
 
 if [ "$1" = purge ]; then
-    if [ -f /var/log/deepamehta/deepamehta.log ]; then
-	rm /var/log/deepamehta/*
+    if [ -f /var/log/dmx/dmx.log ]; then
+	rm /var/log/dmx/*
     fi
-    deluser --system --backup backup-to '/var/lib' deluser --system --remove-home deepamehta
-    update-rc.d deepamehta remove >/dev/null
+    deluser --system --backup backup-to '/var/lib' deluser --system --remove-home dmx
+    update-rc.d dmx remove >/dev/null
 fi
 
 # dh_installdeb will replace this with shell code automatically
