@@ -7,7 +7,7 @@
 # Default-Stop:      0 1 6
 # Short-Description: DMX initscript
 # Description:       This file should be used to start and stop DMX.
-#                    Copyright (c) 2016 Juergen Neumann <juergen@junes.eu>
+#                    Copyright (c) 2019 DMX Systems <https://dmx.systems>
 ### END INIT INFO
 
 # Do NOT "set -e"
@@ -42,9 +42,9 @@ fi
 [ -r /etc/default/${NAME} ] && . /etc/default/${NAME}
 
 # Create logfile if configured
-if [ ! -z ${LOG_DEEPAMEHTA_INIT} ] && [ ! -f ${LOG_DEEPAMEHTA_INIT} ]; then
-    touch ${LOG_DEEPAMEHTA_INIT}
-    chown ${USER}:${USER} ${LOG_DEEPAMEHTA_INIT}
+if [ ! -z ${LOG_DMX_INIT} ] && [ ! -f ${LOG_DMX_INIT} ]; then
+    touch ${LOG_DMX_INIT}
+    chown ${USER}:${USER} ${LOG_DMX_INIT}
 fi
 
 # Load the VERBOSE setting and other rcS variables
@@ -86,8 +86,8 @@ status_of_daemon() {
 #
 do_start()
 {
-    # Check START_DEEPAMEHTA
-    if [ "${START_DEEPAMEHTA}" != "yes" ]; then
+    # Check START_DMX
+    if [ "${START_DMX}" != "yes" ]; then
         echo "   ${DESC} is disabled in /etc/default/${NAME}."
         exit 1
     fi
@@ -151,10 +151,10 @@ do_reload() {
 
 case "$1" in
   start)
-    status_of_daemon || ( [ "$?" = 1 ] && ( [ ! -z ${LOG_DEEPAMEHTA_INIT} ] && echo "$( date +%d.%m.%Y" "%H:%M:%S ) *** Starting ${DESC} ***">>${LOG_DEEPAMEHTA_INIT} ); do_start )
+    status_of_daemon || ( [ "$?" = 1 ] && ( [ ! -z ${LOG_DMX_INIT} ] && echo "$( date +%d.%m.%Y" "%H:%M:%S ) *** Starting ${DESC} ***">>${LOG_DMX_INIT} ); do_start )
     ;;
   stop)
-    status_of_daemon && ( do_stop; ( [ ! -z ${LOG_DEEPAMEHTA_INIT} ] && echo "$( date +%d.%m.%Y" "%H:%M:%S ) *** Stopping ${DESC} ***">>${LOG_DEEPAMEHTA_INIT} ) )
+    status_of_daemon && ( do_stop; ( [ ! -z ${LOG_DMX_INIT} ] && echo "$( date +%d.%m.%Y" "%H:%M:%S ) *** Stopping ${DESC} ***">>${LOG_DMX_INIT} ) )
     ;;
   status)
        status_of_daemon && echo "   Instance ${NAME} of ${DESC} is running with PID ${PIDLNUM}." || echo "   Instance ${NAME} of ${DESC} is not running."
@@ -168,7 +168,7 @@ case "$1" in
     status_of_daemon && do_stop
     case "$?" in
       0|1)
-        ( [ ! -z ${LOG_DEEPAMEHTA_INIT} ] && echo "$( date +%d.%m.%Y" "%H:%M:%S ) *** Restarting ${DESC} ***">>${LOG_DEEPAMEHTA_INIT} ); do_start
+        ( [ ! -z ${LOG_DMX_INIT} ] && echo "$( date +%d.%m.%Y" "%H:%M:%S ) *** Restarting ${DESC} ***">>${LOG_DMX_INIT} ); do_start
         ;;
       *)
         # Failed to stop
