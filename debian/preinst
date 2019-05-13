@@ -46,12 +46,14 @@ case "$1" in
     ;;
 
     upgrade)
-    # existing DB is >= DM 4.1
-    elif [ -d /var/lib/dmx/dmx-db ] && [ ! -f /var/lib/dmx/dmx-db/.dm-version.$DMVERSION ] && [ -f /var/lib/dmx/dmx-db/.dm-version.4.1* ]; then
+    # backup existing database
+    if [ -d /var/lib/dmx/dmx-db ]; then
         cp -a /var/lib/dmx/dmx-db /var/lib/dmx/dmx-db-$PREVIOUSVERSION-backup-$BACKUPDATE
         touch /var/lib/dmx/dmx-db/.dm-version.$DMVERSION
 		echo "Your existing database has been copied to /var/lib/dmx/dmx-db-$PREVIOUSVERSION-backup-$BACKUPDATE."
-		rm /var/lib/dmx/dmx-db/.dm-version.$PREVIOUSVERSION
+		if [ -f /var/lib/dmx/dmx-db/.dm-version.$PREVIOUSVERSION ]; then
+            rm /var/lib/dmx/dmx-db/.dm-version.$PREVIOUSVERSION
+        fi
     fi
     if [ -d /var/cache/dmx/bundle-cache ]; then
 	    rm -rf /var/cache/dmx/bundle-cache
