@@ -87,7 +87,8 @@ deploy:
     - deb
   stage: deploy
   script:
-    - TARGET="$(lsb_release -sc)"
+    # - TARGET="$(lsb_release -sc)"
+    - TARGET="unstable"
     - REPODIR='/var/www/download.dmx.systems/repos'  
     - pwd
     - mv ../dmx_*-${CI_PIPELINE_ID}_* ${REPODIR}/ubuntu/mini-dinstall/incoming/
