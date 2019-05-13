@@ -21,7 +21,7 @@ DESC="DMX init script"
 USER="dmx"
 DAEMON=/usr/share/dmx/dmx.sh
 EXTRA_ARGS="--chuid ${USER}:${USER} --background --make-pidfile"
-DAEMON_ARGS="/etc/dmx/${NAME}.conf"
+DAEMON_ARGS="/etc/dmx/config.properties"
 PIDFILE=/var/run/${USER}/${NAME}.pid
 SCRIPTNAME=/etc/init.d/${NAME}
 
