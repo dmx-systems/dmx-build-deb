@@ -90,10 +90,10 @@ deploy:
     - deb
   stage: deploy
   script:
-    # - TARGET="$(lsb_release -sc)"
     - REPODIR='/var/www/download.dmx.systems/repos'  
     - pwd
-    - mv ../dmx_*-${CI_PIPELINE_ID}_* ${REPODIR}/ubuntu/mini-dinstall/incoming/
+    # mv ../dmx_*-${CI_PIPELINE_ID}_* ${REPODIR}/ubuntu/mini-dinstall/incoming/
+    - dput local ../dmx_*-${CI_PIPELINE_ID}_*.changes
     - mini-dinstall --batch
     - debc ${REPODIR}/ubuntu/${TARGET}/dmx_*-${CI_PIPELINE_ID}_all.changes
     # trigger pipeline to re-deploy docker image for dmx demo
