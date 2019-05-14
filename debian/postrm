@@ -34,7 +34,7 @@ if [ "$1" = purge ]; then
     if [ -f /var/log/dmx/dmx.log ]; then
 	rm /var/log/dmx/*
     fi
-    deluser --system --backup-to '/var/lib' --remove-home dmx
+    deluser --system dmx
     update-rc.d dmx remove >/dev/null
 fi
 
