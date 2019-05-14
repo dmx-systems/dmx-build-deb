@@ -15,7 +15,6 @@ build:
     - DMX='dmx'
     - ZIPFILE='dmx-latest.zip'
     - TARGET="$(lsb_release -sc)"
-    # - TARGET="unstable"
     - DEBFULLNAME='GitLab Runner (DMX CI)'
     - DEBEMAIL='Gitlab Runner (DMX CI) <gitlab.runner@dmx.systems>'
     - echo "Starting job ${CI_JOB_ID} in pipeline ${CI_PIPELINE_ID}"
@@ -63,7 +62,7 @@ build:
     - git add debian/changelog
     - 'git commit -m"DMX debian package build from ${DMX}-${VERSION} - Build Pipeline ${CI_PIPELINE_ID}" -m"Binaries from https://download.dmx.systems/ci/dmx-latest.zip" -m"Thanks: (GitLab Team for providing great CI infrastructure!)"'
     - git log -1
-    - gbp dch --distribution "unstable" --ignore-branch --new-version "${VERSION}-${CI_PIPELINE_ID}" --commit --since=${LASTCOMMIT} --release --spawn-editor=never --full --meta
+    - gbp dch --distribution "${TARGET}" --ignore-branch --new-version "${VERSION}-${CI_PIPELINE_ID}" --commit --since=${LASTCOMMIT} --release --spawn-editor=never --full --meta
     - dpkg-buildpackage -A -us --force-sign -k'671B7719' 
 
 test:
@@ -89,7 +88,6 @@ deploy:
   stage: deploy
   script:
     - TARGET="$(lsb_release -sc)"
-    # - TARGET="unstable"
     - REPODIR='/var/www/download.dmx.systems/repos'  
     - pwd
     - mv ../dmx_*-${CI_PIPELINE_ID}_* ${REPODIR}/ubuntu/mini-dinstall/incoming/
