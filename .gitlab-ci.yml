@@ -3,6 +3,10 @@ stages:
   - test
   - deploy
 
+variables:
+    # target distribution
+    TARGET: "$(lsb_release -sc)"
+
 build:
   only:
     refs:
@@ -14,7 +18,7 @@ build:
     - pwd
     - DMX='dmx'
     - ZIPFILE='dmx-latest.zip'
-    - TARGET="$(lsb_release -sc)"
+    # - TARGET="$(lsb_release -sc)"
     - DEBFULLNAME='GitLab Runner (DMX CI)'
     - DEBEMAIL='Gitlab Runner (DMX CI) <gitlab.runner@dmx.systems>'
     - echo "Starting job ${CI_JOB_ID} in pipeline ${CI_PIPELINE_ID}"
@@ -72,7 +76,6 @@ test:
   tags:
     - deb
   stage: test
-
   script:
     - COMMIT_VERSION="$( cat .git/COMMIT_EDITMSG | cut -d' ' -f4 )"
     - cat ../dmx_${COMMIT_VERSION}_all.changes
@@ -87,7 +90,7 @@ deploy:
     - deb
   stage: deploy
   script:
-    - TARGET="$(lsb_release -sc)"
+    # - TARGET="$(lsb_release -sc)"
     - REPODIR='/var/www/download.dmx.systems/repos'  
     - pwd
     - mv ../dmx_*-${CI_PIPELINE_ID}_* ${REPODIR}/ubuntu/mini-dinstall/incoming/
