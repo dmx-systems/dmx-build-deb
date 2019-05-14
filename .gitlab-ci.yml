@@ -49,7 +49,7 @@ build:
     - LOGGING=${LOGGING/handlers=java.util.logging.ConsoleHandler/\# handlers=java.util.logging.ConsoleHandler}
     - LOGGING=${LOGGING/java.util.logging.ConsoleHandler.level=ALL/\# java.util.logging.ConsoleHandler.level=ALL}
     - LOGGING=${LOGGING/\# handlers=java.util.logging.FileHandler/handlers=java.util.logging.FileHandler}
-    - LOGGING=${LOGGING/java.util.logging.FileHandler.pattern=dmx.log/java.util.logging.FileHandler.pattern=\/var\/log\/dmx\/dmx.log}
+    - LOGGING=${LOGGING/java.util.logging.FileHandler.pattern=deepamehta.log/java.util.logging.FileHandler.pattern=\/var\/log\/dmx\/dmx.log}
     - echo "${LOGGING}" >etc/dmx/logging.properties
     - COPYRIGHT=$(<debian/copyright)
     - echo "${COPYRIGHT/@@NUNC@@/$(date -R)}" >debian/copyright
