@@ -5,7 +5,7 @@ stages:
 
 variables:
     # target distribution
-    TARGET: "$(lsb_release -sc)"
+    TARGET: "xenial"
 
 build:
   only:
