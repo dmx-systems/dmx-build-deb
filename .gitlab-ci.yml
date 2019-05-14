@@ -63,7 +63,7 @@ build:
     - git add debian/changelog
     - 'git commit -m"DMX debian package build from ${DMX}-${VERSION} - Build Pipeline ${CI_PIPELINE_ID}" -m"Binaries from https://download.dmx.systems/ci/dmx-latest.zip" -m"Thanks: (GitLab Team for providing great CI infrastructure!)"'
     - git log -1
-    - gbp dch --ignore-branch --new-version "${VERSION}-${CI_PIPELINE_ID}" --commit --since=${LASTCOMMIT} --release --spawn-editor=never --full --meta
+    - gbp dch --distribution "unstable" --ignore-branch --new-version "${VERSION}-${CI_PIPELINE_ID}" --commit --since=${LASTCOMMIT} --release --spawn-editor=never --full --meta
     - dpkg-buildpackage -A -us --force-sign -k'671B7719' 
 
 test:
