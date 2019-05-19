@@ -21,7 +21,6 @@ set -e
 
 case "$1" in
     configure)
-    chmod 644 /etc/default/dmx
     chmod 750 /etc/dmx
     chmod 640 /etc/dmx/*
     chown -R root:dmx /etc/dmx
@@ -29,11 +28,6 @@ case "$1" in
     chown -R dmx:dmx /var/cache/dmx
     chown -R dmx:dmx /var/log/dmx
     cp /usr/share/doc/dmx/examples/dmx.filedir /var/lib/dmx/dmx-filedir/README.txt
-    # systemctl enable dmx
-    # systemctl daemon-reload
-    # systemctl reset-failed
-    # systemctl status dmx
-    # rm /etc/systemd/system/[servicename] symlinks that might be related
     ;;
     abort-upgrade|abort-remove|abort-deconfigure)
     ;;
