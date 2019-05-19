@@ -23,7 +23,11 @@ fi
 
 case "$1" in
     install)
-    useradd --system --user-group --create-home -d'/var/lib/dmx' -s'/bin/false' -c'DMX - The Context Machine' dmx
+    useradd --system --user-group --home-dir'/var/lib/dmx' -shell'/bin/false' --comment'DMX - The Context Machine' dmx
+    if [ ! -d /var/lib/dmx ]; then
+	mkdir /var/lib/dmx
+	chown dmx:dmx /var/lib/dmx
+    fi
     if [ -d /var/lib/dmx/dmx-db ]; then
 	    if [ ! -f /var/lib/dmx/dmx-db/.dm-version.$DMVERSION ]; then
 		    mv /var/lib/dmx/dmx-db /var/lib/dmx/dmx-db-$PREVIOUSVERSION-backup-$BACKUPDATE
