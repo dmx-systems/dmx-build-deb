@@ -27,7 +27,7 @@ build:
     - VERSION="$( ls -d dmx-* | grep -v ${ZIPFILE} | cut -d'-' -f2- )"
     - echo "VERSION=${VERSION}"
     - rm -rf ${DMX}-${VERSION}/bundle/org.apache.felix.gogo.*
-    - mkdir bin/bin bin/bundle bin/bundle-deploy bin/bundle-available
+    - mkdir -p bin/bin bin/bundle bin/bundle-deploy bin/bundle-available
     - wget -q https://download.dmx.systems/ci/dmx-tableview-command/dmx-tableview-command-latest.jar -P bin/bundle-available
     - wget -q https://download.dmx.systems/ci/dmx-tableview/dmx-tableview-latest.jar -P bin/bundle-available
     - mv ${DMX}-${VERSION}/bin/* bin/bin/
