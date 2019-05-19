@@ -32,7 +32,7 @@ case "$1" in
     # systemctl enable dmx
     # systemctl daemon-reload
     # systemctl reset-failed
-    systemctl status dmx
+    # systemctl status dmx
     # rm /etc/systemd/system/[servicename] symlinks that might be related
     ;;
     abort-upgrade|abort-remove|abort-deconfigure)

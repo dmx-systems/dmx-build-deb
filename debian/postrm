@@ -35,12 +35,6 @@ if [ "$1" = purge ]; then
 	rm /var/log/dmx/*
     fi
     deluser --system dmx
-    systemctl stop dmx
-    systemctl disable dmx
-    rm /etc/systemd/system/dmx
-    # rm /etc/systemd/system/[servicename] symlinks that might be related
-    systemctl daemon-reload
-    systemctl reset-failed
 fi
 
 # dh_installdeb will replace this with shell code automatically
