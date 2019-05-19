@@ -19,11 +19,11 @@ PermissionsStartOnly=true
 SyslogIdentifier=DMX
 
 ExecStart=/bin/bash -c \
-    "exec /usr/bin/java \
+    "/usr/bin/java \
     -Xms${JAVA_XMS}M \
     -Xmx${JAVA_XMX}M \
     -Dfile.encoding='UTF-8' \
-    -Dfelix.system.properties='file:/etc/dmx/config.properties' \
+    -Dfelix.system.properties='file\:/etc/dmx/config.properties' \
     -Dpidfile.path='/var/run/dmx/dmx.pid' \
     -jar /usr/share/dmx/bin/felix.jar"
 
