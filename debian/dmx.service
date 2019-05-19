@@ -1,0 +1,21 @@
+[Unit]
+Description=DMX - The Context Machine
+Documentation=https://docs.dmx.systems
+After=network.target syslog.target
+
+[Service]
+User=dmx
+Group=dmx
+EnvironmentFile=/etc/default/dmx
+
+ExecStart=/usr/bin/java \
+    -Xms${DM_JAVA_XMS}M \
+    -Xmx${DM_JAVA_XMX}M \
+    -Dfile.encoding=UTF-8 \
+    -Dfelix.system.properties=file:/etc/dmx/config.properties \
+    -jar /usr/share/dmx/bin/felix.jar
+PIDFile=/var/run/dmx/dmx.pid
+
+[Install]
+WantedBy=multi-user.target
+
