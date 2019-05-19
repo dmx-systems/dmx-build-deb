@@ -5,6 +5,7 @@ After=network.target syslog.target
 
 
 [Service]
+Type=simple
 User=dmx
 Group=dmx
 Environment=JAVA_XMS=128
@@ -13,7 +14,7 @@ ExecStartPre=/bin/mkdir -p /var/run/dmx
 # EnvironmentFile=/etc/default/dmx
 PIDFile=/var/run/dmx/dmx.pid
 # The configuration file application.properties should be here:
-WorkingDirectory=/etc/dmx
+# WorkingDirectory=/etc/dmx
 # Run ExecStartPre with root-permissions
 PermissionsStartOnly=true
 SyslogIdentifier=DMX
