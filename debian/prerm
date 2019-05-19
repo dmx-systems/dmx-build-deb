@@ -20,7 +20,7 @@ set -e
 case "$1" in
     remove|upgrade|deconfigure)
     if [ -f /var/run/dmx/dmx.pid ]; then
-	    invoke-rc.d dmx stop
+	    systemctl stop dmx
     fi
 
     if [ -d /var/cache/dmx/bundle-cache ]; then

@@ -10,7 +10,7 @@ variables:
 build:
   only:
     refs:
-      - master
+      - systemd
   tags:
     - deb
   stage: build
@@ -74,7 +74,7 @@ build:
 test:
   only:
     refs:
-      - master
+      - systemd
   tags:
     - deb
   stage: test
@@ -87,7 +87,7 @@ test:
 deploy:
   only:
     refs:
-      - master
+      - systemd
   tags:
     - deb
   stage: deploy
@@ -100,8 +100,8 @@ deploy:
     - mini-dinstall --batch
     - sleep 1
     - debc ${REPODIR}/ubuntu/${TARGET}/dmx_*-${CI_PIPELINE_ID}_all.changes
-    # trigger pipeline to re-deploy docker image for dmx demo
-    - MY_JOB_TOKEN="$(</home/gitlab-runner/.after-deb-repo.token)"
-    - TRIGGER="$(curl --silent --write-out '%{http_code}' --output /dev/null --request POST --form token="${MY_JOB_TOKEN}" --form ref=master https://git.dmx.systems/api/v4/projects/17/trigger/pipeline)"
-    - echo "${TRIGGER}"
-    - if [ ${TRIGGER} -ne 201 ]; then echo "Failed to trigger subsequent project."; exit 1; fi
+    ### trigger pipeline to re-deploy docker image for dmx demo
+    # - MY_JOB_TOKEN="$(</home/gitlab-runner/.after-deb-repo.token)"
+    #- TRIGGER="$(curl --silent --write-out '%{http_code}' --output /dev/null --request POST --form token="${MY_JOB_TOKEN}" --form ref=master https://git.dmx.systems/api/v4/projects/17/trigger/pipeline)"
+    #- echo "${TRIGGER}"
+    #- if [ ${TRIGGER} -ne 201 ]; then echo "Failed to trigger subsequent project."; exit 1; fi

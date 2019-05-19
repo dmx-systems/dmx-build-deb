@@ -1,11 +1,13 @@
 Add file /etc/apt/sources.list.d/dmx-repo.list
- * deb https://download.dmx.systems/repos/ubuntu/ unstable/
+ * deb https://download.dmx.systems/repos/ubuntu/ xenial/
 
 Add key:
  * curl -fsSL https://download.dmx.systems/repos/gpg | sudo apt-key add -
  
 Install dmx:
  * sudo apt update && sudo apt install dmx
+ * edit /etc/dmx/config.properties and change the initial admin password
+ * run sudo systemctl start dmx
 
 Known Issues:
  * DMX is still in beta stage and clearly needs further improvement.
