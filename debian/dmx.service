@@ -7,12 +7,11 @@ After=network.target syslog.target
 [Service]
 User=dmx
 Group=dmx
-Environment=PIDDIR=/var/run/dmx
 Environment=JAVA_XMS=128
 Environment=JAVA_XMX=256
-ExecStartPre=/bin/mkdir -p ${PIDDIR}
+ExecStartPre=/bin/mkdir -p /var/run/dmx
 # EnvironmentFile=/etc/default/dmx
-PIDFile=${PIDDIR}/dmx.pid
+PIDFile=/var/run/dmx/dmx.pid
 # The configuration file application.properties should be here:
 WorkingDirectory=/etc/dmx
 # Run ExecStartPre with root-permissions
@@ -23,9 +22,9 @@ ExecStart=/bin/bash -c \
     "exec /usr/bin/java \
     -Xms${JAVA_XMS}M \
     -Xmx${JAVA_XMX}M \
-    -Dfile.encoding=UTF-8 \
-    -Dfelix.system.properties=file:/etc/dmx/config.properties \
-    -Dpidfile.path=${PIDDIR}/dmx.pid \
+    -Dfile.encoding='UTF-8' \
+    -Dfelix.system.properties='file:/etc/dmx/config.properties' \
+    -Dpidfile.path='/var/run/dmx/dmx.pid' \
     -jar /usr/share/dmx/bin/felix.jar"
 
 
