@@ -13,7 +13,7 @@ ExecStart=/usr/bin/java \
     -Xmx${DM_JAVA_XMX}M \
     -Dfile.encoding=UTF-8 \
     -Dfelix.system.properties=file:/etc/dmx/config.properties \
-    -Dpidfile.path=/var/run/dmx/dmx.pid
+    -Dpidfile.path=/var/run/dmx/dmx.pid \
     -jar /usr/share/dmx/bin/felix.jar
 PIDFile=/var/run/dmx/dmx.pid
 
