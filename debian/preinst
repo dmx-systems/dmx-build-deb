@@ -18,7 +18,7 @@ DMVERSION='@@VERSION@@'
 PREVIOUSVERSION=$( find /var/lib/dmx/dmx-db/ -name "*.dm-version.*" | cut -d'.' -f'3-' | sort -V | tail -n1 )
 
 if [ -f /var/run/dmx/dmx.pid ]; then
-    invoke-rc.d dmx stop
+    systemctl stop dmx
 fi
 
 case "$1" in
