@@ -7,9 +7,7 @@ Add key:
 Install dmx:
  * sudo apt update && sudo apt install dmx
  * edit /etc/dmx/config.properties and change the initial admin password
- * edit /etc/default/dmx and set 'START_DMX=yes'
- * run sudo systemctl daemon-reload
- * run sudo systemctl restart dmx
+ * run sudo systemctl start dmx
 
 Known Issues:
  * DMX is still in beta stage and clearly needs further improvement.
