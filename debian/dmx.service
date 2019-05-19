@@ -10,8 +10,8 @@ Group=dmx
 Environment=PIDDIR=/var/run/dmx
 Environment=JAVA_XMS=128
 Environment=JAVA_XMX=256
-ExecStartPre=/usr/bin/mkdir -p ${PIDDIR}
-EnvironmentFile=/etc/default/dmx
+ExecStartPre=/bin/mkdir -p ${PIDDIR}
+# EnvironmentFile=/etc/default/dmx
 PIDFile=${PIDDIR}/dmx.pid
 
 ExecStart=/bin/sh -ec \
