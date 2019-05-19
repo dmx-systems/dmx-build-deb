@@ -26,7 +26,7 @@ case "$1" in
     chmod 644 /etc/default/dmx
     chmod 750 /etc/dmx
     chmod 640 /etc/dmx/*
-    update-rc.d dmx defaults >/dev/null
+    # update-rc.d dmx defaults >/dev/null
     chown -R root:dmx /etc/dmx
     chown -R dmx:dmx /var/lib/dmx
     chown -R dmx:dmx /var/cache/dmx
