@@ -13,8 +13,10 @@ Environment=JAVA_XMX=256
 ExecStartPre=/bin/mkdir -p ${PIDDIR}
 # EnvironmentFile=/etc/default/dmx
 PIDFile=${PIDDIR}/dmx.pid
+WorkingDirectory=/var/lib/dmx
+SyslogIdentifier=DMX
 
-ExecStart=/bin/sh -ec \
+ExecStart=/bin/bash -c \
     "/usr/bin/java \
     -Xms${JAVA_XMS}M \
     -Xmx${JAVA_XMX}M \
