@@ -21,7 +21,7 @@ set -e
 
 case "$1" in
     configure)
-    chmod 755 /etc/init.d/dmx
+    # chmod 755 /etc/init.d/dmx
     chmod 755 /usr/share/dmx/dmx.sh
     chmod 644 /etc/default/dmx
     chmod 750 /etc/dmx
