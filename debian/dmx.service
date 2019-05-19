@@ -11,22 +11,18 @@ Group=dmx
 Environment=JAVA_XMS=128
 Environment=JAVA_XMX=256
 ExecStartPre=/bin/mkdir -p /var/run/dmx
-# EnvironmentFile=/etc/default/dmx
 PIDFile=/var/run/dmx/dmx.pid
-# The configuration file application.properties should be here:
 WorkingDirectory=/usr/share/dmx
-# Run ExecStartPre with root-permissions
 PermissionsStartOnly=true
 SyslogIdentifier=DMX
 
-ExecStart=/bin/bash -c \
-    "/usr/bin/java \
+ExecStart=/usr/bin/java \
     -Xms${JAVA_XMS}M \
     -Xmx${JAVA_XMX}M \
-    -Dfile.encoding='UTF-8' \
-    -Dfelix.system.properties='file:/etc/dmx/config.properties' \
-    -Dpidfile.path='/var/run/dmx/dmx.pid' \
-    -jar /usr/share/dmx/bin/felix.jar"
+    -Dfile.encoding=UTF-8 \
+    -Dfelix.system.properties=file:/etc/dmx/config.properties \
+    -Dpidfile.path=/var/run/dmx/dmx.pid \
+    -jar /usr/share/dmx/bin/felix.jar
 
 
 [Install]
