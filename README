@@ -6,7 +6,7 @@ Install dmx:
  2. Add key:
    ~$ curl -fsSL https://download.dmx.systems/repos/gpg | sudo apt-key add -
 
- 3. Update packet sources
+ 3. Update packet sources and install dmx
    ~$ sudo apt update && sudo apt install dmx
 
  4. Change the initial admin password
