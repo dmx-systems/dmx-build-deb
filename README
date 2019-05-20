@@ -10,11 +10,15 @@ Install dmx:
  * run sudo systemctl start dmx
 
 Known Issues:
- * DMX is still in beta stage and clearly needs further improvement.
-    
+ * DMX is still in an early beta stage and clearly needs further improvement.
+ * There are lacks in a) security, b) robustness, and c) usability.
+
 Feedback:
  * Join https://forum.dmx.systems to help us improve.
 
-Juergen Neumann
+Copyright + Licensing: 
+ * Copyright 2019 DMX Systems <https://dmx.systems>
+ * DMX is available freely under the GNU General Public License, version 3 or later.
 
-
+Disclaimer:
+ * DMX Systems assumes no liability for lost or compromised data.
