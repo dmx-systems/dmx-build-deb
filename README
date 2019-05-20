@@ -1,13 +1,23 @@
-Add file /etc/apt/sources.list.d/dmx-repo.list
- * deb https://download.dmx.systems/repos/ubuntu/ xenial/
-
-Add key:
- * curl -fsSL https://download.dmx.systems/repos/gpg | sudo apt-key add -
- 
 Install dmx:
- * sudo apt update && sudo apt install dmx
- * edit /etc/dmx/config.properties and change the initial admin password
- * run sudo systemctl start dmx
+
+ 1. Add file /etc/apt/sources.list.d/dmx-repo.list
+   ~$ sudo echo "deb https://download.dmx.systems/repos/ubuntu/ xenial/" >/etc/apt/sources.list.d/dmx-repo.list
+
+ 2. Add key:
+   ~$ curl -fsSL https://download.dmx.systems/repos/gpg | sudo apt-key add -
+
+ 3. Update packet sources
+   ~$ sudo apt update && sudo apt install dmx
+
+ 4. Change the initial admin password
+   ~$ sudo nano /etc/dmx/config.properties 
+
+ 5. Start DMX
+   ~$ sudo systemctl start dmx
+
+ 6. Browse to the local instance
+    open http://localhost:8080/systems.dmx.webclient/ in your browser
+
 
 Known Issues:
  * DMX is still in an early beta stage and clearly needs further improvement.
