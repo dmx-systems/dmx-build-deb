@@ -2,7 +2,7 @@ Install DMX:
 ============
 
  1. Add file /etc/apt/sources.list.d/dmx-repo.list
-   ~$ sudo echo "deb https://download.dmx.systems/repos/ubuntu/ xenial/">/etc/apt/sources.list.d/dmx-repo.list
+   ~$ sudo bash -c 'echo "deb https://download.dmx.systems/repos/ubuntu/ xenial/" >/etc/apt/sources.list.d/dmx-repo.list'
 
  2. Add key:
    ~$ curl -fsSL https://download.dmx.systems/repos/gpg | sudo apt-key add -
