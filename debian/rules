@@ -13,7 +13,10 @@ export DH_VERBOSE=1
 	dh  $@ --with systemd
 
 override_dh_installinit:
-	dh_installinit -pdmx --noscripts --no-start
+	dh_installinit -pdmx --noscripts
+
+override_dh_installsystemd:
+	dh_installsystemd --no-start --restart-after-upgrade
 
 override_dh_systemd_start:
 	dh_systemd_start --no-start --restart-after-upgrade
