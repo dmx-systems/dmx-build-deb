@@ -20,6 +20,10 @@ set -e
 
 echo "running postinst $1"
 
+### FIXME
+### various dirs can be configured via config.properties
+### the script should refelct this.
+
 case "$1" in
     configure)
     chmod 750 /etc/dmx
@@ -30,7 +34,9 @@ case "$1" in
     chown -R dmx:dmx /var/cache/dmx
     chown -R dmx:dmx /var/log/dmx
     cp /usr/share/doc/dmx/examples/dmx.filedir /var/lib/dmx/dmx-filedir/README.txt
-    deb-systemd-invoke try-restart dmx.service >/dev/null || true
+    if [ -L /etc/systemd/system/multi-user.target.wants/dmx.service ]; then
+	deb-systemd-invoke try-restart dmx.service >/dev/null || true
+    fi
     ;;
     abort-upgrade|abort-remove|abort-deconfigure)
     ;;
