@@ -42,15 +42,16 @@ case "$1" in
 	chown dmx:dmx /var/lib/dmx
     fi
     if [ -d ${DBDIR} ]; then
-	    if [ ! -f ${DBDIR}/.dm-version.$DMVERSION ]; then
-		    mv ${DBDIR} ${DBDIR}-$PREVIOUSVERSION-backup-$BACKUPDATE
+	    if [ -f ${DBDIR}/.dm-version.${PREVIOUSVERSION} ]; then
+		    mv ${DBDIR} ${DBDIR}-${PREVIOUSVERSION}-backup-$BACKUPDATE
 		    mkdir ${DBDIR}
 		    chown dmx:dmx ${DBDIR}
+		    chmod 750 
 		    touch ${DBDIR}/.dm-version.$DMVERSION
-		    echo "Your existing database has been moved to /var/lib/dmx/dmx-db-$PREVIOUSVERSION-backup-$BACKUPDATE."
+		    echo "Your existing database has been moved to /var/lib/dmx/dmx-db-${PREVIOUSVERSION}-backup-$BACKUPDATE."
 	    fi
     else
-	    mkdir ${DBDIR}
+	    mkdir ${DBDIR} ${DBDIR}
 	    chown dmx:dmx ${DBDIR}
 	    chmod 750 ${DBDIR}
 	    touch ${DBDIR}/.dm-version.$DMVERSION
@@ -66,12 +67,12 @@ case "$1" in
     upgrade)
     # backup existing database
     if [ -d ${DBDIR} ]; then
-        cp -a ${DBDIR} ${DBDIR}-$PREVIOUSVERSION-backup-$BACKUPDATE
-        touch ${DBDIR}.dm-version.$DMVERSION
-	echo "Your existing database has been copied to ${DBDIR}-$PREVIOUSVERSION-backup-$BACKUPDATE."
-	if [ -f ${DBDIR}/.dm-version.$PREVIOUSVERSION ]; then
-            rm ${DBDIR}/.dm-version.$PREVIOUSVERSION
-    	fi
+        cp -a ${DBDIR} ${DBDIR}-${PREVIOUSVERSION}-backup-$BACKUPDATE
+        touch ${DBDIR}/.dm-version.$DMVERSION
+	echo "Your existing database has been copied to ${DBDIR}-${PREVIOUSVERSION}-backup-$BACKUPDATE."
+	# if [ -f ${DBDIR}/.dm-version.${PREVIOUSVERSION} ]; then
+        #    rm ${DBDIR}/.dm-version.$PREVIOUSVERSION
+    	# fi
     fi
 
     ### bundle cache dir is a config parameter. We need to read it from config properties.
