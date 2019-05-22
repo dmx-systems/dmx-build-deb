@@ -15,7 +15,7 @@ set -e
 
 BACKUPDATE="$( date +%F-%H:%M:%S )"
 DMVERSION='@@VERSION@@'
-PREVIOUSVERSION="$( [[ -d /var/lib/dmx/dmx-db ]] && find /var/lib/dmx/dmx-db/ -name "*.dm-version.*" | cut -d'.' -f'3-' | sort -V | tail -n1 )"
+PREVIOUSVERSION="$( if [ -d /var/lib/dmx ]; then find /var/lib/dmx/dmx-db/ -name "*.dm-version.*" | cut -d'.' -f'3-' | sort -V | tail -n1; fi )"
 
 echo "Installing Version ${DMVERSION}"
 
