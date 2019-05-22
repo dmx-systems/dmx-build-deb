@@ -30,6 +30,9 @@ case "$1" in
     chown -R dmx:dmx /var/log/dmx
     cp /usr/share/doc/dmx/examples/dmx.filedir /var/lib/dmx/dmx-filedir/README.txt
     ;;
+    upgrade)
+    deb-systemd-invoke try-restart dmx.service >/dev/null || true
+    ;;
     abort-upgrade|abort-remove|abort-deconfigure)
     ;;
 
