@@ -46,12 +46,12 @@ case "$1" in
 		    mv ${DBDIR} ${DBDIR}-${PREVIOUSVERSION}-backup-$BACKUPDATE
 		    mkdir ${DBDIR}
 		    chown dmx:dmx ${DBDIR}
-		    chmod 750 
+		    chmod 750 ${DBDIR}
 		    touch ${DBDIR}/.dm-version.$DMVERSION
 		    echo "Your existing database has been moved to /var/lib/dmx/dmx-db-${PREVIOUSVERSION}-backup-$BACKUPDATE."
 	    fi
     else
-	    mkdir ${DBDIR} ${DBDIR}
+	    mkdir ${DBDIR}
 	    chown dmx:dmx ${DBDIR}
 	    chmod 750 ${DBDIR}
 	    touch ${DBDIR}/.dm-version.$DMVERSION
