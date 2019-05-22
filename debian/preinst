@@ -36,7 +36,7 @@ fi
 
 case "$1" in
     install)
-    useradd --system --user-group --home-dir '/var/lib/dmx' --shell '/bin/false' --comment 'DMX - The Context Machine' dmx
+    id -u dmx >/dev/null 2>&1 || useradd --system --user-group --home-dir '/var/lib/dmx' --shell '/bin/false' --comment 'DMX - The Context Machine' dmx
     if [ ! -d /var/lib/dmx ]; then
 	mkdir /var/lib/dmx
 	chown dmx:dmx /var/lib/dmx
