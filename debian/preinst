@@ -42,7 +42,7 @@ case "$1" in
     fi
     if [ -d ${DBDIR} ]; then
 	    if [ ! -f ${DBDIR}/.dm-version.$DMVERSION ]; then
-		    mv ${DBDIR} ${DBDIR}/dmx-db-$PREVIOUSVERSION-backup-$BACKUPDATE
+		    mv ${DBDIR} ${DBDIR}-$PREVIOUSVERSION-backup-$BACKUPDATE
 		    mkdir ${DBDIR}
 		    chown dmx:dmx ${DBDIR}
 		    touch ${DBDIR}/.dm-version.$DMVERSION
