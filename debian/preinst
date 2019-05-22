@@ -13,9 +13,11 @@ set -e
 # for details, see http://www.debian.org/doc/debian-policy/ or
 # the debian-policy package
 
-BACKUPDATE=$( date +%F-%H:%M:%S )
+BACKUPDATE="$( date +%F-%H:%M:%S )"
 DMVERSION='@@VERSION@@'
-PREVIOUSVERSION=$( find /var/lib/dmx/dmx-db/ -name "*.dm-version.*" | cut -d'.' -f'3-' | sort -V | tail -n1 )
+PREVIOUSVERSION="$( [[ -d /var/lib/dmx/dmx-db ]] && find /var/lib/dmx/dmx-db/ -name "*.dm-version.*" | cut -d'.' -f'3-' | sort -V | tail -n1 )"
+
+echo "Installing Version ${DMVERSION}"
 
 if [ -f /var/run/dmx/dmx.pid ]; then
     systemctl stop dmx
