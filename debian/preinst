@@ -16,6 +16,7 @@ set -e
 BACKUPDATE="$( date +%F-%H:%M:%S )"
 DMVERSION='@@VERSION@@'
 
+###  FIXME
 ###  Backing up the db depends on the location of the db, which is a config parameter in config properties.
 ###  So in the funture we have to read that!
 DBDIR='/var/lib/dmx/dmx-db'
@@ -26,7 +27,7 @@ echo "running preinst $1"
 echo "installing version ${DMVERSION}"
 
 if [ ! -z "${PREVIOUSVERSION}" ]; then
-    echo "found previous version ${PREVIOUSVERSION}"
+    echo "found previous db-version ${PREVIOUSVERSION}"
 fi
 
 if [ -f /var/run/dmx/dmx.pid ]; then
