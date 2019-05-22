@@ -19,4 +19,4 @@ override_dh_installinit:
 #	dh_installsystemd --package=dmx --no-start dmx.service
 
 override_dh_systemd_start:
-	dh_systemd_start --no-start
+	dh_systemd_start --restart-after-upgrade --no-start 
