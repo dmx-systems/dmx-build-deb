@@ -15,9 +15,19 @@ set -e
 
 BACKUPDATE="$( date +%F-%H:%M:%S )"
 DMVERSION='@@VERSION@@'
-PREVIOUSVERSION="$( if [ -d /var/lib/dmx ]; then find /var/lib/dmx/dmx-db/ -name "*.dm-version.*" | cut -d'.' -f'3-' | sort -V | tail -n1; fi )"
 
-echo "Installing Version ${DMVERSION}"
+###  Backing up the db depends on the location of the db, which is a config parameter in config properties.
+###  So in the funture we have to read that!
+DBDIR='/var/lib/dmx/dmx-db'
+
+PREVIOUSVERSION="$( if [ -d ${DBDIR} ]; then find ${DBDIR} -name ".dm-version.*" | cut -d'.' -f'3-' | sort -V | tail -n1; fi )"
+
+echo "running preinst $1"
+echo "installing version ${DMVERSION}"
+
+if [ ! -z "${PREVIOUSVERSION}" ]; then
+    echo "found previous version ${PREVIOUSVERSION}"
+fi
 
 if [ -f /var/run/dmx/dmx.pid ]; then
     systemctl stop dmx
@@ -30,18 +40,19 @@ case "$1" in
 	mkdir /var/lib/dmx
 	chown dmx:dmx /var/lib/dmx
     fi
-    if [ -d /var/lib/dmx/dmx-db ]; then
-	    if [ ! -f /var/lib/dmx/dmx-db/.dm-version.$DMVERSION ]; then
-		    mv /var/lib/dmx/dmx-db /var/lib/dmx/dmx-db-$PREVIOUSVERSION-backup-$BACKUPDATE
-		    mkdir /var/lib/dmx/dmx-db
-		    chown dmx:dmx /var/lib/dmx/dmx-db
-		    touch /var/lib/dmx/dmx-db/.dm-version.$DMVERSION
+    if [ -d ${DBDIR} ]; then
+	    if [ ! -f ${DBDIR}/.dm-version.$DMVERSION ]; then
+		    mv ${DBDIR} ${DBDIR}/dmx-db-$PREVIOUSVERSION-backup-$BACKUPDATE
+		    mkdir ${DBDIR}
+		    chown dmx:dmx ${DBDIR}
+		    touch ${DBDIR}/.dm-version.$DMVERSION
 		    echo "Your existing database has been moved to /var/lib/dmx/dmx-db-$PREVIOUSVERSION-backup-$BACKUPDATE."
 	    fi
     else
-	    mkdir /var/lib/dmx/dmx-db
-	    chown dmx:dmx /var/lib/dmx/dmx-db
-	    touch /var/lib/dmx/dmx-db/.dm-version.$DMVERSION
+	    mkdir ${DBDIR}
+	    chown dmx:dmx ${DBDIR}
+	    chmod 750 ${DBDIR}
+	    touch ${DBDIR}/.dm-version.$DMVERSION
     fi
     if [ -d /var/cache/dmx/bundle-cache ]; then
 	    rm -rf /var/cache/dmx/bundle-cache
@@ -53,14 +64,16 @@ case "$1" in
 
     upgrade)
     # backup existing database
-    if [ -d /var/lib/dmx/dmx-db ]; then
-        cp -a /var/lib/dmx/dmx-db /var/lib/dmx/dmx-db-$PREVIOUSVERSION-backup-$BACKUPDATE
-        touch /var/lib/dmx/dmx-db/.dm-version.$DMVERSION
-	echo "Your existing database has been copied to /var/lib/dmx/dmx-db-$PREVIOUSVERSION-backup-$BACKUPDATE."
-	if [ -f /var/lib/dmx/dmx-db/.dm-version.$PREVIOUSVERSION ]; then
-            rm /var/lib/dmx/dmx-db/.dm-version.$PREVIOUSVERSION
+    if [ -d ${DBDIR} ]; then
+        cp -a ${DBDIR} ${DBDIR}-$PREVIOUSVERSION-backup-$BACKUPDATE
+        touch ${DBDIR}.dm-version.$DMVERSION
+	echo "Your existing database has been copied to ${DBDIR}-$PREVIOUSVERSION-backup-$BACKUPDATE."
+	if [ -f ${DBDIR}/.dm-version.$PREVIOUSVERSION ]; then
+            rm ${DBDIR}/.dm-version.$PREVIOUSVERSION
     	fi
     fi
+
+    ### bundle cache dir is a config parameter. We need to read it from config properties.
     if [ -d /var/cache/dmx/bundle-cache ]; then
 	    rm -rf /var/cache/dmx/bundle-cache
     fi
