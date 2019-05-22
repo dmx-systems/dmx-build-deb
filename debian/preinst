@@ -54,10 +54,10 @@ case "$1" in
     if [ -d /var/lib/dmx/dmx-db ]; then
         cp -a /var/lib/dmx/dmx-db /var/lib/dmx/dmx-db-$PREVIOUSVERSION-backup-$BACKUPDATE
         touch /var/lib/dmx/dmx-db/.dm-version.$DMVERSION
-		echo "Your existing database has been copied to /var/lib/dmx/dmx-db-$PREVIOUSVERSION-backup-$BACKUPDATE."
-		if [ -f /var/lib/dmx/dmx-db/.dm-version.$PREVIOUSVERSION ]; then
+	echo "Your existing database has been copied to /var/lib/dmx/dmx-db-$PREVIOUSVERSION-backup-$BACKUPDATE."
+	if [ -f /var/lib/dmx/dmx-db/.dm-version.$PREVIOUSVERSION ]; then
             rm /var/lib/dmx/dmx-db/.dm-version.$PREVIOUSVERSION
-        fi
+    	fi
     fi
     if [ -d /var/cache/dmx/bundle-cache ]; then
 	    rm -rf /var/cache/dmx/bundle-cache
