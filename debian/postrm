@@ -18,7 +18,7 @@ set -e
 # for details, see http://www.debian.org/doc/debian-policy/ or
 # the debian-policy package
 
-
+echo "running postrm $1"
 
 case "$1" in
     purge|remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
@@ -31,6 +31,8 @@ case "$1" in
 esac
 
 if [ "$1" = purge ]; then
+    deb-systemd-invoke try-stop dmx.service >/dev/null || true
+    ### the logfile is a config parameter. we should read this in the future
     if [ -f /var/log/dmx/dmx.log ]; then
 	rm /var/log/dmx/*
     fi
