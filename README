@@ -3,7 +3,7 @@ Install DMX from Debian/Ubuntu repo:
 
 automatic:
 
-~$ curl -sS https://download.dmx.systems/repos/dmx-install.sh | sudo bash
+   ~$ curl -sS https://download.dmx.systems/repos/dmx-install.sh | sudo bash
 
 manual:
 
