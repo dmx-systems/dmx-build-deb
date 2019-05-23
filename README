@@ -1,6 +1,12 @@
 Install DMX:
 ============
 
+automatic:
+
+~$ curl https://download.dmx.systems/repos/dmx-install.sh | sudo bash
+
+manual:
+
  1. Add file /etc/apt/sources.list.d/dmx-repo.list
    ~$ sudo bash -c 'echo "deb https://download.dmx.systems/repos/ubuntu/ xenial/" >/etc/apt/sources.list.d/dmx-repo.list'
 
