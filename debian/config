@@ -11,7 +11,7 @@ set -e
 RUN=''
 PW1=''
 PW2=''
-do while [ ! "$RUN" ] || [ "$PW1" != "$PW2" ];
+while [ ! "$RUN" ] || [ "$PW1" != "$PW2" ]; do
     db_input high dmx/initial_admin_password || true
     db_go || true
     db_input high dmx/initial_admin_password_again || true
