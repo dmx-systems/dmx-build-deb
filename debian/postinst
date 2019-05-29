@@ -21,6 +21,11 @@ echo "running postinst $1"
 
 CONFIGFILE=/etc/dmx/config.properties
 
+# Load config file, if it exists.
+if [ -e $CONFIGFILE ]; then
+    . $CONFIGFILE || true
+fi
+
 # Source debconf library.
 . /usr/share/debconf/confmodule
 
