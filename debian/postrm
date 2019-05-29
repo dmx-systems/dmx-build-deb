@@ -36,7 +36,7 @@ if [ "$1" = purge ]; then
     if [ -f /var/log/dmx/dmx.log ]; then
 	rm /var/log/dmx/*
     fi
-    deluser --system dmx
+    # deluser --system dmx
 
     # Source debconf library.
     . /usr/share/debconf/confmodule
