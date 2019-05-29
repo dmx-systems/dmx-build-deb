@@ -1,0 +1,22 @@
+DMX for Debian
+---------------------
+
++++ DMX is still under heavy development! +++
+
+DMX is under heavy development. While you can do productive work with it, DMX does not meet professional standards yet. At least there are lacks in a) security, b) robustness, and c) usability. Do not put sensitive data in DMX, in particular when you setup DMX for network access. Be aware that data loss may occur when you use DMX improperly. The DMX developers assume no liability for lost or compromised data. Please keep this in mind when using this software.
+
+Thank you for your understanding!
+
++++ Configuration +++
+
+By default, DMX is listening on port 8080. To change this setting, edit /etc/dmx/config.properties. Adjust the settings in /etc/dmx/config.properties and make sure your computer is protected by a firewall. Then edit /etc/default/dmx and set "START_DMX=yes" before invoking "/etc/init.d/dmx start" to start DMX.
+
+dpkg -P dmx will remove all installed files but not delete your database.
+
++++ Apache +++
+
+See /usr/share/doc/dmx/examples/dmx.apache for a sample Apache2 config file (for details concerning Apache2 configuration see https://dmx.readthedocs.io/en/latest/admin.html#running-dmx-behind-an-apache-reverse-proxy).
+
++++ Security +++
+
+To secure your installation with iptables see https://dmx.readthedocs.io/en/latest/admin.html#securing-dmx.
