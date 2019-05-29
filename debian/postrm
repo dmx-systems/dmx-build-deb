@@ -3,7 +3,8 @@
 #
 # see: dh_installdeb(1)
 
-set -e
+# set -e
+set -x
 
 # summary of how this script can be called:
 #        * <postrm> `remove'
@@ -18,7 +19,7 @@ set -e
 # for details, see http://www.debian.org/doc/debian-policy/ or
 # the debian-policy package
 
-echo "running postrm $1"
+# echo "running postrm $1"
 
 case "$1" in
     purge|remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
@@ -36,12 +37,12 @@ if [ "$1" = purge ]; then
     if [ -f /var/log/dmx/dmx.log ]; then
 	rm /var/log/dmx/*
     fi
-    # deluser --system dmx
+    deluser --system dmx
 
     # Source debconf library.
     . /usr/share/debconf/confmodule
     # Remove my changes to the db.
-    db_purge
+    # db_purge
 fi
 
 # dh_installdeb will replace this with shell code automatically
