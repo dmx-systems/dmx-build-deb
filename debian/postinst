@@ -4,7 +4,6 @@
 # see: dh_installdeb(1)
 
 set -e
-#. /usr/share/debconf/confmodule
 
 # summary of how this script can be called:
 #        * <postinst> `configure' <most-recently-configured-version>
@@ -20,23 +19,25 @@ set -e
 
 echo "running postinst $1"
 
+CONFIGFILE=/etc/dmx/config.properties
+
+# Source debconf library.
+. /usr/share/debconf/confmodule
+
 ### FIXME
 ### various dirs can be configured via config.properties
 ### the script should refelct this.
 
 case "$1" in
     configure)
-    # Source debconf library.
-    . /usr/share/debconf/confmodule
 
-    # Fetch configuration from debconf
     db_get dmx/initial_admin_password
-    INITIAL_ADMIN_PASSWORD=$RET
+    INITIAL_ADMIN_PASSWORD="$RET"
 
-    # Modify dmx config file
-    CONFIG=$(</etc/dmx/config.properties)
-    CONFIG=${CONFIG/dmx.security.initial_admin_password = YOUR_SECRET_PASSWORD_HERE/dmx.security.initial_admin_password = ${INITIAL_ADMIN_PASSWORD}}
-    cat <<< "${CONFIG]" >/etc/dmx/config.properties
+    cp -a -f $CONFIGFILE $CONFIGFILE.tmp
+    sed -e "s/^ *dmx.security.initial_admin_password =.*/dmx.security.initial_admin_password = \"$INITIAL_ADMIN_PASSWORD\"/" \
+        < $CONFIGFILE > $CONFIGFILE.tmp
+    mv -f $CONFIGFILE.tmp $CONFIGFILE
 
     # Set permissions
     chmod 750 /etc/dmx
