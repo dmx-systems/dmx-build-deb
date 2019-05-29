@@ -1,7 +1,0 @@
-Template: dmx/initial_admin_password
-Type: password
-Default:
-Description: Enter initial admin password:
- The initial admin password is set on the first run of DMX when
- no previous database exists. Once started the admin password can be
- changed interactively (using the web client).
