@@ -48,6 +48,8 @@ case "$1" in
         < $CONFIGFILE > $CONFIGFILE.tmp
     mv -f $CONFIGFILE.tmp $CONFIGFILE
 
+    db_clear
+
     # Set permissions
     chmod 750 /etc/dmx
     chmod 640 /etc/dmx/*
