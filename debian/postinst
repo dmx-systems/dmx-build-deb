@@ -38,7 +38,7 @@ case "$1" in
     configure)
 
     # Ask for password.
-    db_input dmx/initial_admin_password || true
+    db_input medium dmx/initial_admin_password || true
     db_go || true
 
     db_get dmx/initial_admin_password
