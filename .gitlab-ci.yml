@@ -53,11 +53,11 @@ build:
     - LOGGING=${LOGGING/java.util.logging.FileHandler.pattern=deepamehta.log/java.util.logging.FileHandler.pattern=\/var\/log\/dmx\/dmx.log}
     - LOGGING=${LOGGING/java.util.logging.FileHandler.pattern=dmx.log/java.util.logging.FileHandler.pattern=\/var\/log\/dmx\/dmx.log}
     - echo "${LOGGING}" >etc/dmx/logging.properties
-    - COPYRIGHT=$(<DEBIAN/copyright)
-    - echo "${COPYRIGHT/@@NUNC@@/$(date -R)}" >DEBIAN/copyright
-    - PREINST="$(<DEBIAN/preinst)"
+    - COPYRIGHT=$(<debian/copyright)
+    - echo "${COPYRIGHT/@@NUNC@@/$(date -R)}" >debian/copyright
+    - PREINST="$(<debian/preinst)"
     - PREINST=${PREINST/DMVERSION=\'@@VERSION@@\'/DMVERSION=\'${VERSION}\'}
-    - echo "${PREINST}" >DEBIAN/preinst
+    - echo "${PREINST}" >debian/preinst
     - pwd
     - dch --controlmaint --create --package "dmx" --newversion ${VERSION} --empty
     - dch --controlmaint -v ${VERSION} "A Debian Package for DMX - The Context Machine"
@@ -65,7 +65,7 @@ build:
     - dch --controlmaint -v ${VERSION} "Thanks to Silke <silke@silkemeyer.net> for the initial work on the debian package."
     - dch --controlmaint -r --distribution "${TARGET}" ignored 
     - LASTCOMMIT="$( git rev-parse HEAD )"
-    - git add DEBIAN/changelog
+    - git add debian/changelog
     - 'git commit -m"DMX debian package build from ${DMX}-${VERSION} - Build Pipeline ${CI_PIPELINE_ID}" -m"Binaries from https://download.dmx.systems/ci/dmx-latest.zip" -m"Thanks: GitLab Team for providing great CI infrastructure!"'
     - git log -1
     - gbp dch --distribution "${TARGET}" --ignore-branch --new-version "${VERSION}-${CI_PIPELINE_ID}" --commit --since=${LASTCOMMIT} --release --spawn-editor=never --full --meta
