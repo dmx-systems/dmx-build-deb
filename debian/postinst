@@ -19,12 +19,13 @@ set -e
 
 echo "running postinst $1"
 
-CONFIGFILE=/etc/dmx/config.properties
+CONFIGFILE='/etc/dmx/config.properties'
 
 # Load config file, if it exists.
-if [ -e $CONFIGFILE ]; then
-    . $CONFIGFILE || true
-fi
+### THIS DOES NOT WORK, BECAUSE DMX VARS CONTAIN '.'s.
+### if [ -e $CONFIGFILE ]; then
+###    . $CONFIGFILE || true
+### fi
 
 # Source debconf library.
 . /usr/share/debconf/confmodule
@@ -36,11 +37,15 @@ fi
 case "$1" in
     configure)
 
+    # Ask for password.
+    db_input dmx/initial_admin_password || true
+    db_go || true
+
     db_get dmx/initial_admin_password
     INITIAL_ADMIN_PASSWORD="$RET"
 
     cp -a -f $CONFIGFILE $CONFIGFILE.tmp
-    sed -e "s/^ *dmx.security.initial_admin_password =.*/dmx.security.initial_admin_password = \"$INITIAL_ADMIN_PASSWORD\"/" \
+    sed -e "s/^ *dmx\.security\.initial_admin_password =.*/dmx\.security\.initial_admin_password = $INITIAL_ADMIN_PASSWORD/" \
         < $CONFIGFILE > $CONFIGFILE.tmp
     mv -f $CONFIGFILE.tmp $CONFIGFILE
 
