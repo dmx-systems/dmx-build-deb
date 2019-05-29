@@ -37,6 +37,11 @@ if [ "$1" = purge ]; then
 	rm /var/log/dmx/*
     fi
     deluser --system dmx
+
+    # Source debconf library.
+    . /usr/share/debconf/confmodule
+    # Remove my changes to the db.
+    db_purge
 fi
 
 # dh_installdeb will replace this with shell code automatically

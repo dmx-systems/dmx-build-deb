@@ -37,10 +37,7 @@ CONFIGFILE='/etc/dmx/config.properties'
 case "$1" in
     configure)
 
-    # Ask for password.
-    db_input medium dmx/initial_admin_password || true
-    db_go || true
-
+    # Get password from debconf-db
     db_get dmx/initial_admin_password
     INITIAL_ADMIN_PASSWORD="$RET"
 

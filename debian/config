@@ -6,8 +6,7 @@ set -e
 # Source debconf library.
 . /usr/share/debconf/confmodule
 
-# Ask questions
-db_input low dmx/initial_admin_password || true
-
-# Show interface
+# Ask for password.
+db_input medium dmx/initial_admin_password || true
 db_go || true
+
