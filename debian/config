@@ -7,6 +7,6 @@ set -e
 . /usr/share/debconf/confmodule
 
 # Ask for password.
-db_input medium dmx/initial_admin_password || true
+db_input high dmx/initial_admin_password || true
 db_go || true
 
