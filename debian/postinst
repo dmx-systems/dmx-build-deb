@@ -18,7 +18,8 @@ set -x
 # for details, see http://www.debian.org/doc/debian-policy/ or
 # the debian-policy package
 
-echo "running postinst $1"
+### The next line seems to cause problems when used with config_db
+# echo "running postinst $1"
 
 CONFIGFILE='/etc/dmx/config.properties'
 
