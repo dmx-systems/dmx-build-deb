@@ -7,6 +7,18 @@ set -e
 . /usr/share/debconf/confmodule
 
 # Ask for password.
-db_input high dmx/initial_admin_password || true
-db_go || true
 
+RUN="false"
+PW1=""
+PW2=""
+while [ "$PW1" != "$PW2" ] || [ "$RUN" == "false" ]; do
+    db_input high dmx/initial_admin_password || true
+    db_go || true
+    db_input high dmx/initial_admin_password_again || true
+    db_go || true
+    db_get dmx/initial_admin_password || true
+    PW1="$RES"
+    db_get dmx/initial_admin_password_again || true
+    PW2="$RES"
+    RUN="true"
+done
