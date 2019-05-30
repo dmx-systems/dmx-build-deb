@@ -23,7 +23,7 @@ manual:
    ~$ sudo systemctl start dmx
 
  6. Browse to the local instance
-    open http://localhost:8080/systems.dmx.webclient/ in your browser
+    http://localhost:8080/systems.dmx.webclient/
 
 
 Known Issues:
