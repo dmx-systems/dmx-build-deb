@@ -16,7 +16,7 @@ manual:
  3. Update packet sources and install dmx
    ~$ sudo apt update && sudo apt install dmx
 
- 4. Change the initial admin password
+ 4. Adjust the configuration
    ~$ sudo nano /etc/dmx/config.properties 
 
  5. Start DMX
@@ -30,7 +30,8 @@ Known Issues:
  * DMX is still in an early beta stage and clearly needs further improvement.
  * There are lacks in a) security, b) robustness, and c) usability.
 
-Feedback:
+Documentation, Help and Feedback:
+ * Check https://dos.dmx.systems to learn more about DMX.
  * Join https://forum.dmx.systems to help us improve.
 
 Copyright + Licensing: 
