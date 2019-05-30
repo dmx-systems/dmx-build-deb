@@ -3,15 +3,15 @@ Type: password
 Default:
 Description: Enter initial admin password:
  The initial admin password is set on the first run of DMX when
- no previous database exists. Once started the admin password can be
- changed interactively (using the web client). The value will be
- written to /etc/dmx/config.peoperties.
+ no previous database exists. The value will be written to 
+ /etc/dmx/config.properties. Once started the admin password can
+ be changed interactively (using the web client).
 
 Template: dmx/initial_admin_password_again
 Type: password
 Default:
 Description: Verify initial admin password:
  The initial admin password is set on the first run of DMX when
- no previous database exists. Once started the admin password can be
- changed interactively (using the web client). The value will be
- written to /etc/dmx/config.peoperties.
+ no previous database exists. The value will be written to 
+ /etc/dmx/config.properties. Once started the admin password can
+ be changed interactively (using the web client).

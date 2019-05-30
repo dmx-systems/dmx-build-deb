@@ -3,8 +3,7 @@
 #
 # see: dh_installdeb(1)
 
-# set -e
-set -x
+set -e
 
 # summary of how this script can be called:
 #        * <postinst> `configure' <most-recently-configured-version>
@@ -18,12 +17,10 @@ set -x
 # for details, see http://www.debian.org/doc/debian-policy/ or
 # the debian-policy package
 
-### The next line seems to cause problems when used with config_db
-# echo "running postinst $1"
-
 CONFIGFILE='/etc/dmx/config.properties'
 
 # Load config file, if it exists.
+
 ### THIS DOES NOT WORK, BECAUSE DMX VARS CONTAIN '.'s.
 ### if [ -e $CONFIGFILE ]; then
 ###    . $CONFIGFILE || true
