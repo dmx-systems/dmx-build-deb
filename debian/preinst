@@ -23,11 +23,11 @@ DBDIR='/var/lib/dmx/dmx-db'
 
 PREVIOUSVERSION="$( if [ -d ${DBDIR} ]; then find ${DBDIR} -name ".dm-version.*" | cut -d'.' -f'3-' | sort -V | tail -n1; fi )"
 
-echo "running preinst $1"
-echo "installing version ${DMVERSION}"
+# echo "running preinst $1"
+echo "Installing version ${DMVERSION}"
 
 if [ ! -z "${PREVIOUSVERSION}" ]; then
-    echo "found previous db-version ${PREVIOUSVERSION}"
+    echo "Found previous db-version ${PREVIOUSVERSION}"
 fi
 
 if [ -f /var/run/dmx/dmx.pid ]; then
