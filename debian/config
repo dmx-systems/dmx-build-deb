@@ -8,17 +8,19 @@ set -e
 
 # Ask for password.
 
-RUN=''
-PW1=''
-PW2=''
-while [ ! "$RUN" ] || [ "$PW1" != "$PW2" ]; do
-    db_input high dmx/initial_admin_password || true
-    db_go || true
-    db_input high dmx/initial_admin_password_again || true
-    db_go || true
-    db_get dmx/initial_admin_password || true
-    PW1="$RET"
-    db_get dmx/initial_admin_password_again || true
-    PW2="$RET"
-    RUN="true"
-done
+if [ ! -f /etc/dmx/config.properties ]; then
+    RUN=''
+    PW1=''
+    PW2=''
+    while [ ! "$RUN" ] || [ "$PW1" != "$PW2" ]; do
+        db_input high dmx/initial_admin_password || true
+        db_go || true
+        db_input high dmx/initial_admin_password_again || true
+        db_go || true
+        db_get dmx/initial_admin_password || true
+        PW1="$RET"
+        db_get dmx/initial_admin_password_again || true
+        PW2="$RET"
+        RUN="true"
+    done
+fi
