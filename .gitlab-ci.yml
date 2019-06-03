@@ -19,11 +19,12 @@ build:
   stage: build
   script:
     - pwd
+    - WEBDIR='https://download.dmx.systems/ci'
     - ZIPFILE='dmx-latest.zip'
     - DEBFULLNAME='GitLab Runner (DMX CI)'
     - DEBEMAIL='Gitlab Runner (DMX CI) <gitlab.runner@dmx.systems>'
     - echo "Starting job ${CI_JOB_ID} in pipeline ${CI_PIPELINE_ID}"
-    - wget -q https://download.dmx.systems/ci/${ZIPFILE}
+    - wget -q ${WEBDIR}/${ZIPFILE}
     - unzip -q ${ZIPFILE}
     - VERSION="$( ls -d dmx-* | grep -v ${ZIPFILE} | cut -d'-' -f2- )"
     - echo "VERSION=${VERSION}"
@@ -76,7 +77,7 @@ build:
     - LASTCOMMIT="$( git rev-parse HEAD )"
     # - git add etc/*
     - git add debian/changelog
-    - 'git commit -m"DMX debian package build from ${DMX}-${VERSION} - Build Pipeline ${CI_PIPELINE_ID}" -m"Binaries from https://download.dmx.systems/ci/${ZIPFILE}" -m"Thanks: GitLab Team for providing great CI infrastructure!"'
+    - 'git commit -m"DMX debian package build from ${DMX}-${VERSION} - Build Pipeline ${CI_PIPELINE_ID}" -m"Binaries from ${WEBDIR}/${ZIPFILE}" -m"Thanks: GitLab Team for providing great CI infrastructure!"'
     - git log -1
     - gbp dch --distribution "${TARGET}" --ignore-branch --new-version "${VERSION}-${CI_PIPELINE_ID}" --commit --since=${LASTCOMMIT} --release --spawn-editor=never --full --meta
     # - export GPG_TTY=$(tty) <= moved to .bashrc
@@ -124,7 +125,7 @@ deploy:
     - cd ..
     - WORKDIR="$( pwd )"
     - echo "cleaning up ${WORKDIR}/* ..."
-    # - find . -type f -name "*${PACKAGENAME}_*" -exec rm -f {} \;
+    - find . -type f -name "*${PACKAGENAME}_*" -exec rm -f {} \;
     ### trigger pipeline to re-deploy docker image for dmx demo
     - MY_JOB_TOKEN="$(</home/gitlab-runner/.after-deb-repo.token)"
     - TRIGGER="$(curl --silent --write-out '%{http_code}' --output /dev/null --request POST --form token="${MY_JOB_TOKEN}" --form ref=master https://git.dmx.systems/api/v4/projects/17/trigger/pipeline)"
