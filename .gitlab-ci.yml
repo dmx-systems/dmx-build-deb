@@ -7,6 +7,8 @@ variables:
     # target distribution
     # TARGET="$(lsb_release -sc)"
     TARGET: "xenial"
+    DMX: 'dmx'
+    PACKAGENAME: "${DMX}-latest"
 
 build:
   only:
@@ -17,8 +19,8 @@ build:
   stage: build
   script:
     - pwd
-    - DMX='dmx'
-    - PACKAGENAME="${DMX}-latest"
+    # - DMX='dmx'
+    # - PACKAGENAME="${DMX}-latest"
     - ZIPFILE='dmx-latest.zip'
     - DEBFULLNAME='GitLab Runner (DMX CI)'
     - DEBEMAIL='Gitlab Runner (DMX CI) <gitlab.runner@dmx.systems>'
