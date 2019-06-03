@@ -59,6 +59,9 @@ build:
     - PREINST="$(<debian/preinst)"
     - PREINST=${PREINST/DMVERSION=\'@@VERSION@@\'/DMVERSION=\'${VERSION}\'}
     - echo "${PREINST}" >debian/preinst
+    - CONTROL="$(<debian/control)"
+    - CONTROL=${CONTROL/@@PACKAGENAME@@/${PACKAGENAME}}
+    - echo "${CONTROL}" >debian/control
     - pwd
     - dch --controlmaint --create --package "${PACKAGENAME}" --newversion ${VERSION} --empty
     - dch --controlmaint -v ${VERSION} "A Debian Package for DMX - The Context Machine"
