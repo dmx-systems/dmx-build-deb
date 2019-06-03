@@ -56,9 +56,6 @@ case "$1" in
     chown -R dmx:dmx /var/cache/dmx
     chown -R dmx:dmx /var/log/dmx
     
-    # copy README to filedir
-    cp /usr/share/doc/dmx/examples/dmx.filedir /var/lib/dmx/dmx-filedir/README.txt
-
     # try to restart DMX if systemd symlink exists
     if [ -L /etc/systemd/system/multi-user.target.wants/dmx.service ]; then
 	deb-systemd-invoke try-restart dmx.service >/dev/null || true
