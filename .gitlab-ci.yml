@@ -18,6 +18,7 @@ build:
   script:
     - pwd
     - DMX='dmx'
+    - PACKAGENAME="${DMX}-SNAPSHOT"
     - ZIPFILE='dmx-latest.zip'
     - DEBFULLNAME='GitLab Runner (DMX CI)'
     - DEBEMAIL='Gitlab Runner (DMX CI) <gitlab.runner@dmx.systems>'
@@ -59,7 +60,7 @@ build:
     - PREINST=${PREINST/DMVERSION=\'@@VERSION@@\'/DMVERSION=\'${VERSION}\'}
     - echo "${PREINST}" >debian/preinst
     - pwd
-    - dch --controlmaint --create --package "dmx" --newversion ${VERSION} --empty
+    - dch --controlmaint --create --package "${PACKAGENAME}" --newversion ${VERSION} --empty
     - dch --controlmaint -v ${VERSION} "A Debian Package for DMX - The Context Machine"
     - dch --controlmaint -v ${VERSION} "DMX is the successor of Jörg Richter's <jri@deepamehta.de> DeepaMehta project."
     - dch --controlmaint -v ${VERSION} "Thanks to Silke <silke@silkemeyer.net> for the initial work on the debian package."
