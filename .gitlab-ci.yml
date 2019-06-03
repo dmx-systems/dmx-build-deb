@@ -115,7 +115,7 @@ deploy:
     - sleep 1
     - mini-dinstall --batch
     - sleep 1
-    - debc ${REPODIR}/ubuntu/${TARGET}/dmx_*-${CI_PIPELINE_ID}_all.changes
+    - debc ${REPODIR}/ubuntu/${TARGET}/${PACKAGENAME}_*-${CI_PIPELINE_ID}_all.changes
     - cp ./README ${REPODIR}/
     ### trigger pipeline to re-deploy docker image for dmx demo
     - MY_JOB_TOKEN="$(</home/gitlab-runner/.after-deb-repo.token)"
