@@ -60,7 +60,9 @@ build:
     - PREINST=${PREINST/DMVERSION=\'@@VERSION@@\'/DMVERSION=\'${VERSION}\'}
     - echo "${PREINST}" >debian/preinst
     - CONTROL="$(<debian/control)"
+    - echo -e "old control file:\n\n${CONTROL}"
     - CONTROL=${CONTROL/@@PACKAGENAME@@/${PACKAGENAME}}
+    - echo -e "new control file:\n\n${CONTROL}"
     - echo "${CONTROL}" >debian/control
     - pwd
     - dch --controlmaint --create --package "${PACKAGENAME}" --newversion ${VERSION} --empty

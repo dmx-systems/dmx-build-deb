@@ -1,5 +1,6 @@
 DMX for Debian
----------------------
+==============
+
 
 +++ DMX is still under heavy development! +++
 
@@ -9,9 +10,9 @@ Thank you for your understanding!
 
 +++ Configuration +++
 
-By default, DMX is listening on port 8080. To change this setting, edit /etc/dmx/config.properties. Adjust the settings in /etc/dmx/config.properties and make sure your computer is protected by a firewall. Then edit /etc/default/dmx and set "START_DMX=yes" before invoking "/etc/init.d/dmx start" to start DMX.
+By default, DMX is listening on port 8080. To change this setting, edit /etc/dmx/config.properties. Adjust the settings in /etc/dmx/config.properties and make sure your computer is protected by a firewall.
 
-dpkg -P dmx will remove all installed files but not delete your database.
+dpkg -P dmx will remove all installed files but not delete your database and files in /var/lib/dmx.
 
 +++ Apache +++
 
