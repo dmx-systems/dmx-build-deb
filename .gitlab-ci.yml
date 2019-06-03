@@ -78,9 +78,10 @@ build:
     - git log -1
     - gbp dch --distribution "${TARGET}" --ignore-branch --new-version "${VERSION}-${CI_PIPELINE_ID}" --commit --since=${LASTCOMMIT} --release --spawn-editor=never --full --meta
     # - export GPG_TTY=$(tty) <= moved to .bashrc
-    # - dpkg-buildpackage -A -us --force-sign -k'671B7719'
+    - dpkg-buildpackage -A -us --force-sign -k'671B7719'
     # trying with subkey
-    - dpkg-buildpackage -A -us --force-sign -k'94697CDD'
+    # - dpkg-buildpackage -A -us --force-sign -k'94697CDD'
+    # also fails
 
 test:
   only:
