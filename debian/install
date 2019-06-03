@@ -1,5 +1,5 @@
+etc/dmx/* /etc/dmx
 bin/bin/* /usr/share/dmx/bin
 bin/bundle/* /usr/share/dmx/bundle
 bin/bundle-deploy/* /usr/share/dmx/bundle-deploy
 bin/bundle-available/* /usr/share/dmx/bundle-available
-etc/dmx/* /etc/dmx
