@@ -73,8 +73,8 @@ build:
     - dch --controlmaint -v ${VERSION} "Thanks to Silke <silke@silkemeyer.net> for the initial work on the debian package."
     - dch --controlmaint -r --distribution "${TARGET}" ignored 
     - LASTCOMMIT="$( git rev-parse HEAD )"
-    - git add debian/
-    # - git add debian/changelog
+    - git add etc/*
+    - git add debian/changelog
     - 'git commit -m"DMX debian package build from ${DMX}-${VERSION} - Build Pipeline ${CI_PIPELINE_ID}" -m"Binaries from https://download.dmx.systems/ci/${ZIPFILE}" -m"Thanks: GitLab Team for providing great CI infrastructure!"'
     - git log -1
     - gbp dch --distribution "${TARGET}" --ignore-branch --new-version "${VERSION}-${CI_PIPELINE_ID}" --commit --since=${LASTCOMMIT} --release --spawn-editor=never --full --meta
