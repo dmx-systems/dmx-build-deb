@@ -109,6 +109,8 @@ deploy:
   stage: deploy
   script:
     - REPODIR='/var/www/download.dmx.systems/repos'
+    - echo "removing old packages ..."
+    - rm ${REPODIR}/${TARGET}/${PACKAGENAME}_*.{tar.gz,deb,dsc,changes}
     - echo "adding ${PACKAGENAME}_*-${CI_PIPELINE_ID} to ${REPODIR} ..."
     - pwd
     - dput local ../${PACKAGENAME}_*-${CI_PIPELINE_ID}_*.changes
