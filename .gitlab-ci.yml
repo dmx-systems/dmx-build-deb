@@ -18,7 +18,7 @@ build:
   script:
     - pwd
     - DMX='dmx'
-    - PACKAGENAME="${DMX}-SNAPSHOT"
+    - PACKAGENAME="${DMX}-latest"
     - ZIPFILE='dmx-latest.zip'
     - DEBFULLNAME='GitLab Runner (DMX CI)'
     - DEBEMAIL='Gitlab Runner (DMX CI) <gitlab.runner@dmx.systems>'
