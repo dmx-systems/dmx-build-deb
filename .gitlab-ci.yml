@@ -108,8 +108,8 @@ deploy:
     - deb
   stage: deploy
   script:
+    - REPODIR='/var/www/download.dmx.systems/repos'
     - echo "adding ${PACKAGENAME}_*-${CI_PIPELINE_ID} to ${REPODIR} ..."
-    - REPODIR='/var/www/download.dmx.systems/repos'  
     - pwd
     - dput local ../${PACKAGENAME}_*-${CI_PIPELINE_ID}_*.changes
     - sleep 1
