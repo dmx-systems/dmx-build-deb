@@ -54,6 +54,7 @@ build:
     - LOGGING=${LOGGING/java.util.logging.FileHandler.pattern=deepamehta.log/java.util.logging.FileHandler.pattern=\/var\/log\/dmx\/dmx.log}
     - LOGGING=${LOGGING/java.util.logging.FileHandler.pattern=dmx.log/java.util.logging.FileHandler.pattern=\/var\/log\/dmx\/dmx.log}
     - echo "${LOGGING}" >etc/dmx/logging.properties
+    # patch debian files
     - COPYRIGHT=$(<debian/copyright)
     - echo "${COPYRIGHT/@@NUNC@@/$(date -R)}" >debian/copyright
     - PREINST="$(<debian/preinst)"
@@ -61,7 +62,8 @@ build:
     - echo "${PREINST}" >debian/preinst
     - CONTROL="$(<debian/control)"
     - echo -e "old control file:\n\n${CONTROL}"
-    - CONTROL=${CONTROL/@@PACKAGENAME@@/${PACKAGENAME}}
+    # To replace all occurrences, use ${parameter//pattern/string}
+    - CONTROL=${CONTROL//@@PACKAGENAME@@/${PACKAGENAME}}
     - echo -e "new control file:\n\n${CONTROL}"
     - echo "${CONTROL}" >debian/control
     - pwd
