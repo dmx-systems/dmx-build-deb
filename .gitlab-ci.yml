@@ -74,7 +74,7 @@ build:
     - dch --controlmaint -r --distribution "${TARGET}" ignored 
     - LASTCOMMIT="$( git rev-parse HEAD )"
     - git add debian/changelog
-    - 'git commit -m"DMX debian package build from ${DMX}-${VERSION} - Build Pipeline ${CI_PIPELINE_ID}" -m"Binaries from https://download.dmx.systems/ci/dmx-latest.zip" -m"Thanks: GitLab Team for providing great CI infrastructure!"'
+    - 'git commit -m"DMX debian package build from ${DMX}-${VERSION} - Build Pipeline ${CI_PIPELINE_ID}" -m"Binaries from https://download.dmx.systems/ci/${ZIPFILE}" -m"Thanks: GitLab Team for providing great CI infrastructure!"'
     - git log -1
     - gbp dch --distribution "${TARGET}" --ignore-branch --new-version "${VERSION}-${CI_PIPELINE_ID}" --commit --since=${LASTCOMMIT} --release --spawn-editor=never --full --meta
     - dpkg-buildpackage -A -us --force-sign -k'671B7719' 
@@ -88,9 +88,10 @@ test:
   stage: test
   script:
     - COMMIT_VERSION="$( cat .git/COMMIT_EDITMSG | cut -d' ' -f4 )"
-    - cat ../dmx_${COMMIT_VERSION}_all.changes
-    - echo "Running test - lintian -i -I --show-overrides ../dmx_${COMMIT_VERSION}_all.changes"
-    - lintian -i -I --show-overrides ../dmx_${COMMIT_VERSION}_all.changes
+    - ls -la ../*
+    - cat ../${PACKAGENAME}_${COMMIT_VERSION}_all.changes
+    - echo "Running test - lintian -i -I --show-overrides ../${PACKAGENAME}_${COMMIT_VERSION}_all.changes"
+    - lintian -i -I --show-overrides ../${PACKAGENAME}_${COMMIT_VERSION}_all.changes
 
 deploy:
   only:
@@ -100,9 +101,10 @@ deploy:
     - deb
   stage: deploy
   script:
+    - echo "adding ${PACKAGENAME}_*-${CI_PIPELINE_ID} to ${REPODIR} ..."
     - REPODIR='/var/www/download.dmx.systems/repos'  
     - pwd
-    - dput local ../dmx_*-${CI_PIPELINE_ID}_*.changes
+    - dput local ../${PACKAGENAME}_*-${CI_PIPELINE_ID}_*.changes
     - sleep 1
     - mini-dinstall --batch
     - sleep 1
