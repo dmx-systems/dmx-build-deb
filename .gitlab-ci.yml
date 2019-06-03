@@ -77,7 +77,7 @@ build:
     - 'git commit -m"DMX debian package build from ${DMX}-${VERSION} - Build Pipeline ${CI_PIPELINE_ID}" -m"Binaries from https://download.dmx.systems/ci/${ZIPFILE}" -m"Thanks: GitLab Team for providing great CI infrastructure!"'
     - git log -1
     - gbp dch --distribution "${TARGET}" --ignore-branch --new-version "${VERSION}-${CI_PIPELINE_ID}" --commit --since=${LASTCOMMIT} --release --spawn-editor=never --full --meta
-    - export GPG_TTY=$(tty)
+    # - export GPG_TTY=$(tty)
     - dpkg-buildpackage -A -us --force-sign -k'671B7719' 
 
 test:
