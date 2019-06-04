@@ -7,8 +7,8 @@ variables:
     # target distribution
     # TARGET="$(lsb_release -sc)"
     TARGET: "xenial"
-    DMX: 'dmx'
-    PACKAGENAME: "${DMX}-latest"
+    DMX: 'dmx'                     # [ dmx | deepamehta ]
+    PACKAGENAME: "${DMX}-latest"   # [ dmx | dmx-latest ]
 
 build:
   only:
@@ -65,6 +65,10 @@ build:
     - echo -e "old control file:\n\n${CONTROL}"
     # To replace all occurrences, use ${parameter//pattern/string}
     - CONTROL=${CONTROL//@@PACKAGENAME@@/${PACKAGENAME}}
+    - CONTROL=${CONTROL//@@VERSION@@/${VERSION}}
+    - if [ "${PACKAGENAME}" == "dmx" ]; then CONFLICTS='dmx-latest'; fi
+    - if [ "${PACKAGENAME}" == "dmx-latest" ]; then CONFLICTS='dmx'; fi
+    - CONTROL=${CONTROL/@@CONFLICTS@@/${CONFLICTS}}
     - echo -e "new control file:\n\n${CONTROL}"
     - echo "${CONTROL}" >debian/control
     - pwd
@@ -75,17 +79,12 @@ build:
     - dch --controlmaint -v ${VERSION} "Thanks to Silke <silke@silkemeyer.net> for the initial work on the debian package."
     - dch --controlmaint -r --distribution "${TARGET}" ignored 
     - LASTCOMMIT="$( git rev-parse HEAD )"
-    # - git add etc/*
     - git add debian/changelog
     - 'git commit -m"DMX debian package build from ${DMX}-${VERSION} - Build Pipeline ${CI_PIPELINE_ID}" -m"Binaries from ${WEBDIR}/${ZIPFILE}" -m"Thanks: GitLab Team for providing great CI infrastructure!"'
     - git log -1
     - gbp dch --distribution "${TARGET}" --ignore-branch --new-version "${VERSION}-${CI_PIPELINE_ID}" --commit --since=${LASTCOMMIT} --release --spawn-editor=never --full --meta
     # - export GPG_TTY=$(tty) <= moved to .bashrc
-    # - dpkg-buildpackage -A -us --force-sign -k'671B7719'
     - dpkg-buildpackage -A -us --force-sign -k'gitlab.runner@dmx.systems'
-    # trying with subkey
-    # - dpkg-buildpackage -A -us --force-sign -k'94697CDD'
-    # also fails
 
 test:
   only:
