@@ -1,17 +1,17 @@
+Package: @@PACKAGENAME@@
 Source: @@PACKAGENAME@@
+Version: @@VERSION@@
 Section: misc
 Priority: extra
-Maintainer: Juergen Neumann <juergen.neumann@dmx.berlin>
-Original-Maintainer: Joerg Richter <jri@dmx.berlin>
-Build-Depends: debhelper (>= 7)
-Standards-Version: 3.8.3
-Homepage: https://dmx.berlin
-Package: @@PACKAGENAME@@
 Architecture: all
-Version: @@VERSION@@
+Essential: no
 Depends: openjdk-8-jre-headless, debconf (>= 0.5)
 Breaks: deepamehta
 Conflicts: @@CONFLICTS@@
+Installed-Size: 20 MB
+Maintainer: Juergen Neumann <juergen.neumann@dmx.berlin>
+Original-Maintainer: Joerg Richter <jri@dmx.berlin>
+Homepage: https://dmx.berlin
 Description: semantic web platform for knowledge management and collaboration
  DMX is a software platform for collaboration and knowledge management.
  Knowledge is represented in a semantic network and is handled collaboratively.
