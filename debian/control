@@ -2,12 +2,11 @@ Source: @@PACKAGENAME@@
 Section: misc
 Priority: extra
 Maintainer: Juergen Neumann <juergen.neumann@dmx.berlin>
+Original-Maintainer: Joerg Richter <jri@dmx.berlin>
 Build-Depends: debhelper (>= 7)
 Standards-Version: 3.8.3
 Homepage: https://dmx.berlin
-
 Package: @@PACKAGENAME@@
-
 Architecture: all
 Version: @@VERSION@@
 Depends: openjdk-8-jre-headless, debconf (>= 0.5)
