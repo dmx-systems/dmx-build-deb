@@ -13,7 +13,7 @@ export DH_VERBOSE=1
 	dh  $@ --with systemd
 
 override_dh_installinit:
-	dh_installinit --package=dmx --noscripts
+	dh_installinit --noscripts --name=dmx
 
 override_dh_systemd_start:
-	dh_systemd_start --no-start 
+	dh_systemd_start --no-start --name=dmx
