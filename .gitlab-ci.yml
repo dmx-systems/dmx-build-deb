@@ -71,6 +71,7 @@ build:
     - CONTROL=${CONTROL/@@CONFLICTS@@/${CONFLICTS}}
     - echo -e "new control file:\n\n${CONTROL}"
     - echo "${CONTROL}" >debian/control
+    - cp debian/dmx.service debian/${PACKAGENAME}.dmx.service
     - pwd
     - tree
     - dch --controlmaint --create --package "${PACKAGENAME}" --newversion ${VERSION} --empty
