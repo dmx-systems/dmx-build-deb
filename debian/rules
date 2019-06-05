@@ -16,4 +16,4 @@ override_dh_installinit:
 	dh_installinit --noscripts --name=dmx
 
 override_dh_systemd_start:
-	dh_systemd_start --no-start --name=dmx
+	dh_systemd_start --no-start --name=dmx dmx.service
