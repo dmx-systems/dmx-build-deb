@@ -1,0 +1,3 @@
+/etc/dmx/config.properties
+/etc/dmx/logging.properties
+/etc/logrotate.d/dmx
