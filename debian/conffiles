@@ -1,7 +1,0 @@
-# debhelper (dh_installdeb, compat level 3 or higher) will add any files in your
-# package located in /etc automatically to the list of conffiles, so if you do
-# that manually too, you'll get duplicates.
-#
-# /etc/dmx/config.properties
-# /etc/dmx/logging.properties
-# /etc/logrotate.d/dmx
