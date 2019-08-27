@@ -71,6 +71,9 @@ build:
     - CONTROL=${CONTROL/@@CONFLICTS@@/${CONFLICTS}}
     - echo -e "new control file:\n\n${CONTROL}"
     - echo "${CONTROL}" >debian/control
+    # The next two cp commands are relevant when overriding the package name in debian/rules
+    - cp debian/dmx.service debian/${PACKAGENAME}.dmx.service
+    - cp debian/dmx.logrotate debian/${PACKAGENAME}.dmx.logrotate
     - pwd
     - tree
     - dch --controlmaint --create --package "${PACKAGENAME}" --newversion ${VERSION} --empty
