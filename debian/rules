@@ -12,6 +12,9 @@ export DH_VERBOSE=1
 %:
 	dh  $@ --with systemd
 
+override_dh_installinit:
+	dh_installinit --noscripts --name=dmx
+
 override_dh_installlogrotate:
 	dh_installlogrotate --name=dmx
 
