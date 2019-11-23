@@ -9,6 +9,7 @@ variables:
     TARGET: "xenial"
     DMX: 'dmx'                     # [ dmx | deepamehta ]
     PACKAGENAME: "${DMX}"          # [ dmx | dmx-latest ]
+    ZIPFILE: 'dmx-5.0-beta-6.zip'  # <= ENTER RELEASE
 
 build:
   only:
@@ -20,7 +21,6 @@ build:
   script:
     - pwd
     - WEBDIR='https://download.dmx.systems' # <= ENTER THE WEBDIR
-    - ZIPFILE='dmx-5.0-beta-5.zip'          # <= ENTER RELEASE
     - DEBFULLNAME='GitLab Runner (DMX CI)'
     - DEBEMAIL='Gitlab Runner (DMX CI) <gitlab.runner@dmx.systems>'
     - echo "Starting job ${CI_JOB_ID} in pipeline ${CI_PIPELINE_ID}"
