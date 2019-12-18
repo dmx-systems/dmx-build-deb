@@ -1,3 +1,7 @@
+# The releases branch builds the stable releases 
+# of the dmx core modules and the curated dmx plugins.  
+
+
 stages:
   - build
   - test
@@ -30,8 +34,10 @@ build:
     - echo "VERSION=${VERSION}"
     - rm -rf ${DMX}-${VERSION}/bundle/org.apache.felix.gogo.*
     - mkdir -p bin/bin bin/bundle bin/bundle-deploy bin/bundle-available
-    - wget -q https://download.dmx.systems/ci/dmx-tableview-command/dmx-tableview-command-latest.jar -P bin/bundle-available
-    - wget -q https://download.dmx.systems/ci/dmx-tableview/dmx-tableview-latest.jar -P bin/bundle-available
+    - wget -q https://download.dmx.systems/plugins/dmx-ldap/dmx-ldap-0.5.1.jar -P bin/bundle-available
+    - wget -q https://download.dmx.systems/plugins/dmx-tableview-command/dmx-tableview-command-1.3.0.jar -P bin/bundle-available
+    - wget -q https://download.dmx.systems/plugins/dmx-tableview/dmx-tableview-0.3.1.jar -P bin/bundle-available
+    - wget -q https://download.dmx.systems/plugins/dmx-thymeleaf/dmx-thymeleaf-0.9.1.jar -P bin/bundle-available
     - mv ${DMX}-${VERSION}/bin/* bin/bin/
     - mv ${DMX}-${VERSION}/bundle/* bin/bundle/
     - mv ${DMX}-${VERSION}/bundle-deploy/* bin/bundle-deploy/
