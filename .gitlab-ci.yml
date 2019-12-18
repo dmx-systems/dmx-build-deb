@@ -1,3 +1,6 @@
+# The master branch builds the latest development snapshots 
+# of the dmx core modules and the curated dmx plugins.  
+
 stages:
   - build
   - test
