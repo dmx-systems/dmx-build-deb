@@ -37,6 +37,7 @@ build:
     - wget -q https://download.dmx.systems/ci/dmx-tableview/dmx-tableview-latest.jar -P bin/bundle-available
     - wget -q https://download.dmx.systems/ci/dmx-ldap/dmx-ldap-latest.jar -P bin/bundle-available
     - wget -q https://download.dmx.systems/ci/dmx-mobile/dmx-mobile-latest.jar -P bin/bundle-available
+    - wget -q https://download.dmx.systems/ci/dmx-geomaps/dmx-geomaps-latest.jar -P bin/bundle-available
     - mv ${DMX}-${VERSION}/bin/* bin/bin/
     - mv ${DMX}-${VERSION}/bundle/* bin/bundle/
     - mv ${DMX}-${VERSION}/bundle-deploy/* bin/bundle-deploy/
