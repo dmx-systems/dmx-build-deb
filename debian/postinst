@@ -145,9 +145,16 @@ case "$1" in
     chown -R dmx:dmx /var/cache/dmx
     chown -R dmx:dmx /var/log/dmx
     
-    # try to restart DMX if systemd symlink exists
-    if [ -L /etc/systemd/system/multi-user.target.wants/dmx.service ]; then
+    # try to restart DMX if it is running
+    if [ "$(systemctl is-active dmx.service)" ]; then
 	deb-systemd-invoke try-restart dmx.service >/dev/null || true
+    fi
+    # enable the service if not enabled
+    if [ "$(systemctl is-enabled dmx.service)" == "masked" ]; then
+        deb-systemd-invoke unmask dmx.service >/dev/null || true
+    fi
+    if [ ! "$(systemctl is-enabled dmx.service)" ]; then
+        deb-systemd-invoke enable dmx.service >/dev/null || true
     fi
     ;;
     abort-upgrade|abort-remove|abort-deconfigure)
