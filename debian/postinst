@@ -52,7 +52,7 @@ case "$1" in
     FILEDIR='/usr/share/dmx/bundle-available'
 
     # Check if there are any files instead of links in $LINKDIR
-    PLUGINFILES="$(find "${LINKDIR}/*.jar" -maxdepth 1 -type f)"
+    PLUGINFILES="$(find "${LINKDIR}/" -name "*.jar" -maxdepth 1 -type f)"
     for pf in ${PLUGINFILES}; do
         echo ""
         # extract filename
@@ -81,7 +81,7 @@ case "$1" in
     done
 
     # Remove old files
-    OLDFILES="$(find "${FILEDIR}/*.jar" -maxdepth 1 -type f)"
+    OLDFILES="$(find "${FILEDIR}/" -name "*.jar" -maxdepth 1 -type f)"
     for of in ${OLDFILES}; do
         echo ""
         # create backup dir
@@ -107,7 +107,7 @@ case "$1" in
     done
 
     # Update symlinks
-    SYMLINKS="$(find "${LINKDIR}/*.jar" -maxdepth 1 -type l)"      # use l for symlinks
+    SYMLINKS="$(find "${LINKDIR}/" -name "*.jar" -maxdepth 1 -type l)"      # use l for symlinks
     for sl in ${SYMLINKS}; do
         echo ""
         # extract filename
