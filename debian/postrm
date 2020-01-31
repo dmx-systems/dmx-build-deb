@@ -37,6 +37,9 @@ if [ "$1" = purge ]; then
     if [ -f /var/log/dmx/dmx.log ]; then
 	rm /var/log/dmx/*
     fi
+    if [ -d /usr/share/dmx/bundle-available/.~outdated~ ]; then
+        rm -r /usr/share/dmx/bundle-available/.~outdated~
+    fi
     deluser --system dmx >/dev/null || true
 
     # Source debconf library.

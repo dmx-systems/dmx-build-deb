@@ -89,10 +89,6 @@ case "$1" in
     OLDFILES="$(find "${FILEDIR}/" -name "*.jar" -maxdepth 1 -type f)"
     for of in ${OLDFILES}; do
         ## echo ""
-        # create backup dir
-        if [ ! -d "${FILEDIR}/.~outdated~" ]; then
-            mkdir "${FILEDIR}/.~outdated~"
-        fi
         # extract filename
         ## echo "<Oldfile: $(file ${of})>"
         filename="$(basename -- "${of}")"
@@ -104,6 +100,10 @@ case "$1" in
         latestfile="$(ls -rv "${FILEDIR}/${plugin}"*.jar | head -n1)"
         ## echo "<Latest file: ${latestfile}>"
         if [ "${of}" != "${latestfile}" ]; then
+            # create backup dir if missing
+            if [ ! -d "${FILEDIR}/.~outdated~" ]; then
+                mkdir "${FILEDIR}/.~outdated~"
+            fi
             mv "${of}" "${FILEDIR}/.~outdated~/${filename}"
             ## echo "Moved ${of}" to "${FILEDIR}/.~outdated~/${filename}"
         fi
