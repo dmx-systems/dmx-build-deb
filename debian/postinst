@@ -145,10 +145,6 @@ case "$1" in
     chown -R dmx:dmx /var/cache/dmx
     chown -R dmx:dmx /var/log/dmx
     
-    # try to restart DMX if it is running
-    if [ "$(systemctl is-active dmx.service)" ]; then
-	deb-systemd-invoke try-restart dmx.service >/dev/null || true
-    fi
     # enable the service if not enabled
     if [ "$(systemctl is-enabled dmx.service)" = "masked" ]; then
         echo "INFO: Service is masked."
@@ -157,6 +153,10 @@ case "$1" in
     if [ ! "$(systemctl is-enabled dmx.service)" ]; then
         echo "INFO: Service is not enabled."
         deb-systemd-invoke enable dmx.service >/dev/null || true
+    fi
+    # try to restart DMX if it is running
+    if [ "$(systemctl is-active dmx.service)" ]; then
+	deb-systemd-invoke try-restart dmx.service >/dev/null || true
     fi
     ;;
     abort-upgrade|abort-remove|abort-deconfigure)
