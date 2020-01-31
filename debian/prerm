@@ -19,7 +19,7 @@ set -e
 
 case "$1" in
     remove|upgrade|deconfigure)
-    if [ "$(systemctl isactive dmx)" ]; then
+    if [ "$(systemctl is-active dmx)" ]; then
 	    systemctl stop dmx
     fi
 
