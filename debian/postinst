@@ -47,104 +47,6 @@ case "$1" in
 
     db_clear
 
-    ### Start: Update plugin symlinks
-    LINKDIR='/usr/share/dmx/bundle-deploy'
-    FILEDIR='/usr/share/dmx/bundle-available'
-
-
-    # Check if there are any files instead of links in $LINKDIR
-    PLUGINFILES="$(find "${LINKDIR}/" -maxdepth 1 -type f | grep -v '_outdated.bak'$)"         # use f for files
-    for pf in ${PLUGINFILES}; do
-        echo ""
-        # extract filename
-        echo "<File: $(file ${pf})>"
-        filename="$(basename -- "${pf}")"
-        plugin="${filename%.*}"
-        plugin="$(echo "${plugin}" | sed -e 's/[0-9].*$//g' | sed 's/\-v$//g'| sed 's/\.v$//g' | sed 's/\-$//g' | sed 's/\.$//g')"
-        echo "<Filename: ${filename}>"
-        echo "<Plugin: ${plugin}>"
-        # make sure latest file exists in FILEDIR
-        cp -u "${pf}" "${FILEDIR}/"
-        # find latest file in filedir
-        latestfile="$(ls -rv "${FILEDIR}/${plugin}"* | grep -v '_outdated.bak'$ | head -n1)"
-        echo "<Latest file: ${latestfile}>"
-        # update symlink in linkdir
-        linkname="$(basename -- "${latestfile}")"
-        echo "<Linkname: ${linkname}>"
-        if [ -f "${LINKDIR}/${linkname}" ]; then
-            rm "${pf}"
-        fi
-        ln -s "${latestfile}" "${LINKDIR}/${linkname}"
-        echo "<New link: $(file ${LINKDIR}/${linkname})>"
-        # make sure targetdir is up to date
-        # sleep .1
-        # ls -la "${LINKDIR}/" >>/dev/null
-    done
-
-    # Remove old files
-    OLDFILES="$(find "${FILEDIR}/" -maxdepth 1 -type f | grep -v '_outdated.bak'$)"         # use f for files
-    for of in ${OLDFILES}; do
-        echo ""
-        # create backup dir
-        if [ ! -d "${FILEDIR}/.~outdated~" ]; then
-            mkdir "${FILEDIR}/.~outdated~"
-        fi
-        # extract filename
-        echo "<Oldfile: $(file ${of})>"
-        filename="$(basename -- "${of}")"
-        plugin="${filename%.*}"
-        plugin="$(echo "${plugin}" | sed -e 's/[0-9].*$//g' | sed 's/\-v$//g'| sed 's/\.v$//g' | sed 's/\-$//g' | sed 's/\.$//g')"
-        echo "<Filename: ${filename}>"
-        echo "<Plugin: ${plugin}>"
-        # find latest file in filedir
-        latestfile="$(ls -rv "${FILEDIR}/${plugin}"* | grep -v '_outdated.bak'$ | head -n1)"
-        echo "<Latest file: ${latestfile}>"
-        if [ "${of}" != "${latestfile}" ]; then
-            mv "${of}" "${FILEDIR}/.~outdated~/${filename}"
-            echo "Moved ${of}" to "${FILEDIR}/.~outdated~/${filename}"
-        else
-            echo "<No update required.>"
-        fi
-    done
-
-    # Update symlinks
-    SYMLINKS="$(find "${LINKDIR}/" -maxdepth 1 -type l)"      # use l for symlinks
-    for sl in ${SYMLINKS}; do
-        echo ""
-        # extract filename
-        echo "<Old link: $(file ${sl})>"
-        filename="$(basename -- "${sl}")"
-        plugin="${filename%.*}"
-        plugin="$(echo "${plugin}" | sed -e 's/[0-9].*$//g' | sed 's/\-v$//g'| sed 's/\.v$//g' | sed 's/\-$//g' | sed 's/\.$//g')"
-        echo "<Filename: ${filename}>"
-        echo "<Plugin: ${plugin}>"
-        # find latest file in filedir
-        latestfile="$(ls -rv "${FILEDIR}/${plugin}"* | grep -v '_outdated.bak'$ | head -n1)"
-        echo "<Latest file: ${latestfile}>"
-        # update symlink in linkdir
-        linkname="$(basename -- "${latestfile}")"
-        echo "<Linkname: ${linkname}>"
-        if [ "${sl}" != "${LINKDIR}/${linkname}" ]; then
-            rm "${sl}"
-            if [ -L "${LINKDIR}/${linkname}" ]; then
-                rm "${LINKDIR}/${linkname}"
-            fi
-            ln -s "${latestfile}" "${LINKDIR}/${linkname}"
-            echo "<New link: $(file ${LINKDIR}/${linkname})>"
-        else
-            echo "<No update required.>"
-        fi
-    done
-
-
-    # filename=$(basename -- "$fullfile")
-    # extension="${filename##*.}"
-    # filename="${filename%.*}"
-
-    # ln -s target-directory/`ls -rt target-directory | tail -n1` latest
-
-    ### End: Update plugin symlinks
-
     # Set permissions
     chmod 750 /etc/dmx
     chmod 640 /etc/dmx/*
@@ -153,7 +55,6 @@ case "$1" in
     chown -R dmx:dmx /var/lib/dmx
     chown -R dmx:dmx /var/cache/dmx
     chown -R dmx:dmx /var/log/dmx
-
 
     # Try to restart DMX if systemd symlink exists
     if [ -L /etc/systemd/system/multi-user.target.wants/dmx.service ]; then
