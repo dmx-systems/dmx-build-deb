@@ -31,21 +31,26 @@ CONFIGFILE='/etc/dmx/config.properties'
 
 ### FIXME
 ### various dirs can be configured via config.properties
-### the script should refelct this.
+### the script should reflect this.
 
 case "$1" in
     configure)
 
-    # Get password from debconf-db
-    db_get dmx/initial_admin_password
-    INITIAL_ADMIN_PASSWORD="$RET"
+    # Change password only on initial installation
+    if [ -z "$2" ]; then
+        # Get password from debconf-db
+        db_get dmx/initial_admin_password
+        INITIAL_ADMIN_PASSWORD="$RET"
 
-    cp -a -f $CONFIGFILE $CONFIGFILE.tmp
-    sed -e "s/^ *dmx\.security\.initial_admin_password =.*/dmx\.security\.initial_admin_password = $INITIAL_ADMIN_PASSWORD/" \
-        < $CONFIGFILE > $CONFIGFILE.tmp
-    mv -f $CONFIGFILE.tmp $CONFIGFILE
-
-    db_clear
+        cp -a -f $CONFIGFILE $CONFIGFILE.tmp
+        sed -e "s/^ *dmx\.security\.initial_admin_password =.*/dmx\.security\.initial_admin_password = $INITIAL_ADMIN_PASSWORD/" \
+            < $CONFIGFILE > $CONFIGFILE.tmp
+        mv -f $CONFIGFILE.tmp $CONFIGFILE
+        db_clear
+    else
+        echo "  Info: Found previous installation of DMX."
+        echo "  Leaving password untouched."
+    fi
 
     ### Start: Update plugin symlinks
     LINKDIR='/usr/share/dmx/bundle-deploy'
