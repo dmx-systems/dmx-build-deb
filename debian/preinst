@@ -30,7 +30,7 @@ if [ ! -z "${PREVIOUSVERSION}" ]; then
     echo "Found previous db-version ${PREVIOUSVERSION}"
 fi
 
-if [ -f /var/run/dmx/dmx.pid ]; then
+if [ "$(systemctl is-active dmx.service)" ]; then
     systemctl stop dmx
 fi
 

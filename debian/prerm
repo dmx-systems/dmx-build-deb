@@ -19,8 +19,8 @@ set -e
 
 case "$1" in
     remove|upgrade|deconfigure)
-    if [ "$(systemctl is-active dmx)" ]; then
-	    systemctl stop dmx
+    if [ "$(systemctl is-active dmx.service)" ]; then
+        deb-systemd-invoke stop dmx.service >/dev/null || true
     fi
 
     if [ -d /var/cache/dmx/bundle-cache ]; then
