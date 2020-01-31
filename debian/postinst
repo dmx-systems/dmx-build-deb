@@ -52,7 +52,7 @@ case "$1" in
     FILEDIR='/usr/share/dmx/bundle-available'
 
     # Check if there are any files instead of links in $LINKDIR
-    PLUGINFILES="$(find "${LINKDIR}/" -maxdepth 1 -type f | grep -v '_outdated.bak'$)"         # use f for files
+    PLUGINFILES="$(find "${LINKDIR}/*.jar" -maxdepth 1 -type f)"
     for pf in ${PLUGINFILES}; do
         echo ""
         # extract filename
@@ -65,7 +65,7 @@ case "$1" in
         # make sure latest file exists in FILEDIR
         cp -u "${pf}" "${FILEDIR}/"
         # find latest file in filedir
-        latestfile="$(ls -rv "${FILEDIR}/${plugin}"* | grep -v '_outdated.bak'$ | head -n1)"
+        latestfile="$(ls -rv "${FILEDIR}/${plugin}"* | head -n1)"
         echo "<Latest file: ${latestfile}>"
         # update symlink in linkdir
         linkname="$(basename -- "${latestfile}")"
@@ -81,7 +81,7 @@ case "$1" in
     done
 
     # Remove old files
-    OLDFILES="$(find "${FILEDIR}/" -maxdepth 1 -type f | grep -v '_outdated.bak'$)"         # use f for files
+    OLDFILES="$(find "${FILEDIR}/*.jar" -maxdepth 1 -type f)"
     for of in ${OLDFILES}; do
         echo ""
         # create backup dir
@@ -107,7 +107,7 @@ case "$1" in
     done
 
     # Update symlinks
-    SYMLINKS="$(find "${LINKDIR}/" -maxdepth 1 -type l)"      # use l for symlinks
+    SYMLINKS="$(find "${LINKDIR}/*.jar" -maxdepth 1 -type l)"      # use l for symlinks
     for sl in ${SYMLINKS}; do
         echo ""
         # extract filename
