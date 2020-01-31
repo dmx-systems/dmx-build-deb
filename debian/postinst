@@ -147,11 +147,11 @@ case "$1" in
     
     # enable the service if not enabled
     if [ "$(systemctl is-enabled dmx.service)" = "masked" ]; then
-        echo "INFO: Service is masked."
+        ## echo "INFO: Service is masked."
         deb-systemd-invoke unmask dmx.service >/dev/null || true
     fi
     if [ ! "$(systemctl is-enabled dmx.service)" ]; then
-        echo "INFO: Service is not enabled."
+        ## echo "INFO: Service is not enabled."
         deb-systemd-invoke enable dmx.service >/dev/null || true
     fi
     # try to restart DMX if it is running
