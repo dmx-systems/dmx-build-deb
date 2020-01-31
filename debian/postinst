@@ -47,9 +47,7 @@ case "$1" in
             < $CONFIGFILE > $CONFIGFILE.tmp
         mv -f $CONFIGFILE.tmp $CONFIGFILE
         db_clear
-    else
-        echo "  Info: Found previous installation of DMX."
-        echo "  Leaving password untouched."
+        echo "Successfuly changed dmx.security.initial_admin_password in /etc/dmx/config.properties."
     fi
 
     ### Start: Update plugin symlinks
