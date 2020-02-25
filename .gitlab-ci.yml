@@ -33,7 +33,6 @@ build:
     - echo "VERSION=${VERSION}"
     - rm -rf ${DMX}-${VERSION}/bundle/org.apache.felix.gogo.*
     - mkdir -p bin/bin bin/bundle bin/bundle-deploy bin/bundle-available
-    - wget -q https://download.dmx.systems/ci/dmx-tableview-command/dmx-tableview-command-latest.jar -P bin/bundle-available
     - wget -q https://download.dmx.systems/ci/dmx-tableview/dmx-tableview-latest.jar -P bin/bundle-available
     - wget -q https://download.dmx.systems/ci/dmx-ldap/dmx-ldap-latest.jar -P bin/bundle-available
     - wget -q https://download.dmx.systems/ci/dmx-mobile/dmx-mobile-latest.jar -P bin/bundle-available
