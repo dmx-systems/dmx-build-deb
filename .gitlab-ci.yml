@@ -60,6 +60,9 @@ build:
     - LOGGING=${LOGGING/java.util.logging.FileHandler.pattern=deepamehta.log/java.util.logging.FileHandler.pattern=\/var\/log\/dmx\/dmx.log}
     - LOGGING=${LOGGING/java.util.logging.FileHandler.pattern=dmx.log/java.util.logging.FileHandler.pattern=\/var\/log\/dmx\/dmx.log}
     - echo "${LOGGING}" >etc/dmx/logging.properties
+    # add py4dmx example
+    - git clone https://git.dmx.systems/dmx-contrib/py4dmx examples/py4dmx
+    - rm -rf examples/py4dmx/.git*
     # patch debian files
     - COPYRIGHT=$(<debian/copyright)
     - echo "${COPYRIGHT/@@NUNC@@/$(date -R)}" >debian/copyright
