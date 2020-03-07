@@ -160,7 +160,7 @@ case "$1" in
     fi
     # try to restart DMX if it is running
     if [ "$(systemctl is-active dmx.service)" ]; then
-	deb-systemd-invoke try-restart dmx.service >/dev/null || true
+	deb-systemd-invoke restart dmx.service >/dev/null || true
     fi
     ;;
     abort-upgrade|abort-remove|abort-deconfigure)
