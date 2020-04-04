@@ -1,4 +1,4 @@
-dmx-build-deb builds DMX debian packages from DMX binary files
+dmx-build-deb builds Debian packages from DMX binary files
 and loads them into the public repository at DMX Systems.
 
 
