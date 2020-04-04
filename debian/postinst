@@ -145,6 +145,7 @@ case "$1" in
     chmod 640 /etc/dmx/config.properties
     chmod 640 /etc/dmx/logging.properties
     chmod 750 /var/log/dmx
+    chown root:dmx /etc/dmx
     chown root:dmx /etc/dmx/config.properties
     chown root:dmx /etc/dmx/logging.properties
     chown dmx:dmx /var/lib/dmx
