@@ -1,5 +1,10 @@
+dmx-build-deb builds DMX debian packages from DMX binary files
+and loads them into the public repository at DMX Systems.
+
+
 Install DMX from Debian/Ubuntu repo:
 ====================================
+
 
 automatic:
 
@@ -36,7 +41,12 @@ Documentation, Help and Feedback:
 
 Copyright + Licensing: 
  * Copyright 2019 DMX Systems <https://dmx.systems>
+ * dmx-build-deb is available freely under the GNU General Public License, GPL version 3 or later.
  * DMX is available freely under the GNU Affero General Public License, AGPL version 3 or later.
 
 Disclaimer:
  * DMX Systems assumes no liability for lost or compromised data.
+
+Source code:
+ * https://git.dmx.systems/dmx-platform/dmx-build-deb
+ * https://github.com/dmx-systems/dmx-build-deb
