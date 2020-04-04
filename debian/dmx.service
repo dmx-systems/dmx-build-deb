@@ -1,7 +1,7 @@
 [Unit]
 Description=DMX - The Context Machine
 Documentation=https://docs.dmx.systems
-After=network.target syslog.target
+After=network.target
 
 
 [Service]
