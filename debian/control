@@ -9,7 +9,7 @@ Homepage: https://dmx.berlin
 Package: @@PACKAGENAME@@
 Architecture: all
 Depends: openjdk-8-jre-headless, debconf (>= 0.5)
-Breaks: deepamehta
+Breaks: deepamehta (<< 5.0)
 Conflicts: @@CONFLICTS@@
 Description: semantic web platform for knowledge management and collaboration
  DMX is a software platform for collaboration and knowledge management.
