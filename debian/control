@@ -1,6 +1,6 @@
 Source: @@PACKAGENAME@@
 Section: misc
-Priority: extra
+Priority: optional
 Maintainer: Juergen Neumann <juergen.neumann@dmx.berlin>
 Build-Depends: debhelper (>= 7)
 Standards-Version: 3.8.3
