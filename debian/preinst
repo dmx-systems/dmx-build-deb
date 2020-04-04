@@ -31,7 +31,7 @@ if [ ! -z "${PREVIOUSVERSION}" ]; then
 fi
 
 if [ "$(systemctl is-active dmx.service)" ]; then
-    systemctl stop dmx
+    deb-systemd-invoke stop dmx
 fi
 
 case "$1" in
