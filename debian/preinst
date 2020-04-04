@@ -56,6 +56,10 @@ case "$1" in
 	    chmod 750 ${DBDIR}
 	    touch ${DBDIR}/.dm-version.$DMVERSION
     fi
+    if [ -d /etc/dmx ]; then
+	    chown root:dmx /etc/dmx
+	    chmod 750 /etc/dmx
+    fi
     if [ -d /var/cache/dmx/bundle-cache ]; then
 	    rm -rf /var/cache/dmx/bundle-cache
     fi
