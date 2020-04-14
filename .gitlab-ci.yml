@@ -19,6 +19,7 @@ build:
   only:
     refs:
       - releases
+      - tags
   tags:
     - deb
   stage: build
@@ -99,6 +100,7 @@ test:
   only:
     refs:
       - releases
+      - tags
   tags:
     - deb
   stage: test
@@ -110,9 +112,12 @@ test:
     - lintian -i -I --show-overrides ../${PACKAGENAME}_${COMMIT_VERSION}_all.changes
 
 deploy:
+  dependencies:
+    - build
+    - test
   only:
     refs:
-      - releases
+      - tags
   tags:
     - deb
   stage: deploy
