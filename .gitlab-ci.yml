@@ -15,11 +15,13 @@ variables:
     DMX: 'dmx'                     # [ dmx | deepamehta ]
     PACKAGENAME: "${DMX}"          # [ dmx | dmx-latest ]
     ZIPFILE: 'dmx-5.0-beta-6.zip'  # <= ENTER RELEASE
+    VERSION: "$( basename "${ZIPFILE}" .zip | cut -d'-' -f2- )"
+
 
 before_script:
-    - VERSION=$( basename "${ZIPFILE}" .zip | cut -d'-' -f2- )
+    # - VERSION=$( basename "${ZIPFILE}" .zip | cut -d'-' -f2- )
     - echo "VERSION = ${VERSION}"
-    - export ${VERSION}
+    # - export ${VERSION}
 
 
 build:
@@ -163,5 +165,5 @@ deploy:
 
 
 after_script:
-  - ls -la .
-  - ls -la ..
+  - ls -l .
+  - ls -l ..
