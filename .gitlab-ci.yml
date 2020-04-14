@@ -93,8 +93,12 @@ build:
     - 'git commit -m"DMX debian package build from ${DMX}-${VERSION} - Build Pipeline ${CI_PIPELINE_ID}" -m"Binaries from ${WEBDIR}/${ZIPFILE}" -m"Thanks: GitLab Team for providing great CI infrastructure!"'
     - git log -1
     - gbp dch --distribution "${TARGET}" --ignore-branch --new-version "${VERSION}-${CI_PIPELINE_ID}" --commit --since=${LASTCOMMIT} --release --spawn-editor=never --full --meta
-    # - export GPG_TTY=$(tty) <= moved to .bashrc
     - dpkg-buildpackage -A -us --force-sign -k'gitlab.runner@dmx.systems'
+    - ls -l *.deb
+
+#  artifacts:
+#    paths:
+#    - packaged.gz
 
 test:
   only:
@@ -111,6 +115,7 @@ test:
     - echo "Running test - lintian -i -I --show-overrides ../${PACKAGENAME}_${COMMIT_VERSION}_all.changes"
     - lintian -i -I --show-overrides ../${PACKAGENAME}_${COMMIT_VERSION}_all.changes
 
+
 deploy:
   dependencies:
     - build
@@ -118,6 +123,8 @@ deploy:
   only:
     refs:
       - tags
+    variables:
+      - ${ZIPFILE} =~ ${CI_COMMIT_TAG}  # the Commit Tag must match the version as in ZIPFILE (e.g. 5.0-beta-7)
   tags:
     - deb
   stage: deploy
