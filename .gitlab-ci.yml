@@ -19,6 +19,8 @@ variables:
 before_script:
     - VERSION=$( basename "${ZIPFILE}" .zip | cut -d'-' -f2- )
     - echo "VERSION = ${VERSION}"
+    - export ${VERSION}
+
 
 build:
   only:
@@ -37,7 +39,7 @@ build:
     - wget -q ${WEBDIR}/${ZIPFILE}
     - unzip -q ${ZIPFILE}
     # - VERSION="$( ls -d dmx-* | grep -v ${ZIPFILE} | cut -d'-' -f2- )"
-    # - echo "VERSION=${VERSION}"
+    - echo "VERSION = ${VERSION}"
     - rm -rf ${DMX}-${VERSION}/bundle/org.apache.felix.gogo.*
     - mkdir -p bin/bin bin/bundle bin/bundle-deploy bin/bundle-available
     - wget -q https://download.dmx.systems/plugins/dmx-ldap/dmx-ldap-0.5.1.jar -P bin/bundle-available
@@ -128,8 +130,10 @@ deploy:
   only:
     refs:
       - tags
-    variables:
-      - ${GIT_COMMIT_TAG} == ${VERSION}
+    # variables:
+    #  - ${GIT_COMMIT_TAG} == ${VERSION}
+  rules:
+   - if: '${GIT_COMMIT_TAG} == ${VERSION}'
   tags:
     - deb
   stage: deploy
