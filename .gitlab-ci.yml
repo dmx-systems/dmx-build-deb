@@ -163,6 +163,5 @@ deploy:
 
 
 after_script:
-  - ls -la 
   - ls -la .
-  - la -la ..
+  - ls -la ..
