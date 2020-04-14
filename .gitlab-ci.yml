@@ -127,7 +127,7 @@ deploy:
     refs:
       - tags
     variables:
-      - ${ZIPFILE} =~ "${TAG_PATTERN}"
+      - ${ZIPFILE} =~ "%TAG_PATTERN%"
   tags:
     - deb
   stage: deploy
