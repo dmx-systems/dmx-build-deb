@@ -17,7 +17,7 @@ variables:
     ZIPFILE: 'dmx-5.0-beta-6.zip'  # <= ENTER RELEASE
 
 before_script:
-    - VERSION=$( basename "${ZIPFILE}" )
+    - VERSION=$( basename "${ZIPFILE}" .zip )
     - echo $VERSION
 
 build:
@@ -99,7 +99,7 @@ build:
     - git log -1
     - gbp dch --distribution "${TARGET}" --ignore-branch --new-version "${VERSION}-${CI_PIPELINE_ID}" --commit --since=${LASTCOMMIT} --release --spawn-editor=never --full --meta
     - dpkg-buildpackage -A -us --force-sign -k'gitlab.runner@dmx.systems'
-    - ls -l *.deb
+    - ls -l ../*.deb
 #  artifacts:
 #    paths:
 #    - packaged.gz
