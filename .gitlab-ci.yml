@@ -132,8 +132,8 @@ deploy:
       - tags
     # variables:
     #  - ${GIT_COMMIT_TAG} == ${VERSION}
-  rules:
-   - if: '${GIT_COMMIT_TAG} == ${VERSION}'
+  # rules:
+  #  - if: '${GIT_COMMIT_TAG} == ${VERSION}'
   tags:
     - deb
   stage: deploy
