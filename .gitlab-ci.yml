@@ -15,8 +15,10 @@ variables:
     DMX: 'dmx'                     # [ dmx | deepamehta ]
     PACKAGENAME: "${DMX}"          # [ dmx | dmx-latest ]
     ZIPFILE: 'dmx-5.0-beta-6.zip'  # <= ENTER RELEASE
-    TAG_PATTERN: "/${CI_COMMIT_TAG}/"
 
+before_script:
+    - VERSION=$( basename "${ZIPFILE}" )
+    - echo $VERSION
 
 build:
   only:
@@ -126,8 +128,8 @@ deploy:
   only:
     refs:
       - tags
-    variables:
-      - ${ZIPFILE} =~ %TAG_PATTERN%
+    # variables:
+    #  - ${ZIPFILE} =~ %TAG_PATTERN%
   tags:
     - deb
   stage: deploy
