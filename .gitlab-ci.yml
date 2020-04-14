@@ -165,4 +165,5 @@ deploy:
 
 after_script:
   - cd ..
-  - tree -ug
+  - tree         # should we run a cleanup here?
+  
