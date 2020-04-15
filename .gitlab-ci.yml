@@ -166,6 +166,7 @@ deploy:
 after_script:
   - cd ..
   # Exit 1 does not stop the job or throw an error. Let's test if exit 2 does.
+  - echo  "[after_script] VERSION = ${VERSION} - CI_COMMIT_TAG = ${CI_COMMIT_TAG}"
   - if [ "${VERSION}" != "${CI_COMMIT_TAG}" ]; then echo "ERROR! Wrong version number in commit tag."; exit 2; fi
   - tree         # should we run a cleanup here?
   
