@@ -18,10 +18,12 @@ variables:
 
 
 before_script:
-    - echo "Running before_script in stage ${CI_JOB_STAGE}."
-    - VERSION=$( basename "${ZIPFILE}" .zip | cut -d'-' -f2- )
-    - echo "VERSION = ${VERSION}"
-    # - export VERSION="${VERSION}"
+  - echo "Running before_script in stage ${CI_JOB_STAGE}."
+  - VERSION=$( basename "${ZIPFILE}" .zip | cut -d'-' -f2- )
+  - echo "VERSION = ${VERSION}"
+  # - export VERSION="${VERSION}"
+  # Testing exit codes in before_script.
+  - if [ "${VERSION}" != "${CI_COMMIT_TAG}" ]; then echo "ERROR! The commit tag does not match the version number."; exit 2; fi
 
 
 build:
@@ -167,12 +169,11 @@ deploy:
 after_script:
   - echo "Running after_script in stage ${CI_JOB_STAGE}."
   - VERSION=$( basename "${ZIPFILE}" .zip | cut -d'-' -f2- )
-  - cd ..
-  # Exit 1 does not stop the job or throw an error. Let's test if exit 2 does.
-  # Neither exit 1 nor exit 2 are working. Lets try pure True | False.
-  - set -e
   - echo  "VERSION = ${VERSION} - CI_COMMIT_TAG = ${CI_COMMIT_TAG}"
+  # In after_script the exit code will not change the jpn result.
+  # Script excecution ends, but job remains succesful.
   - if [ "${VERSION}" != "${CI_COMMIT_TAG}" ]; then echo "ERROR! The commit tag does not match the version number."; exit 2; fi
   - echo "WARNING! Script did not stop!"
+  - cd ..
   - tree         # should we run a cleanup here?
   
