@@ -165,5 +165,6 @@ deploy:
 
 after_script:
   - cd ..
+  - if [[ ${VERSION} != ${CI_COMMIT_TAG} ]]; then echo "ERROR! Wrong version number in commit tag."; exit 1; fi
   - tree         # should we run a cleanup here?
   
