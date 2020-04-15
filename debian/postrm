@@ -32,9 +32,13 @@ esac
 
 if [ "$1" = purge ]; then
     deb-systemd-invoke stop dmx.service >/dev/null || true
+    deb-systemd-invoke disable dmx.service >/dev/null || true
     ### the logfile is a config parameter. We should read this in the future.
     if [ -f /var/log/dmx/dmx.log ]; then
 	rm /var/log/dmx/*
+    fi
+    if [ -d /usr/share/dmx/bundle-available/.~outdated~ ]; then
+        rm -r /usr/share/dmx/bundle-available/.~outdated~
     fi
     deluser --system dmx >/dev/null || true
 

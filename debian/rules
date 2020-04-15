@@ -9,14 +9,23 @@
 # Uncomment this to turn on verbose mode.
 export DH_VERBOSE=1
 
+### Here we are overriding the debian/${packaname}.{service|logrotate}
+### filenames with dmx.{service|logrotate} to keep it easier to maintain.
+### For this to work the source files debian/packaname.{service|logrotate}
+### must be copied|renamed to debian/${packaname}.dmx.{service|logrotate}
+### In our case this is done in .gitlab-ci.yml ( jpn - 20190605 )
+
 %:
 	dh  $@ --with systemd
+
+override_dh_installlogrotate:
+	dh_installlogrotate --name=dmx
 
 override_dh_installinit:
 	dh_installinit --noscripts --name=dmx
 
-override_dh_installlogrotate:
-	dh_installlogrotate --name=dmx
+override_dh_systemd_enable:
+	dh_systemd_enable --name=dmx
 
 override_dh_systemd_start:
 	dh_systemd_start --no-start --name=dmx

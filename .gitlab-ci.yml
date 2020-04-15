@@ -7,7 +7,6 @@ stages:
   - test
   - deploy
 
-
 variables:
     # target distribution
     # TARGET="$(lsb_release -sc)"
@@ -15,18 +14,6 @@ variables:
     DMX: 'dmx'                     # [ dmx | deepamehta ]
     PACKAGENAME: "${DMX}"          # [ dmx | dmx-latest ]
     ZIPFILE: 'dmx-5.0-beta-6.zip'  # <= ENTER RELEASE
-
-
-before_script:
-  - echo "Running before_script in stage ${CI_JOB_STAGE}."
-  - VERSION=$( basename "${ZIPFILE}" .zip | cut -d'-' -f2- )
-  - echo "VERSION = ${VERSION}"
-  # - export VERSION="${VERSION}"
-  # Testing exit codes in before_script:
-  # Job definitely stops and fails on exit codes 1 and 2.
-  # Non of the other stages starts, but after_script is run anyways.
-  - if [ "${VERSION}" != "${CI_COMMIT_TAG}" ]; then echo "ERROR! The commit tag does not match the version number."; exit 2; fi
-
 
 build:
   only:
@@ -44,17 +31,14 @@ build:
     - echo "Starting job ${CI_JOB_ID} in pipeline ${CI_PIPELINE_ID}"
     - wget -q ${WEBDIR}/${ZIPFILE}
     - unzip -q ${ZIPFILE}
-    # - VERSION="$( ls -d dmx-* | grep -v ${ZIPFILE} | cut -d'-' -f2- )"
-    - echo "VERSION = ${VERSION}"
+    - VERSION="$( ls -d dmx-* | grep -v ${ZIPFILE} | cut -d'-' -f2- )"
+    - echo "VERSION=${VERSION}"
     - rm -rf ${DMX}-${VERSION}/bundle/org.apache.felix.gogo.*
     - mkdir -p bin/bin bin/bundle bin/bundle-deploy bin/bundle-available
-    - wget -q https://download.dmx.systems/plugins/dmx-ldap/dmx-ldap-0.5.1.jar -P bin/bundle-available
-    - wget -q https://download.dmx.systems/plugins/dmx-tableview-command/dmx-tableview-command-1.3.0.jar -P bin/bundle-available
-    - wget -q https://download.dmx.systems/plugins/dmx-tableview/dmx-tableview-0.3.1.jar -P bin/bundle-available
-    - wget -q https://download.dmx.systems/plugins/dmx-thymeleaf/dmx-thymeleaf-0.9.1.jar -P bin/bundle-available
     - mv ${DMX}-${VERSION}/bin/* bin/bin/
     - mv ${DMX}-${VERSION}/bundle/* bin/bundle/
     - mv ${DMX}-${VERSION}/bundle-deploy/* bin/bundle-deploy/
+    - mv ${DMX}-${VERSION}/bundle-available/* bin/bundle-available/
     - mv ${DMX}-${VERSION}/*.txt ./
     - mkdir -p etc/dmx
     - CONFIG=$(<${DMX}-${VERSION}/conf/config.properties)
@@ -75,6 +59,9 @@ build:
     - LOGGING=${LOGGING/java.util.logging.FileHandler.pattern=deepamehta.log/java.util.logging.FileHandler.pattern=\/var\/log\/dmx\/dmx.log}
     - LOGGING=${LOGGING/java.util.logging.FileHandler.pattern=dmx.log/java.util.logging.FileHandler.pattern=\/var\/log\/dmx\/dmx.log}
     - echo "${LOGGING}" >etc/dmx/logging.properties
+    # add py4dmx example
+    - git clone https://git.dmx.systems/dmx-contrib/py4dmx examples/py4dmx
+    - rm -rf examples/py4dmx/.git*
     # patch debian files
     - COPYRIGHT=$(<debian/copyright)
     - echo "${COPYRIGHT/@@NUNC@@/$(date -R)}" >debian/copyright
@@ -103,15 +90,14 @@ build:
     - dch --controlmaint -r --distribution "${TARGET}" ignored 
     - LASTCOMMIT="$( git rev-parse HEAD )"
     - git add debian/changelog
-    - 'git commit -m"DMX debian package build from ${DMX}-${VERSION} - Build Pipeline ${CI_PIPELINE_ID}" -m"Binaries from ${WEBDIR}/${ZIPFILE}" -m"Thanks: GitLab Team for providing great CI infrastructure!"'
+    - sleep 1
+    - NUNC="$( date -R )"
+    - 'git commit --date="${NUNC}" -m"DMX debian package build from ${DMX}-${VERSION} - Build Pipeline ${CI_PIPELINE_ID}" -m"Binaries from ${WEBDIR}/${ZIPFILE}" -m"Thanks: GitLab Team for providing great CI infrastructure!"'
     - git log -1
     - gbp dch --distribution "${TARGET}" --ignore-branch --new-version "${VERSION}-${CI_PIPELINE_ID}" --commit --since=${LASTCOMMIT} --release --spawn-editor=never --full --meta
+    # - export GPG_TTY=$(tty) <= moved to .bashrc
     - dpkg-buildpackage -A -us --force-sign -k'gitlab.runner@dmx.systems'
-    - ls -l ../*.deb
-#  artifacts:
-#    paths:
-#    - packaged.gz
-
+    - tree
 
 test:
   only:
@@ -123,23 +109,15 @@ test:
   stage: test
   script:
     - COMMIT_VERSION="$( cat .git/COMMIT_EDITMSG | cut -d' ' -f4 )"
-    # - ls -la ../*
+    - ls -la ../*
     - cat ../${PACKAGENAME}_${COMMIT_VERSION}_all.changes
     - echo "Running test - lintian -i -I --show-overrides ../${PACKAGENAME}_${COMMIT_VERSION}_all.changes"
     - lintian -i -I --show-overrides ../${PACKAGENAME}_${COMMIT_VERSION}_all.changes
 
-
 deploy:
-  dependencies:
-    - build
-    - test
   only:
     refs:
       - tags
-    # variables:
-    #  - ${CI_COMMIT_TAG} == /%{VERSION}%/
-  # rules:
-  #  - if: '${CI_COMMIT_TAG} == ${VERSION}'
   tags:
     - deb
   stage: deploy
@@ -166,16 +144,3 @@ deploy:
     # - TRIGGER="$(curl --silent --write-out '%{http_code}' --output /dev/null --request POST --form token="${MY_JOB_TOKEN}" --form ref=master https://git.dmx.systems/api/v4/projects/17/trigger/pipeline)"
     # - echo "${TRIGGER}"
     # - if [ ${TRIGGER} -ne 201 ]; then echo "Failed to trigger subsequent project."; exit 1; fi
-
-
-after_script:
-  - echo "Running after_script in stage ${CI_JOB_STAGE}."
-  - VERSION=$( basename "${ZIPFILE}" .zip | cut -d'-' -f2- )
-  - echo  "VERSION = ${VERSION} - CI_COMMIT_TAG = ${CI_COMMIT_TAG}"
-  # In after_script the exit code will not change the job result.
-  # Script excecution ends, but job remains succesful.
-  - if [ "${VERSION}" != "${CI_COMMIT_TAG}" ]; then echo "ERROR! The commit tag does not match the version number."; exit 2; fi
-  - echo "WARNING! Script did not stop!"
-  - cd ..
-  - tree         # should we run a cleanup here?
-  
