@@ -168,6 +168,6 @@ after_script:
   # Exit 1 does not stop the job or throw an error. Let's test if exit 2 does.
   # Neither exit 1 nor exit 2 are working. Lets try pure True | False.
   - echo  "[after_script] VERSION = ${VERSION} - CI_COMMIT_TAG = ${CI_COMMIT_TAG}"
-  - [[ "${VERSION}" != ${CI_COMMIT_TAG}" ]] && false 
+  - [[ "${VERSION}" == ${CI_COMMIT_TAG}" ]] 
   - tree         # should we run a cleanup here?
   
