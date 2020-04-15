@@ -21,7 +21,7 @@ before_script:
     - echo "Running before_script in stage ${CI_JOB_STAGE}."
     - VERSION=$( basename "${ZIPFILE}" .zip | cut -d'-' -f2- )
     - echo "VERSION = ${VERSION}"
-    - export VERSION="${VERSION}"
+    # - export VERSION="${VERSION}"
 
 
 build:
@@ -119,7 +119,7 @@ test:
   stage: test
   script:
     - COMMIT_VERSION="$( cat .git/COMMIT_EDITMSG | cut -d' ' -f4 )"
-    - ls -la ../*
+    # - ls -la ../*
     - cat ../${PACKAGENAME}_${COMMIT_VERSION}_all.changes
     - echo "Running test - lintian -i -I --show-overrides ../${PACKAGENAME}_${COMMIT_VERSION}_all.changes"
     - lintian -i -I --show-overrides ../${PACKAGENAME}_${COMMIT_VERSION}_all.changes
@@ -166,6 +166,7 @@ deploy:
 
 after_script:
   - echo "Running after_script in stage ${CI_JOB_STAGE}."
+  - VERSION=$( basename "${ZIPFILE}" .zip | cut -d'-' -f2- )
   - cd ..
   # Exit 1 does not stop the job or throw an error. Let's test if exit 2 does.
   # Neither exit 1 nor exit 2 are working. Lets try pure True | False.
