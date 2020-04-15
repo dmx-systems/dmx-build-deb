@@ -22,9 +22,9 @@ before_script:
   - VERSION=$( basename "${ZIPFILE}" .zip | cut -d'-' -f2- )
   - echo "VERSION = ${VERSION}"
   # - export VERSION="${VERSION}"
-  # Testing exit codes in before_script.
-  # Job definitely stops and fails on exit code 2.
-  # Let's try exit code 1:
+  # Testing exit codes in before_script:
+  # Job definitely stops and fails on exit codes 1 and 2.
+  # Non of the other stages starts, but after_script is run anyways.
   - if [ "${VERSION}" != "${CI_COMMIT_TAG}" ]; then echo "ERROR! The commit tag does not match the version number."; exit 2; fi
 
 
