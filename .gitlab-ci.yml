@@ -18,7 +18,7 @@ variables:
 
 
 before_script:
-    - echo "INFO: Running before_script in stage ${CI_JOB_STAGE}."
+    - echo "Running before_script in stage ${CI_JOB_STAGE}."
     - VERSION=$( basename "${ZIPFILE}" .zip | cut -d'-' -f2- )
     - echo "VERSION = ${VERSION}"
     - export VERSION="${VERSION}"
@@ -165,7 +165,7 @@ deploy:
 
 
 after_script:
-  - echo "INFO: Running after_script in stage ${CI_JOB_STAGE}."
+  - echo "Running after_script in stage ${CI_JOB_STAGE}."
   - cd ..
   # Exit 1 does not stop the job or throw an error. Let's test if exit 2 does.
   # Neither exit 1 nor exit 2 are working. Lets try pure True | False.
