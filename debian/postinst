@@ -70,7 +70,7 @@ case "$1" in
             if [ ! -d "${FILEDIR}/.~outdated~" ]; then
                 mkdir "${FILEDIR}/.~outdated~"
             fi
-            if [ -f "${FILEDIR}/${plugin}-latest.jar"
+            if [ -f "${FILEDIR}/${plugin}-latest.jar" ]; then
                 mv "${FILEDIR}/${plugin}-latest.jar" "${FILEDIR}/.~outdated~/"
             fi
             mv "${pf}" "${FILEDIR}/.~outdated~/"
