@@ -117,7 +117,7 @@ case "$1" in
         ## echo "<Old link: $(file ${sl})>"
         filename="$(basename -- "${sl}")"
         plugin="${filename%.*}"
-        plugin="$(echo "${plugin}" | sed -e 's/[0-9].*$//g' | sed 's/\-v$//g'| sed 's/\.v$//g' | sed 's/\-$//g' | sed 's/\.$//g')"
+        plugin="$(echo "${plugin}" | sed 's/-latest//g' | sed -e 's/[0-9].*$//g' | sed 's/\-v$//g'| sed 's/\.v$//g' | sed 's/\-$//g' | sed 's/\.$//g')"
         ## echo "<Filename: ${filename}>"
         ## echo "<Plugin: ${plugin}>"
         # find latest file in filedir
