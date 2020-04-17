@@ -78,13 +78,16 @@ case "$1" in
     ## Get rid of pluginname-latest.jar files without version number
     ## The whole *-latest.jar should be removed again, once terminated
     PLUGINFILES="$(find "${LINKDIR}/" -maxdepth 1 -name "*-latest.jar" -type l)"
+    echo "PLUGINFILES=${PLUGINFILES}"
     for lf in ${PLUGINFILES}; do
         ## Extract filename
         filename="$(basename -- "${lf}")"
         plugin="${filename%.*}"
         plugin="$(echo "${plugin}" | sed 's/\-latest//g' | sed -e 's/[0-9].*$//g' | sed 's/\-v$//g'| sed 's/\.v$//g' | sed 's/\-$//g' | sed 's/\.$//g')"
+        echo "plugin=${plugin}"
         ## find latest versioned file in filedir
         latestfile="$(ls -rv "${FILEDIR}/${plugin}"*.jar | grep -v '\-latest\.jar' | head -n1)"
+        echo "latestfile=${latestfile}"
         if [ -f "${FILEDIR}/${latestfile}" ]; then
             if [ ! -d "${FILEDIR}/.~outdated~" ]; then
                 mkdir "${FILEDIR}/.~outdated~"
@@ -94,15 +97,18 @@ case "$1" in
                 mv "${FILEDIR}/${plugin}-latest.jar" "${FILEDIR}/.~outdated~/"
             fi
             ## check for *-latest.jar files in linkdir
-            if [ -f "${LINKDIR}/${plugin}-latest.jar" ]; then
-                mv "${LINKDIR}/${plugin}-latest.jar" "${FILEDIR}/.~outdated~/"
-            fi
+            #if [ -f "${LINKDIR}/${plugin}-latest.jar" ]; then
+            #    mv "${LINKDIR}/${plugin}-latest.jar" "${FILEDIR}/.~outdated~/"
+            #fi
             ## check for *-latest.jar links in linkdir
             if [ -L "${LINKDIR}/${plugin}-latest.jar" ]; then
                 rm "${FILEDIR}/${plugin}-latest.jar"
             fi
             linkname="$(basename -- "${latestfile}")"
-            ln -s "${latestfile}" "${LINKDIR}/${linkname}"
+            echo "linkname=${linkname}"
+            if [ ! -L "${LINKDIR}/${linkname}" ]; then
+                ln -s "${latestfile}" "${LINKDIR}/${linkname}"
+            fi
         fi
         # echo "<New link: $(file ${LINKDIR}/${linkname})>"
     done
