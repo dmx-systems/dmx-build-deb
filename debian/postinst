@@ -54,14 +54,33 @@ case "$1" in
     LINKDIR='/usr/share/dmx/bundle-deploy'
     FILEDIR='/usr/share/dmx/bundle-available'
 
+    ## Check if there are any files instead of links in $LINKDIR
+    PLUGINFILES="$(find "${LINKDIR}/" -maxdepth 1 -name "*.jar" -type f)"
+    for pf in ${PLUGINFILES}; do
+        ## Extract filename
+        filename="$(basename -- "${pf}")"
+        plugin="${filename%.*}"
+        plugin="$(echo "${plugin}" | sed 's/\-latest//g' | sed -e 's/[0-9].*$//g' | sed 's/\-v$//g'| sed 's/\.v$//g' | sed 's/\-$//g' | sed 's/\.$//g')"
+        ## make sure latest file exists in FILEDIR
+        cp -u "${pf}" "${FILEDIR}/"
+        ## find latest file in filedir
+        latestfile="$(ls -rv "${FILEDIR}/${plugin}"*.jar | head -n1)"
+        ## update symlink in linkdir
+        linkname="$(basename -- "${latestfile}")"
+        if [ -f "${LINKDIR}/${linkname}" ]; then
+            rm "${pf}"
+        fi
+        if [ ! -L "${LINKDIR}/${linkname}" ]; then
+            ln -s "${latestfile}" "${LINKDIR}/${linkname}"
+        fi
+    done
+
     ## Get rid of pluginname-latest.jar files without version number
     ## The whole *-latest.jar should be removed again, once terminated
-    PLUGINFILES="$(find "${LINKDIR}/" -name "*-latest.jar" -maxdepth 1 -type f)"
-    for pf in ${PLUGINFILES}; do
-        # echo ""
+    PLUGINFILES="$(find "${LINKDIR}/" -maxdepth 1 -name "*-latest.jar" -type l)"
+    for lf in ${PLUGINFILES}; do
         ## Extract filename
-        # echo "<File: $(file ${pf})>"
-        filename="$(basename -- "${pf}")"
+        filename="$(basename -- "${lf}")"
         plugin="${filename%.*}"
         plugin="$(echo "${plugin}" | sed 's/\-latest//g' | sed -e 's/[0-9].*$//g' | sed 's/\-v$//g'| sed 's/\.v$//g' | sed 's/\-$//g' | sed 's/\.$//g')"
         ## find latest versioned file in filedir
@@ -73,82 +92,44 @@ case "$1" in
             if [ -f "${FILEDIR}/${plugin}-latest.jar" ]; then
                 mv "${FILEDIR}/${plugin}-latest.jar" "${FILEDIR}/.~outdated~/"
             fi
-            mv "${pf}" "${FILEDIR}/.~outdated~/"
+            if [ -L "${LINKDIR}/${plugin}-latest.jar" ]; then
+                rm "${FILEDIR}/${plugin}-latest.jar"
+            fi
             linkname="$(basename -- "${latestfile}")"
             ln -s "${latestfile}" "${LINKDIR}/${linkname}"
         fi
         # echo "<New link: $(file ${LINKDIR}/${linkname})>"
     done
 
-    ## Check if there are any files instead of links in $LINKDIR
-    PLUGINFILES="$(find "${LINKDIR}/" -name "*.jar" -maxdepth 1 -type f)"
-    for pf in ${PLUGINFILES}; do
-        # echo ""
-        ## Extract filename
-        # echo "<File: $(file ${pf})>"
-        filename="$(basename -- "${pf}")"
-        plugin="${filename%.*}"
-        plugin="$(echo "${plugin}" | sed 's/\-latest//g' | sed -e 's/[0-9].*$//g' | sed 's/\-v$//g'| sed 's/\.v$//g' | sed 's/\-$//g' | sed 's/\.$//g')"
-        # echo "<Filename: ${filename}>"
-        # echo "<Plugin: ${plugin}>"
-        ## make sure latest file exists in FILEDIR
-        cp -u "${pf}" "${FILEDIR}/"
-        ## find latest file in filedir
-        latestfile="$(ls -rv "${FILEDIR}/${plugin}"*.jar | head -n1)"
-        # echo "<Latest file: ${latestfile}>"
-        ## update symlink in linkdir
-        linkname="$(basename -- "${latestfile}")"
-        # echo "<Linkname: ${linkname}>"
-        if [ -f "${LINKDIR}/${linkname}" ]; then
-            rm "${pf}"
-        fi
-        if [ ! -L "${LINKDIR}/${linkname}" ]; then
-            ln -s "${latestfile}" "${LINKDIR}/${linkname}"
-        fi
-        # echo "<New link: $(file ${LINKDIR}/${linkname})>"
-    done
-
     ## Remove old files
-    OLDFILES="$(find "${FILEDIR}/" -name "*.jar" -maxdepth 1 -type f)"
+    OLDFILES="$(find "${FILEDIR}/" -maxdepth 1 -name "*.jar" -type f)"
     for of in ${OLDFILES}; do
-        # echo ""
         ## extract filename
-        # echo "<Oldfile: $(file ${of})>"
         filename="$(basename -- "${of}")"
         plugin="${filename%.*}"
         plugin="$(echo "${plugin}" | sed 's/\-latest//g' | sed -e 's/[0-9].*$//g' | sed 's/\-v$//g'| sed 's/\.v$//g' | sed 's/\-$//g' | sed 's/\.$//g')"
-        # echo "<Filename: ${filename}>"
-        # echo "<Plugin: ${plugin}>"
         ## find latest file in filedir
         latestfile="$(ls -rv "${FILEDIR}/${plugin}"*.jar | head -n1)"
-        # echo "<Latest file: ${latestfile}>"
         if [ "${of}" != "${latestfile}" ]; then
             ## create backup dir if missing
             if [ ! -d "${FILEDIR}/.~outdated~" ]; then
                 mkdir "${FILEDIR}/.~outdated~"
             fi
             mv "${of}" "${FILEDIR}/.~outdated~/${filename}"
-            # echo "Moved ${of}" to "${FILEDIR}/.~outdated~/${filename}"
         fi
     done
 
     ## Update symlinks
-    SYMLINKS="$(find "${LINKDIR}/" -name "*.jar" -maxdepth 1 -type l)"      # use l for symlinks
+    SYMLINKS="$(find "${LINKDIR}/" -maxdepth 1 -name "*.jar" -type l)"      # use l for symlinks
     for sl in ${SYMLINKS}; do
-        # echo ""
         ## extract filename
-        # echo "<Old link: $(file ${sl})>"
         filename="$(basename -- "${sl}")"
         plugin="${filename%.*}"
         plugin="$(echo "${plugin}" | sed 's/-latest//g' | sed -e 's/[0-9].*$//g' | sed 's/\-v$//g'| sed 's/\.v$//g' | sed 's/\-$//g' | sed 's/\.$//g')"
-        # echo "<Filename: ${filename}>"
-        # echo "<Plugin: ${plugin}>"
         ## find latest file in filedir
         latestfile="$(ls -rv "${FILEDIR}/${plugin}"*.jar | head -n1)"
-        # echo "<Latest file: ${latestfile}>"
         ## update symlink in linkdir
         linkname="$(basename -- "${latestfile}")"
-        # echo "<Linkname: ${linkname}>"
         if [ "${sl}" != "${LINKDIR}/${linkname}" ]; then
             rm "${sl}"
             if [ -L "${LINKDIR}/${linkname}" ]; then
@@ -157,7 +138,6 @@ case "$1" in
             if [ ! -L "${LINKDIR}/${linkname}" ]; then
                 ln -s "${latestfile}" "${LINKDIR}/${linkname}"
             fi
-            # echo "<New link: $(file ${LINKDIR}/${linkname})>"
         fi
     done
 
@@ -179,11 +159,9 @@ case "$1" in
     
     ## enable the service if not enabled
     if [ "$(systemctl is-enabled dmx.service)" = "masked" ]; then
-        ## echo "INFO: Service is masked."
         deb-systemd-invoke unmask dmx.service >/dev/null || true
     fi
     if [ ! "$(systemctl is-enabled dmx.service)" ]; then
-        ## echo "INFO: Service is not enabled."
         deb-systemd-invoke enable dmx.service >/dev/null || true
     fi
     ## try to restart DMX if it is running
