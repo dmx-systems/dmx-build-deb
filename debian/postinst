@@ -88,7 +88,7 @@ case "$1" in
         ## find latest versioned file in filedir
         latestfile="$(ls -rv "${FILEDIR}/${plugin}"*.jar | grep -v '\-latest\.jar' | head -n1)"
         echo "latestfile=${latestfile}"
-        if [ -f "${FILEDIR}/${latestfile}" ]; then
+        if [ -f "${latestfile}" ]; then
             if [ ! -d "${FILEDIR}/.~outdated~" ]; then
                 mkdir "${FILEDIR}/.~outdated~"
             fi
