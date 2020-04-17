@@ -85,20 +85,24 @@ case "$1" in
         plugin="$(echo "${plugin}" | sed 's/\-latest//g' | sed -e 's/[0-9].*$//g' | sed 's/\-v$//g'| sed 's/\.v$//g' | sed 's/\-$//g' | sed 's/\.$//g')"
         ## find latest versioned file in filedir
         latestfile="$(ls -rv "${FILEDIR}/${plugin}"*.jar | grep -v '\-latest\.jar' | head -n1)"
-        if [ -f "${FILEDIR}/${latestfile}" ]; then
+        if [ -f "${latestfile}" ]; then
             if [ ! -d "${FILEDIR}/.~outdated~" ]; then
                 mkdir "${FILEDIR}/.~outdated~"
             fi
+            ## check for *-latest.jar files in filedir
             if [ -f "${FILEDIR}/${plugin}-latest.jar" ]; then
                 mv "${FILEDIR}/${plugin}-latest.jar" "${FILEDIR}/.~outdated~/"
             fi
+            ## check for *-latest.jar links in linkdir
             if [ -L "${LINKDIR}/${plugin}-latest.jar" ]; then
-                rm "${FILEDIR}/${plugin}-latest.jar"
+                rm "${LINKDIR}/${plugin}-latest.jar"
             fi
+            ## create new symlink for versioned plugin
             linkname="$(basename -- "${latestfile}")"
-            ln -s "${latestfile}" "${LINKDIR}/${linkname}"
+            if [ ! -L "${LINKDIR}/${linkname}" ]; then
+                ln -s "${latestfile}" "${LINKDIR}/${linkname}"
+            fi
         fi
-        # echo "<New link: $(file ${LINKDIR}/${linkname})>"
     done
 
     ## Remove old files
