@@ -102,7 +102,7 @@ case "$1" in
             #fi
             ## check for *-latest.jar links in linkdir
             if [ -L "${LINKDIR}/${plugin}-latest.jar" ]; then
-                rm "${FILEDIR}/${plugin}-latest.jar"
+                rm "${LINKDIR}/${plugin}-latest.jar"
             fi
             linkname="$(basename -- "${latestfile}")"
             echo "linkname=${linkname}"
