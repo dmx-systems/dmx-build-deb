@@ -54,6 +54,22 @@ case "$1" in
     LINKDIR='/usr/share/dmx/bundle-deploy'
     FILEDIR='/usr/share/dmx/bundle-available'
 
+    ## Create backup dir
+    if [ ! -d "${FILEDIR}/.~outdated~" ]; then
+        mkdir "${FILEDIR}/.~outdated~"
+    fi
+
+    ## Remove conflicting older plugins
+    if [ -L ${LINKDIR}/dmx-tableview-command-latest.jar ]; then
+        rm ${LINKDIR}/dmx-tableview-command-latest.jar
+    fi
+    if [ -f ${LINKDIR}/dmx-tableview-command-latest.jar ]; then
+        mv ${LINKDIR}/dmx-tableview-command-latest.jar "${FILEDIR}/.~outdated~/"
+    fi
+    if [ -f ${FILEDIR}/dmx-tableview-command-latest.jar ]; then
+        mv ${FILEDIR}/dmx-tableview-command-latest.jar "${FILEDIR}/.~outdated~/"
+    fi
+
     ## Check if there are any files instead of links in $LINKDIR
     PLUGINFILES="$(find "${LINKDIR}/" -maxdepth 1 -name "*.jar" -type f)"
     for pf in ${PLUGINFILES}; do
@@ -86,9 +102,6 @@ case "$1" in
         ## find latest versioned file in filedir
         latestfile="$(ls -rv "${FILEDIR}/${plugin}"*.jar | grep -v '\-latest\.jar' | head -n1)"
         if [ -f "${latestfile}" ]; then
-            if [ ! -d "${FILEDIR}/.~outdated~" ]; then
-                mkdir "${FILEDIR}/.~outdated~"
-            fi
             ## check for *-latest.jar files in filedir
             if [ -f "${FILEDIR}/${plugin}-latest.jar" ]; then
                 mv "${FILEDIR}/${plugin}-latest.jar" "${FILEDIR}/.~outdated~/"
@@ -115,10 +128,6 @@ case "$1" in
         ## find latest file in filedir
         latestfile="$(ls -rv "${FILEDIR}/${plugin}"*.jar | head -n1)"
         if [ "${of}" != "${latestfile}" ]; then
-            ## create backup dir if missing
-            if [ ! -d "${FILEDIR}/.~outdated~" ]; then
-                mkdir "${FILEDIR}/.~outdated~"
-            fi
             mv "${of}" "${FILEDIR}/.~outdated~/${filename}"
         fi
     done
