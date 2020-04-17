@@ -78,7 +78,6 @@ case "$1" in
     ## Get rid of pluginname-latest.jar files without version number
     ## The whole *-latest.jar should be removed again, once terminated
     PLUGINFILES="$(find "${LINKDIR}/" -maxdepth 1 -name "*-latest.jar" -type l)"
-    echo "PLUGINFILES=${PLUGINFILES}"
     for lf in ${PLUGINFILES}; do
         ## Extract filename
         filename="$(basename -- "${lf}")"
