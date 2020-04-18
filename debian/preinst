@@ -66,9 +66,9 @@ case "$1" in
 #    if [ -d /var/cache/dmx/dmx-bundle-cache ]; then
 #	    rm -rf /var/cache/dmx/dmx-bundle-cache
 #    fi
-    if [ -d /var/cache/dmx ]; then
-	    rm -rf /var/cache/dmx
-    fi
+##    if [ -d /var/cache/dmx ]; then
+##	    rm -rf /var/cache/dmx
+##   fi
 
     ;;
 
@@ -90,9 +90,9 @@ case "$1" in
 #    if [ -d /var/cache/dmx/dmx-bundle-cache ]; then
 #	    rm -rf /var/cache/dmx/dmx-bundle-cache
 #    fi
-    if [ -d /var/cache/dmx ]; then
-	    rm -rf /var/cache/dmx
-    fi
+##    if [ -d /var/cache/dmx ]; then
+##	    rm -rf /var/cache/dmx
+##   fi
     ;;
 
     abort-upgrade)
