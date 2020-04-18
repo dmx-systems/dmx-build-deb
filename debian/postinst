@@ -156,6 +156,11 @@ case "$1" in
 
     ### End: Update plugin symlinks
 
+    ## make sure cache dir exits
+    if [ ! -d /var/cache/dmx ]; then
+        mkdir /var/cache/dmx
+    fi
+
     ## Set permissions
     chmod 750 /etc/dmx
     chmod 640 /etc/dmx/config.properties

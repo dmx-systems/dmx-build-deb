@@ -60,12 +60,16 @@ case "$1" in
 	    chown root:dmx /etc/dmx
 	    chmod 750 /etc/dmx
     fi
-    if [ -d /var/cache/dmx/bundle-cache ]; then
-	    rm -rf /var/cache/dmx/bundle-cache
-    fi
-    if [ -d /var/cache/dmx/dmx-bundle-cache ]; then
-	    rm -rf /var/cache/dmx/dmx-bundle-cache
-    fi
+#    if [ -d /var/cache/dmx/bundle-cache ]; then
+#	    rm -rf /var/cache/dmx/bundle-cache
+#    fi
+#    if [ -d /var/cache/dmx/dmx-bundle-cache ]; then
+#	    rm -rf /var/cache/dmx/dmx-bundle-cache
+#    fi
+##    if [ -d /var/cache/dmx ]; then
+##	    rm -rf /var/cache/dmx
+##   fi
+
     ;;
 
     upgrade)
@@ -80,12 +84,15 @@ case "$1" in
     fi
 
     ### bundle cache dir is a config parameter. We need to read it from config properties.
-    if [ -d /var/cache/dmx/bundle-cache ]; then
-	    rm -rf /var/cache/dmx/bundle-cache
-    fi
-    if [ -d /var/cache/dmx/dmx-bundle-cache ]; then
-	    rm -rf /var/cache/dmx/dmx-bundle-cache
-    fi
+#    if [ -d /var/cache/dmx/bundle-cache ]; then
+#	    rm -rf /var/cache/dmx/bundle-cache
+#    fi
+#    if [ -d /var/cache/dmx/dmx-bundle-cache ]; then
+#	    rm -rf /var/cache/dmx/dmx-bundle-cache
+#    fi
+##    if [ -d /var/cache/dmx ]; then
+##	    rm -rf /var/cache/dmx
+##   fi
     ;;
 
     abort-upgrade)
