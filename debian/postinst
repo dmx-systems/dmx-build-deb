@@ -130,7 +130,7 @@ case "$1" in
         if [ -f "${latestfile}" ]; then
             ## check if latest plugin release fits to SNAPSHOT version
             plugin_version="$( basename ${latestfile} .jar )"
-            if [ "$( grep ${plugin_version}<<<${pf} )" ]; then
+            if [ "$( echo "${pf}" | grep "${plugin_version}" )" ]; then
                 mv "${FILEDIR}/${filename}" "${FILEDIR}/.~outdated~/"
                 rm "${pf}"
                 ln -s "${latestfile}" "${LINKDIR}/${plugin_version}"
