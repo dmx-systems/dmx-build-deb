@@ -128,7 +128,7 @@ deploy:
     - LOCALDIR='/home/gitlab-runner/repos'
     - REPODIR='/var/www/download.dmx.systems/repos'
     - echo "removing old packages ..."
-    - rm -f ${LOCALDIR}/${TARGET}/${PACKAGENAME}_*.{deb,changes}
+    - rm -f ${LOCALDIR}/${TARGET}/${PACKAGENAME}_*.{deb,changes,buildinfo}
     - echo "adding ${PACKAGENAME}_*-${CI_PIPELINE_ID} to ${REPODIR} ..."
     - pwd
     - dput local ../${PACKAGENAME}_*-${CI_PIPELINE_ID}_*.changes
