@@ -102,6 +102,8 @@ case "$1" in
 
     ## Get rid of pluginname-latest.jar files without version number
     ## The whole *-latest.jar should be removed, once they have all been terminated
+    ##
+    ## Step one: find -latest links in ${LINKDIR}
     PLUGINFILES="$(find "${LINKDIR}/" -maxdepth 1 -name "*-latest.jar" -type l)"
     for pf in ${PLUGINFILES}; do
         ## Extract filename
@@ -115,6 +117,19 @@ case "$1" in
             mv "${FILEDIR}/${filename}" "${FILEDIR}/.~outdated~/"
             rm "${LINKDIR}/${filename}"
             ln -s "${latestfile}" "${LINKDIR}/${plugin_version}"
+        fi
+    done
+    ## Step two: find -latest files in ${FILEDIR}
+    PLUGINFILES="$(find "${FILEDIR}/" -maxdepth 1 -name "*-latest.jar" -type f)"
+    for pf in ${PLUGINFILES}; do
+        ## Extract filename
+        filename="$(basename -- "${pf}")"
+        plugin="${filename%.*}"
+        plugin="$(echo "${plugin}" | sed 's/\-latest//g' | sed -e 's/\-[0-9].*$//g' | sed 's/\-v$//g'| sed 's/\.v$//g' | sed 's/\-$//g' | sed 's/\.$//g')"
+        ## find latest versioned file in filedir
+        latestfile="$(ls -rv "${FILEDIR}/${plugin}"*.jar | grep -v '\-latest\.jar' | head -n1)"
+        if [ -f "${latestfile}" ]; then
+            mv "${FILEDIR}/${filename}" "${FILEDIR}/.~outdated~/"
         fi
     done
 
