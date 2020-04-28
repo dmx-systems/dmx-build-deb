@@ -69,6 +69,15 @@ case "$1" in
     if [ -f ${FILEDIR}/dmx-tableview-command-latest.jar ]; then
         mv ${FILEDIR}/dmx-tableview-command-latest.jar "${FILEDIR}/.~outdated~/"
     fi
+    if [ -L ${LINKDIR}/dmx-tableview-command-1.3.0.jar ]; then
+        rm ${LINKDIR}/dmx-tableview-command-1.3.0.jar
+    fi
+    if [ -f ${LINKDIR}/dmx-tableview-command-1.3.0.jar ]; then
+        mv ${LINKDIR}/dmx-tableview-command-1.3.0.jar "${FILEDIR}/.~outdated~/"
+    fi
+    if [ -f ${FILEDIR}/dmx-tableview-command-1.3.0.jar ]; then
+        mv ${FILEDIR}/dmx-tableview-command-1.3.0.jar "${FILEDIR}/.~outdated~/"
+    fi
 
     ## Check if there are any files instead of links in $LINKDIR
     PLUGINFILES="$(find "${LINKDIR}/" -maxdepth 1 -name "*.jar" -type f)"
@@ -76,7 +85,7 @@ case "$1" in
         ## Extract filename
         filename="$(basename -- "${pf}")"
         plugin="${filename%.*}"
-        plugin="$(echo "${plugin}" | sed 's/\-latest//g' | sed -e 's/[0-9].*$//g' | sed 's/\-v$//g'| sed 's/\.v$//g' | sed 's/\-$//g' | sed 's/\.$//g')"
+        plugin="$(echo "${plugin}" | sed 's/\-latest//g' | sed -e 's/\-[0-9].*$//g' | sed 's/\-v$//g'| sed 's/\.v$//g' | sed 's/\-$//g' | sed 's/\.$//g')"
         ## make sure latest file exists in FILEDIR
         cp -u "${pf}" "${FILEDIR}/"
         ## find latest file in filedir
@@ -94,26 +103,37 @@ case "$1" in
     ## Get rid of pluginname-latest.jar files without version number
     ## The whole *-latest.jar should be removed, once they have all been terminated
     PLUGINFILES="$(find "${LINKDIR}/" -maxdepth 1 -name "*-latest.jar" -type l)"
-    for lf in ${PLUGINFILES}; do
+    for pf in ${PLUGINFILES}; do
         ## Extract filename
-        filename="$(basename -- "${lf}")"
+        filename="$(basename -- "${pf}")"
         plugin="${filename%.*}"
-        plugin="$(echo "${plugin}" | sed 's/\-latest//g' | sed -e 's/[0-9].*$//g' | sed 's/\-v$//g'| sed 's/\.v$//g' | sed 's/\-$//g' | sed 's/\.$//g')"
+        plugin="$(echo "${plugin}" | sed 's/\-latest//g' | sed -e 's/\-[0-9].*$//g' | sed 's/\-v$//g'| sed 's/\.v$//g' | sed 's/\-$//g' | sed 's/\.$//g')"
         ## find latest versioned file in filedir
         latestfile="$(ls -rv "${FILEDIR}/${plugin}"*.jar | grep -v '\-latest\.jar' | head -n1)"
         if [ -f "${latestfile}" ]; then
-            ## check for *-latest.jar files in filedir
-            if [ -f "${FILEDIR}/${plugin}-latest.jar" ]; then
-                mv "${FILEDIR}/${plugin}-latest.jar" "${FILEDIR}/.~outdated~/"
-            fi
-            ## check for *-latest.jar links in linkdir
-            if [ -L "${LINKDIR}/${plugin}-latest.jar" ]; then
-                rm "${LINKDIR}/${plugin}-latest.jar"
-            fi
-            ## create new symlink for versioned plugin
-            linkname="$(basename -- "${latestfile}")"
-            if [ ! -L "${LINKDIR}/${linkname}" ]; then
-                ln -s "${latestfile}" "${LINKDIR}/${linkname}"
+            plugin_version="$(basename -- "${latestfile}")"
+            mv "${FILEDIR}/${filename}" "${FILEDIR}/.~outdated~/"
+            rm "${LINKDIR}/${filename}"
+            ln -s "${latestfile}" "${LINKDIR}/${plugin_version}"
+        fi
+    done
+
+    ## Check if SNAPSHOT versions exist for released plugins
+    PLUGINFILES="$(find "${LINKDIR}/" -maxdepth 1 -name "*-SNAPSHOT*.jar" -type l)"
+    for pf in ${PLUGINFILES}; do
+        ## Extract filename
+        filename="$(basename -- "${pf}")"
+        plugin="${filename%.*}"
+        plugin="$(echo "${plugin}" | sed -e 's/\-[0-9].*$//g' | sed 's/\-v$//g'| sed 's/\.v$//g' | sed 's/\-$//g' | sed 's/\.$//g')"
+        ## find latest versioned file in filedir
+        latestfile="$(ls -rv "${FILEDIR}/${plugin}"*.jar | grep -v '\-SNAPSHOT\.jar' | head -n1)"
+        if [ -f "${latestfile}" ]; then
+            ## check if latest plugin release fits to SNAPSHOT version
+            plugin_version="$( basename ${latestfile} .jar )"
+            if [ "$( grep ${plugin_version}<<<${pf} )" ]; then
+                mv "${FILEDIR}/${filename}" "${FILEDIR}/.~outdated~/"
+                rm "${pf}"
+                ln -s "${latestfile}" "${LINKDIR}/${plugin_version}"
             fi
         fi
     done
@@ -124,7 +144,7 @@ case "$1" in
         ## extract filename
         filename="$(basename -- "${of}")"
         plugin="${filename%.*}"
-        plugin="$(echo "${plugin}" | sed 's/\-latest//g' | sed -e 's/[0-9].*$//g' | sed 's/\-v$//g'| sed 's/\.v$//g' | sed 's/\-$//g' | sed 's/\.$//g')"
+        plugin="$(echo "${plugin}" | sed 's/\-latest//g' | sed -e 's/\-[0-9].*$//g' | sed 's/\-v$//g'| sed 's/\.v$//g' | sed 's/\-$//g' | sed 's/\.$//g')"
         ## find latest file in filedir
         latestfile="$(ls -rv "${FILEDIR}/${plugin}"*.jar | head -n1)"
         if [ "${of}" != "${latestfile}" ]; then
@@ -138,7 +158,7 @@ case "$1" in
         ## extract filename
         filename="$(basename -- "${sl}")"
         plugin="${filename%.*}"
-        plugin="$(echo "${plugin}" | sed 's/-latest//g' | sed -e 's/[0-9].*$//g' | sed 's/\-v$//g'| sed 's/\.v$//g' | sed 's/\-$//g' | sed 's/\.$//g')"
+        plugin="$(echo "${plugin}" | sed 's/-latest//g' | sed -e 's/\-[0-9].*$//g' | sed 's/\-v$//g'| sed 's/\.v$//g' | sed 's/\-$//g' | sed 's/\.$//g')"
         ## find latest file in filedir
         latestfile="$(ls -rv "${FILEDIR}/${plugin}"*.jar | head -n1)"
         ## update symlink in linkdir
