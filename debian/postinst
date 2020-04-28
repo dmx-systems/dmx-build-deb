@@ -114,7 +114,7 @@ case "$1" in
             plugin_version="$(basename -- "${latestfile}")"
             mv "${FILEDIR}/${filename}" "${FILEDIR}/.~outdated~/"
             rm "${LINKDIR}/${filename}"
-            ln -s "${latestfile}" "${LINKDIR}/${plugin_version}"
+            ln -s "${latestfile}" "${LINKDIR}/${plugin_version}.jar"
         fi
     done
 
@@ -126,14 +126,14 @@ case "$1" in
         plugin="${filename%.*}"
         plugin="$(echo "${plugin}" | sed -e 's/\-[0-9].*$//g' | sed 's/\-v$//g'| sed 's/\.v$//g' | sed 's/\-$//g' | sed 's/\.$//g')"
         ## find latest versioned file in filedir
-        latestfile="$(ls -rv "${FILEDIR}/${plugin}"*.jar | grep -v '\-SNAPSHOT\.jar' | head -n1)"
+        latestfile="$(ls -rv "${FILEDIR}/${plugin}"*.jar | grep -v '\-SNAPSHOT' | head -n1)"
         if [ -f "${latestfile}" ]; then
             ## check if latest plugin release fits to SNAPSHOT version
-            plugin_version="$( basename ${latestfile} .jar )"
+            plugin_version="$( basename -- "${latestfile}" .jar )"
             if [ "$( echo "${pf}" | grep "${plugin_version}" )" ]; then
                 mv "${FILEDIR}/${filename}" "${FILEDIR}/.~outdated~/"
                 rm "${pf}"
-                ln -s "${latestfile}" "${LINKDIR}/${plugin_version}"
+                ln -s "${latestfile}" "${LINKDIR}/${plugin_version}.jar"
             fi
         fi
     done
