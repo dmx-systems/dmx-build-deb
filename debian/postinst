@@ -114,7 +114,7 @@ case "$1" in
             plugin_version="$(basename -- "${latestfile}")"
             mv "${FILEDIR}/${filename}" "${FILEDIR}/.~outdated~/"
             rm "${LINKDIR}/${filename}"
-            ln -s "${latestfile}" "${LINKDIR}/${plugin_version}.jar"
+            ln -s "${latestfile}" "${LINKDIR}/${plugin_version}"
         fi
     done
 
