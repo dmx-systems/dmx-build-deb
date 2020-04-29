@@ -82,19 +82,17 @@ case "$1" in
     ## Check if there are any files instead of links in $LINKDIR
     PLUGINFILES="$(find "${LINKDIR}/" -maxdepth 1 -name "*.jar" -type f)"
     for pf in ${PLUGINFILES}; do
-        ## Extract filename
+        ## Extract plugin name
         filename="$(basename -- "${pf}")"
-        plugin="${filename%.*}"
-        plugin="$(echo "${plugin}" | sed 's/\-latest//g' | sed -e 's/\-[0-9].*$//g' | sed 's/\-v$//g'| sed 's/\.v$//g' | sed 's/\-$//g' | sed 's/\.$//g')"
+        plugin="$(echo "${filename%.*}" | sed 's/\-latest//g' | sed -e 's/\-[0-9].*$//g' | sed 's/\-v$//g'| sed 's/\.v$//g' | sed 's/\-$//g' | sed 's/\.$//g')"
         ## make sure latest file exists in FILEDIR
         cp -u "${pf}" "${FILEDIR}/"
+        ## delete file in linkdir
+        rm "${pf}"
         ## find latest file in filedir
         latestfile="$(ls -rv "${FILEDIR}/${plugin}"*.jar | head -n1)"
         ## update symlink in linkdir
         linkname="$(basename -- "${latestfile}")"
-        if [ -f "${LINKDIR}/${linkname}" ]; then
-            rm "${pf}"
-        fi
         if [ ! -L "${LINKDIR}/${linkname}" ]; then
             ln -s "${latestfile}" "${LINKDIR}/${linkname}"
         fi
@@ -108,8 +106,7 @@ case "$1" in
     for pf in ${PLUGINFILES}; do
         ## Extract filename
         filename="$(basename -- "${pf}")"
-        plugin="${filename%.*}"
-        plugin="$(echo "${plugin}" | sed 's/\-latest//g' | sed -e 's/\-[0-9].*$//g' | sed 's/\-v$//g'| sed 's/\.v$//g' | sed 's/\-$//g' | sed 's/\.$//g')"
+        plugin="$(echo "${filename%.*}" | sed 's/\-latest//g' | sed -e 's/\-[0-9].*$//g' | sed 's/\-v$//g'| sed 's/\.v$//g' | sed 's/\-$//g' | sed 's/\.$//g')"
         ## find latest versioned file in filedir
         latestfile="$(ls -rv "${FILEDIR}/${plugin}"*.jar | grep -v '\-latest\.jar' | head -n1)"
         if [ -f "${latestfile}" ]; then
@@ -122,10 +119,9 @@ case "$1" in
     ## Step two: find -latest files in ${FILEDIR}
     PLUGINFILES="$(find "${FILEDIR}/" -maxdepth 1 -name "*-latest.jar" -type f)"
     for pf in ${PLUGINFILES}; do
-        ## Extract filename
+        ## Extract plugin name
         filename="$(basename -- "${pf}")"
-        plugin="${filename%.*}"
-        plugin="$(echo "${plugin}" | sed 's/\-latest//g' | sed -e 's/\-[0-9].*$//g' | sed 's/\-v$//g'| sed 's/\.v$//g' | sed 's/\-$//g' | sed 's/\.$//g')"
+        plugin="$(echo "${filename%.*}" | sed 's/\-latest//g' | sed -e 's/\-[0-9].*$//g' | sed 's/\-v$//g'| sed 's/\.v$//g' | sed 's/\-$//g' | sed 's/\.$//g')"
         ## find latest versioned file in filedir
         latestfile="$(ls -rv "${FILEDIR}/${plugin}"*.jar | grep -v '\-latest\.jar' | head -n1)"
         if [ -f "${latestfile}" ]; then
@@ -136,10 +132,9 @@ case "$1" in
     ## Check if SNAPSHOT versions exist for released plugins
     PLUGINFILES="$(find "${LINKDIR}/" -maxdepth 1 -name "*-SNAPSHOT*.jar" -type l)"
     for pf in ${PLUGINFILES}; do
-        ## Extract filename
+        ## Extract plugin name
         filename="$(basename -- "${pf}")"
-        plugin="${filename%.*}"
-        plugin="$(echo "${plugin}" | sed -e 's/\-[0-9].*$//g' | sed 's/\-v$//g'| sed 's/\.v$//g' | sed 's/\-$//g' | sed 's/\.$//g')"
+        plugin="$(echo "${filename%.*}" | sed -e 's/\-[0-9].*$//g' | sed 's/\-v$//g'| sed 's/\.v$//g' | sed 's/\-$//g' | sed 's/\.$//g')"
         ## find latest versioned file in filedir
         latestfile="$(ls -rv "${FILEDIR}/${plugin}"*.jar | grep -v '\-SNAPSHOT' | head -n1)"
         if [ -f "${latestfile}" ]; then
@@ -156,10 +151,9 @@ case "$1" in
     ## Remove old files
     OLDFILES="$(find "${FILEDIR}/" -maxdepth 1 -name "*.jar" -type f)"
     for of in ${OLDFILES}; do
-        ## extract filename
+        ## extract plugin name
         filename="$(basename -- "${of}")"
-        plugin="${filename%.*}"
-        plugin="$(echo "${plugin}" | sed 's/\-latest//g' | sed -e 's/\-[0-9].*$//g' | sed 's/\-v$//g'| sed 's/\.v$//g' | sed 's/\-$//g' | sed 's/\.$//g')"
+        plugin="$(echo "${filename%.*}" | sed 's/\-latest//g' | sed -e 's/\-[0-9].*$//g' | sed 's/\-v$//g'| sed 's/\.v$//g' | sed 's/\-$//g' | sed 's/\.$//g')"
         ## find latest file in filedir
         latestfile="$(ls -rv "${FILEDIR}/${plugin}"*.jar | head -n1)"
         if [ "${of}" != "${latestfile}" ]; then
@@ -170,10 +164,9 @@ case "$1" in
     ## Update symlinks
     SYMLINKS="$(find "${LINKDIR}/" -maxdepth 1 -name "*.jar" -type l)"      # use l for symlinks
     for sl in ${SYMLINKS}; do
-        ## extract filename
+        ## extract plugin name
         filename="$(basename -- "${sl}")"
-        plugin="${filename%.*}"
-        plugin="$(echo "${plugin}" | sed 's/-latest//g' | sed -e 's/\-[0-9].*$//g' | sed 's/\-v$//g'| sed 's/\.v$//g' | sed 's/\-$//g' | sed 's/\.$//g')"
+        plugin="$(echo "${filename%.*}" | sed 's/-latest//g' | sed -e 's/\-[0-9].*$//g' | sed 's/\-v$//g'| sed 's/\.v$//g' | sed 's/\-$//g' | sed 's/\.$//g')"
         ## find latest file in filedir
         latestfile="$(ls -rv "${FILEDIR}/${plugin}"*.jar | head -n1)"
         ## update symlink in linkdir
