@@ -111,7 +111,6 @@ case "$1" in
         latestfile="$(ls -rv "${FILEDIR}/${plugin}"*.jar | grep -v '\-latest\.jar' | head -n1)"
         if [ -f "${latestfile}" ]; then
             plugin_version="$(basename -- "${latestfile}")"
-            mv "${FILEDIR}/${filename}" "${FILEDIR}/.~outdated~/"
             rm "${LINKDIR}/${filename}"
             ln -s "${latestfile}" "${LINKDIR}/${plugin_version}"
         fi
