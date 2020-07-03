@@ -31,7 +31,7 @@ if [ ! -z "${PREVIOUSVERSION}" ]; then
 fi
 
 # check if dmx is already running and stop it then
-systemctl is-active --quiet dmx.service || deb-systemd-invoke stop dmx
+systemctl is-active --quiet dmx.service && deb-systemd-invoke stop dmx
 
 case "$1" in
     install)
