@@ -30,7 +30,10 @@ if [ ! -z "${PREVIOUSVERSION}" ]; then
     echo "Found previous db-version ${PREVIOUSVERSION}"
 fi
 
-if [ "$(systemctl is-active dmx.service)" ]; then
+# check if dmx is already running
+systemctl is-active --quiet dmx.service
+
+if [ $? -eq 0 ]; then
     deb-systemd-invoke stop dmx
 fi
 
