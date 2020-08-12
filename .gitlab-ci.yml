@@ -34,7 +34,7 @@ build:
     DEBFULLNAME: 'GitLab Runner (DMX CI)'
     DEBEMAIL: 'Gitlab Runner (DMX CI) <gitlab.runner@dmx.systems>'
   script:
-    - PLUGINS=("${PLUGINS}")
+    - PLUGINS=(${PLUGINS})
     - pwd
     - echo "ZIPFILE = ${ZIPFILE}"
     - echo "Starting job ${CI_JOB_ID} in pipeline ${CI_PIPELINE_ID}"
