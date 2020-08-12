@@ -20,14 +20,20 @@ build:
   tags:
     - deb
   stage: build
-  variables:
-    PLUGINS: 'dmx-tableview dmx-geomaps dmx-mobile dmx-dita dmx-ldap'
-    WEBCGI: 'https://download.dmx.systems/cgi-bin/v1/latest-version.cgi?'
-    WEBDIR: 'https://download.dmx.systems/ci'
-    ZIPFILE: 'dmx-latest.zip'
-    DEBFULLNAME: 'GitLab Runner (DMX CI)'
-    DEBEMAIL: 'Gitlab Runner (DMX CI) <gitlab.runner@dmx.systems>'
+#  variables:
+#    PLUGINS: 'dmx-tableview dmx-geomaps dmx-mobile dmx-dita dmx-ldap'
+#    WEBCGI: 'https://download.dmx.systems/cgi-bin/v1/latest-version.cgi?'
+#    WEBDIR: 'https://download.dmx.systems/ci'
+#    ZIPFILE: 'dmx-latest.zip'
+#    DEBFULLNAME: 'GitLab Runner (DMX CI)'
+#    DEBEMAIL: 'Gitlab Runner (DMX CI) <gitlab.runner@dmx.systems>'
   script:
+    - PLUGINS='dmx-tableview dmx-geomaps dmx-mobile dmx-dita dmx-ldap'
+    - WEBCGI='https://download.dmx.systems/cgi-bin/v1/latest-version.cgi?'
+    - WEBDIR='https://download.dmx.systems/ci'
+    - ZIPFILE='dmx-latest.zip'
+    - DEBFULLNAME='GitLab Runner (DMX CI)'
+    - DEBEMAIL='Gitlab Runner (DMX CI) <gitlab.runner@dmx.systems>'
     - pwd
     - echo "Starting job ${CI_JOB_ID} in pipeline ${CI_PIPELINE_ID}"
     - wget -q ${WEBDIR}/${ZIPFILE}
