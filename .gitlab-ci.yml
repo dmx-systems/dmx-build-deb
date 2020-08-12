@@ -22,6 +22,8 @@ build:
   stage: build
   script:
     - pwd
+    - PLUGINS='dmx-tableview dmx-geomaps dmx-mobile dmx-dita dmx-ldap'
+    - WEBCGI='https://download.dmx.systems/cgi-bin/v1/latest-version.cgi?'
     - WEBDIR='https://download.dmx.systems/ci'
     - ZIPFILE='dmx-latest.zip'
     - DEBFULLNAME='GitLab Runner (DMX CI)'
@@ -32,13 +34,12 @@ build:
     - VERSION="$( ls -d dmx-* | grep -v ${ZIPFILE} | cut -d'-' -f2- )"
     - echo "VERSION=${VERSION}"
     - rm -rf ${DMX}-${VERSION}/bundle/org.apache.felix.gogo.*
-    - mkdir -p bin/bin bin/bundle bin/bundle-deploy bin/bundle-available
+    - mkdir -p bin/bin bin/bundle bin/bundle-deploy bin/bundle-available etc/dmx
     - mv ${DMX}-${VERSION}/bin/* bin/bin/
     - mv ${DMX}-${VERSION}/bundle/* bin/bundle/
     - mv ${DMX}-${VERSION}/bundle-deploy/* bin/bundle-deploy/
     # - mv ${DMX}-${VERSION}/bundle-available/* bin/bundle-available/
     - mv ${DMX}-${VERSION}/*.txt ./
-    - mkdir -p etc/dmx
     - CONFIG=$(<${DMX}-${VERSION}/conf/config.properties)
     - CONFIG=${CONFIG/dmx.security.anonymous_read_allowed = ALL/dmx.security.anonymous_read_allowed = NONE}
     - CONFIG=${CONFIG/dmx.security.initial_admin_password = /dmx.security.initial_admin_password = YOUR_SECRET_PASSWORD_HERE}
