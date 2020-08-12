@@ -47,7 +47,7 @@ build:
     - echo -e "To activate a plugin copy or link it to the bundles-deploy folder.\n" >>bin/bundle-available/about-this-directory.txt
     - echo -e "Find more information on DMX plugins at" >>bin/bundle-available/about-this-directory.txt
     - echo -e "https://git.dmx.systems/dmx-plugins" >>bin/bundle-available/about-this-directory.txt
-    - echo "Installing plugins: ${PLUGINS[@]}"
+    # - echo "Installing plugins: ${PLUGINS[@]}"
     # - for plugin in "${PLUGINS[@]}"; do latest_version="$( wget -q -O - ${WEBCGI}/ci/${plugin}/${plugin}-latest.jar )"; echo "adding ${latest_version}"; wget -q ${latest_version} -P bin/bundle-available/; done    
     - CONFIG=$(<${DMX}-${VERSION}/conf/config.properties)
     - CONFIG=${CONFIG/dmx.security.anonymous_read_allowed = ALL/dmx.security.anonymous_read_allowed = NONE}
