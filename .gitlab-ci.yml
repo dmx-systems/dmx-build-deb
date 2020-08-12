@@ -11,7 +11,12 @@ variables:
   # TARGET="$(lsb_release -sc)"
   TARGET: "xenial"
   DMX: 'dmx'                     # [ dmx | deepamehta ]
-  PACKAGENAME: "${DMX}-latest"   # [ dmx | dmx-latest ]
+  # PACKAGENAME: "${DMX}-latest"   # [ dmx | dmx-latest ]
+
+before_script:
+  # Workaround for https://gitlab.com/gitlab-org/gitlab-runner/-/issues/1809
+  # Using variables in variables does not work in GitLab
+  - export PACKAGENAME="${DMX}-latest"
 
 build:
   only:
