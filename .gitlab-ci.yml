@@ -22,7 +22,7 @@ build:
   stage: build
   script:
     - pwd
-    - PLUGINS='dmx-tableview dmx-geomaps dmx-mobile dmx-dita dmx-ldap'
+    - PLUGINS='( dmx-tableview dmx-geomaps dmx-mobile dmx-dita dmx-ldap )'
     - WEBCGI='https://download.dmx.systems/cgi-bin/v1/latest-version.cgi?'
     - WEBDIR='https://download.dmx.systems/ci'
     - ZIPFILE='dmx-latest.zip'
