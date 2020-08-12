@@ -24,7 +24,7 @@ build:
     PLUGINS: ( dmx-tableview dmx-geomaps dmx-mobile dmx-dita dmx-ldap )
     WEBCGI: 'https://download.dmx.systems/cgi-bin/v1/latest-version.cgi?'
     WEBDIR: 'https://download.dmx.systems/ci'
-    ZIPFILE: "${PACKAGENAME}.zip"
+    ZIPFILE: '$( "${PACKAGENAME}" ).zip'
     DEBFULLNAME: 'GitLab Runner (DMX CI)'
     DEBEMAIL: 'Gitlab Runner (DMX CI) <gitlab.runner@dmx.systems>'
   script:
