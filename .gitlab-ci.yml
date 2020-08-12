@@ -51,7 +51,7 @@ build:
     - |
       for plugin in "${PLUGINS[@]}"; do 
         latest_version="$( wget -q -O - ${WEBCGI}/ci/${plugin}/${plugin}-latest.jar )"
-        do wget -q ${latest_version} -P bin/bundle-available/
+        wget -q ${latest_version} -P bin/bundle-available/
       done
     ## adjust config
     - CONFIG=$(<${DMX}-${VERSION}/conf/config.properties)
