@@ -7,11 +7,11 @@ stages:
   - deploy
 
 variables:
-    # target distribution
-    # TARGET="$(lsb_release -sc)"
-    TARGET: "xenial"
-    DMX: 'dmx'                     # [ dmx | deepamehta ]
-    PACKAGENAME: "${DMX}-latest"   # [ dmx | dmx-latest ]
+  # target distribution
+  # TARGET="$(lsb_release -sc)"
+  TARGET: "xenial"
+  DMX: 'dmx'                     # [ dmx | deepamehta ]
+  PACKAGENAME: "${DMX}-latest"   # [ dmx | dmx-latest ]
 
 build:
   only:
