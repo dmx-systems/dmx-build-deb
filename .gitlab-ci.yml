@@ -40,7 +40,7 @@ build:
     - mv ${DMX}-${VERSION}/bundle-deploy/* bin/bundle-deploy/
     - mv ${DMX}-${VERSION}/*.txt ./
     # - mv ${DMX}-${VERSION}/bundle-available/* bin/bundle-available/
-    ## add plugins
+    # add plugins
     - echo -e "About the bundle-available directory" >bin/bundle-available/about-this-directory.txt
     - echo -e "------------------------------------\n" >>bin/bundle-available/about-this-directory.txt
     - echo -e "This directory contains a set of selected DMX plugins.\n" >>bin/bundle-available/about-this-directory.txt
