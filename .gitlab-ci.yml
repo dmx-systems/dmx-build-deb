@@ -27,7 +27,7 @@ build:
     - deb
   stage: build
   variables:
-    PLUGINS: "dmx-tableview dmx-geomaps dmx-mobile dmx-dita dmx-ldap"
+    PLUGINS: "dmx-tableview dmx-geomaps dmx-mobile dmx-ldap dmx-cooking dmx-biblio"
     WEBCGI: 'https://download.dmx.systems/cgi-bin/v1/stable-version.cgi?'
     WEBDIR: 'https://download.dmx.systems'
     DEBFULLNAME: 'GitLab Runner (DMX CI)'
