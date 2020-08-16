@@ -16,82 +16,58 @@ set -e
 BACKUPDATE="$( date +%F-%H:%M:%S )"
 DMVERSION='@@VERSION@@'
 
-###  FIXME
-###  Backing up the db depends on the location of the db, which is a config parameter in config properties.
-###  So in the funture we have to read that!
+##  TODO: FIXME
+##  Backing up the db depends on the location of the db, which is a config parameter in config properties.
+##  So in the funture we have to read that!
 DBDIR='/var/lib/dmx/dmx-db'
 
 PREVIOUSVERSION="$( if [ -d ${DBDIR} ]; then find ${DBDIR} -name ".dm-version.*" | cut -d'.' -f'3-' | sort -V | tail -n1; fi )"
 
-# echo "running preinst $1"
+## echo "running preinst $1"
 echo "Installing version ${DMVERSION}"
 
 if [ ! -z "${PREVIOUSVERSION}" ]; then
     echo "Found previous db-version ${PREVIOUSVERSION}"
 fi
 
-# check if dmx is already running and stop it then
+## check if dmx is already running and stop it then
 systemctl is-active --quiet dmx.service && deb-systemd-invoke stop dmx
 
 case "$1" in
     install)
-    id -u dmx >/dev/null 2>&1 || useradd --system --user-group --home-dir '/var/lib/dmx' --shell '/bin/false' --comment 'DMX - The Context Machine' dmx
-    if [ ! -d /var/lib/dmx ]; then
-    mkdir /var/lib/dmx
-    chown dmx:dmx /var/lib/dmx
-    fi
-    if [ -d ${DBDIR} ]; then
-        if [ -f ${DBDIR}/.dm-version.${PREVIOUSVERSION} ]; then
-            mv ${DBDIR} ${DBDIR}-${PREVIOUSVERSION}-backup-$BACKUPDATE
+        id -u dmx >/dev/null 2>&1 || useradd --system --user-group --home-dir '/var/lib/dmx' --shell '/bin/false' --comment 'DMX - The Context Machine' dmx
+        if [ ! -d /var/lib/dmx ]; then
+            mkdir /var/lib/dmx
+            chown dmx:dmx /var/lib/dmx
+        fi
+        if [ -d ${DBDIR} ]; then
+            if [ -f ${DBDIR}/.dm-version.${PREVIOUSVERSION} ]; then
+                mv ${DBDIR} ${DBDIR}-${PREVIOUSVERSION}-backup-$BACKUPDATE
+                mkdir ${DBDIR}
+                chown dmx:dmx ${DBDIR}
+                chmod 750 ${DBDIR}
+                touch ${DBDIR}/.dm-version.$DMVERSION
+                echo "Your existing database has been moved to /var/lib/dmx/dmx-db-${PREVIOUSVERSION}-backup-$BACKUPDATE."
+            fi
+        else
             mkdir ${DBDIR}
             chown dmx:dmx ${DBDIR}
             chmod 750 ${DBDIR}
             touch ${DBDIR}/.dm-version.$DMVERSION
-            echo "Your existing database has been moved to /var/lib/dmx/dmx-db-${PREVIOUSVERSION}-backup-$BACKUPDATE."
         fi
-    else
-        mkdir ${DBDIR}
-        chown dmx:dmx ${DBDIR}
-        chmod 750 ${DBDIR}
-        touch ${DBDIR}/.dm-version.$DMVERSION
-    fi
-    if [ -d /etc/dmx ]; then
-        chown root:dmx /etc/dmx
-        chmod 750 /etc/dmx
-    fi
-#    if [ -d /var/cache/dmx/bundle-cache ]; then
-#           rm -rf /var/cache/dmx/bundle-cache
-#    fi
-#    if [ -d /var/cache/dmx/dmx-bundle-cache ]; then
-#           rm -rf /var/cache/dmx/dmx-bundle-cache
-#    fi
-##    if [ -d /var/cache/dmx ]; then
-##          rm -rf /var/cache/dmx
-##   fi
-
+        if [ -d /etc/dmx ]; then
+            chown root:dmx /etc/dmx
+            chmod 750 /etc/dmx
+        fi
     ;;
 
     upgrade)
-    # backup existing database
-    if [ -d ${DBDIR} ]; then
-        cp -a ${DBDIR} ${DBDIR}-${PREVIOUSVERSION}-backup-$BACKUPDATE
-        touch ${DBDIR}/.dm-version.$DMVERSION
-    echo "Your existing database has been copied to ${DBDIR}-${PREVIOUSVERSION}-backup-$BACKUPDATE."
-    # if [ -f ${DBDIR}/.dm-version.${PREVIOUSVERSION} ]; then
-        #    rm ${DBDIR}/.dm-version.$PREVIOUSVERSION
-        # fi
-    fi
-
-    ### bundle cache dir is a config parameter. We need to read it from config properties.
-#    if [ -d /var/cache/dmx/bundle-cache ]; then
-#           rm -rf /var/cache/dmx/bundle-cache
-#    fi
-#    if [ -d /var/cache/dmx/dmx-bundle-cache ]; then
-#           rm -rf /var/cache/dmx/dmx-bundle-cache
-#    fi
-##    if [ -d /var/cache/dmx ]; then
-##          rm -rf /var/cache/dmx
-##   fi
+        ## backup existing database
+        if [ -d ${DBDIR} ]; then
+            cp -a ${DBDIR} ${DBDIR}-${PREVIOUSVERSION}-backup-$BACKUPDATE
+            touch ${DBDIR}/.dm-version.$DMVERSION
+            echo "Your existing database has been copied to ${DBDIR}-${PREVIOUSVERSION}-backup-$BACKUPDATE."
+        fi
     ;;
 
     abort-upgrade)
