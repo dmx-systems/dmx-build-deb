@@ -30,44 +30,43 @@ if [ ! -z "${PREVIOUSVERSION}" ]; then
     echo "Found previous db-version ${PREVIOUSVERSION}"
 fi
 
-if [ "$(systemctl is-active dmx.service)" ]; then
-    deb-systemd-invoke stop dmx
-fi
+# check if dmx is already running and stop it then
+systemctl is-active --quiet dmx.service && deb-systemd-invoke stop dmx
 
 case "$1" in
     install)
     id -u dmx >/dev/null 2>&1 || useradd --system --user-group --home-dir '/var/lib/dmx' --shell '/bin/false' --comment 'DMX - The Context Machine' dmx
     if [ ! -d /var/lib/dmx ]; then
-	mkdir /var/lib/dmx
-	chown dmx:dmx /var/lib/dmx
+    mkdir /var/lib/dmx
+    chown dmx:dmx /var/lib/dmx
     fi
     if [ -d ${DBDIR} ]; then
-	    if [ -f ${DBDIR}/.dm-version.${PREVIOUSVERSION} ]; then
-		    mv ${DBDIR} ${DBDIR}-${PREVIOUSVERSION}-backup-$BACKUPDATE
-		    mkdir ${DBDIR}
-		    chown dmx:dmx ${DBDIR}
-		    chmod 750 ${DBDIR}
-		    touch ${DBDIR}/.dm-version.$DMVERSION
-		    echo "Your existing database has been moved to /var/lib/dmx/dmx-db-${PREVIOUSVERSION}-backup-$BACKUPDATE."
-	    fi
+        if [ -f ${DBDIR}/.dm-version.${PREVIOUSVERSION} ]; then
+            mv ${DBDIR} ${DBDIR}-${PREVIOUSVERSION}-backup-$BACKUPDATE
+            mkdir ${DBDIR}
+            chown dmx:dmx ${DBDIR}
+            chmod 750 ${DBDIR}
+            touch ${DBDIR}/.dm-version.$DMVERSION
+            echo "Your existing database has been moved to /var/lib/dmx/dmx-db-${PREVIOUSVERSION}-backup-$BACKUPDATE."
+        fi
     else
-	    mkdir ${DBDIR}
-	    chown dmx:dmx ${DBDIR}
-	    chmod 750 ${DBDIR}
-	    touch ${DBDIR}/.dm-version.$DMVERSION
+        mkdir ${DBDIR}
+        chown dmx:dmx ${DBDIR}
+        chmod 750 ${DBDIR}
+        touch ${DBDIR}/.dm-version.$DMVERSION
     fi
     if [ -d /etc/dmx ]; then
-	    chown root:dmx /etc/dmx
-	    chmod 750 /etc/dmx
+        chown root:dmx /etc/dmx
+        chmod 750 /etc/dmx
     fi
 #    if [ -d /var/cache/dmx/bundle-cache ]; then
-#	    rm -rf /var/cache/dmx/bundle-cache
+#           rm -rf /var/cache/dmx/bundle-cache
 #    fi
 #    if [ -d /var/cache/dmx/dmx-bundle-cache ]; then
-#	    rm -rf /var/cache/dmx/dmx-bundle-cache
+#           rm -rf /var/cache/dmx/dmx-bundle-cache
 #    fi
 ##    if [ -d /var/cache/dmx ]; then
-##	    rm -rf /var/cache/dmx
+##          rm -rf /var/cache/dmx
 ##   fi
 
     ;;
@@ -77,21 +76,21 @@ case "$1" in
     if [ -d ${DBDIR} ]; then
         cp -a ${DBDIR} ${DBDIR}-${PREVIOUSVERSION}-backup-$BACKUPDATE
         touch ${DBDIR}/.dm-version.$DMVERSION
-	echo "Your existing database has been copied to ${DBDIR}-${PREVIOUSVERSION}-backup-$BACKUPDATE."
-	# if [ -f ${DBDIR}/.dm-version.${PREVIOUSVERSION} ]; then
+    echo "Your existing database has been copied to ${DBDIR}-${PREVIOUSVERSION}-backup-$BACKUPDATE."
+    # if [ -f ${DBDIR}/.dm-version.${PREVIOUSVERSION} ]; then
         #    rm ${DBDIR}/.dm-version.$PREVIOUSVERSION
-    	# fi
+        # fi
     fi
 
     ### bundle cache dir is a config parameter. We need to read it from config properties.
 #    if [ -d /var/cache/dmx/bundle-cache ]; then
-#	    rm -rf /var/cache/dmx/bundle-cache
+#           rm -rf /var/cache/dmx/bundle-cache
 #    fi
 #    if [ -d /var/cache/dmx/dmx-bundle-cache ]; then
-#	    rm -rf /var/cache/dmx/dmx-bundle-cache
+#           rm -rf /var/cache/dmx/dmx-bundle-cache
 #    fi
 ##    if [ -d /var/cache/dmx ]; then
-##	    rm -rf /var/cache/dmx
+##          rm -rf /var/cache/dmx
 ##   fi
     ;;
 
