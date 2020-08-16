@@ -29,7 +29,7 @@ build:
   variables:
     PLUGINS: "dmx-tableview dmx-geomaps dmx-mobile dmx-dita dmx-ldap"
     WEBCGI: 'https://download.dmx.systems/cgi-bin/v1/stable-version.cgi?'
-    WEBDIR: 'https://download.dmx.systems/ci'
+    WEBDIR: 'https://download.dmx.systems'
     DEBFULLNAME: 'GitLab Runner (DMX CI)'
     DEBEMAIL: 'Gitlab Runner (DMX CI) <gitlab.runner@dmx.systems>'
   script:
@@ -54,7 +54,7 @@ build:
     - echo -e "To activate a plugin copy or link it to the bundles-deploy folder.\n" >>bin/bundle-available/about-this-directory.txt
     - echo -e "Find more information on DMX plugins at" >>bin/bundle-available/about-this-directory.txt
     - echo -e "https://git.dmx.systems/dmx-plugins" >>bin/bundle-available/about-this-directory.txt
-    - for plugin in "${PLUGINS[@]}"; do stable_version="$( wget -q -O - ${WEBCGI}${PLUGIN})"; wget -q ${stable_version} -P bin/bundle-available/; done    
+    - for plugin in "${PLUGINS[@]}"; do stable_version="$( wget -q -O - ${WEBCGI}${PLUGIN})"; wget -q ${stable_version} -P bin/bundle-available/; done
     - tree bin/bundle-available/ 
     - CONFIG=$(<${DMX}-${VERSION}/conf/config.properties)
     - CONFIG=${CONFIG/dmx.security.anonymous_read_allowed = ALL/dmx.security.anonymous_read_allowed = NONE}
