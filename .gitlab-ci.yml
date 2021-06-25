@@ -29,8 +29,8 @@ build:
     PLUGINS: "dmx-tableview dmx-geomaps dmx-mobile dmx-dita dmx-ldap"
     WEBCGI: 'https://download.dmx.systems/cgi-bin/v1/latest-version.cgi?'
     WEBDIR: 'https://download.dmx.systems/ci'
-    DEBFULLNAME: 'GitLab Runner (DMX CI)'
-    DEBEMAIL: 'Gitlab Runner (DMX CI) <gitlab.runner@dmx.systems>'
+    DEBFULLNAME: 'DMX Systems (DMX CI)'
+    DEBEMAIL: 'DMX Systems (DMX CI) <devops@dmx.systems>'
   script:
     - PLUGINS=(${PLUGINS})
     - pwd
@@ -113,7 +113,8 @@ build:
     - git log -1
     - gbp dch --distribution "${TARGET}" --ignore-branch --new-version "${VERSION}-${CI_PIPELINE_ID}" --commit --since=${LASTCOMMIT} --release --spawn-editor=never --full --meta
     ## - export GPG_TTY=$(tty) <= moved to .bashrc
-    - dpkg-buildpackage -A -us --force-sign -k'gitlab.runner@dmx.systems'
+    #- dpkg-buildpackage -A -us --force-sign -k'gitlab.runner@dmx.systems'
+    - dpkg-buildpackage -A -us --force-sign -k'devops@dmx.systems'
     - tree
 
 test:
