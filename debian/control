@@ -8,7 +8,7 @@ Homepage: https://dmx.berlin
 
 Package: @@PACKAGENAME@@
 Architecture: all
-Depends: openjdk-8-jre|openjdk-8-jre-headless, debconf (>= 0.5)
+Depends: openjdk-8-jre | openjdk-8-jre-headless, debconf (>= 0.5)
 Breaks: deepamehta (<< 5.0)
 Conflicts: @@CONFLICTS@@
 Description: semantic web platform for knowledge management and collaboration
