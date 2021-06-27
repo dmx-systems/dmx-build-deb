@@ -10,7 +10,7 @@ variables:
   ## target distribution
   # TARGET="$(lsb_release -sc)"
   #TARGET: "xenial"
-  TARGET: "stable"
+  TARGET: "unstable"
   #TARGET: "debian" # <= This does not work!
   DMX: 'dmx'                              ## [ dmx | deepamehta ]
   
