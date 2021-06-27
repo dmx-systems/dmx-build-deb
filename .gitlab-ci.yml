@@ -9,7 +9,9 @@ stages:
 variables:
   ## target distribution
   # TARGET="$(lsb_release -sc)"
-  TARGET: "xenial"
+  #TARGET: "xenial"
+  #TARGET: "stable"
+  TARGET: "debian"
   DMX: 'dmx'                              ## [ dmx | deepamehta ]
   
 before_script:
