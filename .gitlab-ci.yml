@@ -103,9 +103,9 @@ build:
     - pwd
     - tree
     - dch --controlmaint --create --package "${PACKAGENAME}" --newversion "${VERSION}-${DEBVERSION}+b${CI_PIPELINE_ID}" --empty
-    - dch --controlmaint -v ${VERSION} "A Debian Package for DMX - The Context Machine"
-    - dch --controlmaint -v ${VERSION} "DMX is the successor of Jörg Richter's <jri@deepamehta.de> DeepaMehta project."
-    - dch --controlmaint -v ${VERSION} "Thanks to Silke <silke@silkemeyer.net> for the initial work on the debian package."
+    - dch --controlmaint -v "${VERSION}-${DEBVERSION}+b${CI_PIPELINE_ID}" "A Debian Package for DMX - The Context Machine"
+    - dch --controlmaint -v "${VERSION}-${DEBVERSION}+b${CI_PIPELINE_ID}" "DMX is the successor of Jörg Richter's <jri@deepamehta.de> DeepaMehta project."
+    - dch --controlmaint -v "${VERSION}-${DEBVERSION}+b${CI_PIPELINE_ID}" "Thanks to Silke <silke@silkemeyer.net> for the initial work on the debian package."
     - dch --controlmaint -r --distribution "${TARGET}" ignored 
     - LASTCOMMIT="$( git rev-parse HEAD )"
     - git add debian/changelog
