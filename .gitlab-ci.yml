@@ -2,6 +2,7 @@
 ## of the dmx core modules and adds the curated dmx plugins.  
 
 stages:
+  - dowload
   - build
   - test
   - deploy
@@ -20,17 +21,16 @@ before_script:
   - export PACKAGENAME="${DMX}-latest"    ## [ dmx | dmx-latest ]
   - export ZIPFILE="${PACKAGENAME}.zip"
 
-build-default:
-  ## builds the default dmx (desktop) package
+
+fetch-binaries:
   only:
     refs:
       - master
       - dev-5.2
   tags:
     - deb
-  stage: build
+  stage: download
   variables:
-    PACKAGEVERSION: "1.0"
     PLUGINS: "dmx-tableview dmx-geomaps dmx-mobile dmx-dita dmx-ldap"
     WEBCGI: 'https://download.dmx.systems/cgi-bin/v1/latest-version.cgi?'
     WEBDIR: 'https://download.dmx.systems/ci'
@@ -38,6 +38,7 @@ build-default:
     DEBEMAIL: 'DMX Systems (DMX CI) <devops@dmx.systems>'
   script:
     - PLUGINS=(${PLUGINS})
+    - JAVAVERSION=(${JAVAVERSION})
     - pwd
     - echo "ZIPFILE = ${ZIPFILE}"
     - echo "Starting job ${CI_JOB_ID} in pipeline ${CI_PIPELINE_ID}"
@@ -63,6 +64,24 @@ build-default:
     - echo -e "https://git.dmx.systems/dmx-plugins" >>bin/bundle-available/about-this-directory.txt
     - for plugin in "${PLUGINS[@]}"; do latest_version="$( wget -q -O - "${WEBCGI}/ci/${plugin}/${plugin}-latest.jar" )"; echo "Download latest version of ${plugin} [${latest_version}]"; wget -q "${latest_version}" -P bin/bundle-available/; done    
     - tree bin/bundle-available/ 
+
+
+build-default:
+  ## builds the default dmx (desktop) package
+  only:
+    refs:
+      - master
+      - dev-5.2
+  tags:
+    - deb
+  stage: build
+  variables:
+    PACKAGEVERSION: "1.0"
+    DEBFULLNAME: 'DMX Systems (DMX CI)'
+    DEBEMAIL: 'DMX Systems (DMX CI) <devops@dmx.systems>'
+    JAVAVERSION: 'openjdk-8-jre'
+  script:
+    - JAVAVERSION=(${JAVAVERSION})
     - CONFIG=$(<${DMX}-${VERSION}/conf/config.properties)
     - CONFIG=${CONFIG/dmx.security.anonymous_read_allowed = ALL/dmx.security.anonymous_read_allowed = NONE}
     - CONFIG=${CONFIG/dmx.security.initial_admin_password = /dmx.security.initial_admin_password = YOUR_SECRET_PASSWORD_HERE}
@@ -95,6 +114,7 @@ build-default:
     ## To replace all occurrences, use ${parameter//pattern/string}
     - CONTROL=${CONTROL//@@PACKAGENAME@@/${PACKAGENAME}}
     - CONTROL=${CONTROL//@@VERSION@@/${VERSION}}
+    - CONTROL=${CONTROL//@@JAVAVERSION@@/${JAVAVERSION}}
     - if [ "${PACKAGENAME}" == "dmx" ]; then CONFLICTS='dmx-latest, dmx-latest-server, dmx-server'; fi
     - if [ "${PACKAGENAME}" == "dmx-latest" ]; then CONFLICTS='dmx, dmx-server, dmx-latest-server'; fi
     - CONTROL=${CONTROL/@@CONFLICTS@@/${CONFLICTS}}
@@ -139,33 +159,10 @@ build-server:
     WEBDIR: 'https://download.dmx.systems/ci'
     DEBFULLNAME: 'DMX Systems (DMX CI)'
     DEBEMAIL: 'DMX Systems (DMX CI) <devops@dmx.systems>'
+    JAVAVERSION: 'openjdk-8-jre-headless'
   script:
     - PLUGINS=(${PLUGINS})
-    - pwd
-    - echo "ZIPFILE = ${ZIPFILE}"
-    - echo "Starting job ${CI_JOB_ID} in pipeline ${CI_PIPELINE_ID}"
-    - echo "Download ${WEBDIR}/${ZIPFILE}"
-    - sleep 1
-    - wget -q "${WEBDIR}/${ZIPFILE}"
-    - echo "Unzip $(file ${ZIPFILE})"
-    - unzip -q ${ZIPFILE}
-    - VERSION="$( ls -d dmx-* | grep -v ${ZIPFILE} | cut -d'-' -f2- )"
-    - echo "VERSION=${VERSION}"
-    - rm -rf ${DMX}-${VERSION}/bundle/org.apache.felix.gogo.*
-    - mkdir -p bin/bin bin/bundle bin/bundle-deploy bin/bundle-available etc/dmx
-    - mv ${DMX}-${VERSION}/bin/* bin/bin/
-    - mv ${DMX}-${VERSION}/bundle/* bin/bundle/
-    - mv ${DMX}-${VERSION}/bundle-deploy/* bin/bundle-deploy/
-    - mv ${DMX}-${VERSION}/*.txt ./
-    ## add plugins
-    - echo -e "About the bundle-available directory" >bin/bundle-available/about-this-directory.txt
-    - echo -e "------------------------------------\n" >>bin/bundle-available/about-this-directory.txt
-    - echo -e "This directory contains a set of selected DMX plugins.\n" >>bin/bundle-available/about-this-directory.txt
-    - echo -e "To activate a plugin copy or link it to the bundles-deploy folder.\n" >>bin/bundle-available/about-this-directory.txt
-    - echo -e "Find more information on DMX plugins at" >>bin/bundle-available/about-this-directory.txt
-    - echo -e "https://git.dmx.systems/dmx-plugins" >>bin/bundle-available/about-this-directory.txt
-    - for plugin in "${PLUGINS[@]}"; do latest_version="$( wget -q -O - "${WEBCGI}/ci/${plugin}/${plugin}-latest.jar" )"; echo "Download latest version of ${plugin} [${latest_version}]"; wget -q "${latest_version}" -P bin/bundle-available/; done    
-    - tree bin/bundle-available/ 
+    - JAVAVERSION=(${JAVAVERSION})
     - CONFIG=$(<${DMX}-${VERSION}/conf/config.properties)
     - CONFIG=${CONFIG/dmx.security.anonymous_read_allowed = ALL/dmx.security.anonymous_read_allowed = NONE}
     - CONFIG=${CONFIG/dmx.security.initial_admin_password = /dmx.security.initial_admin_password = YOUR_SECRET_PASSWORD_HERE}
@@ -198,6 +195,7 @@ build-server:
     ## To replace all occurrences, use ${parameter//pattern/string}
     - CONTROL=${CONTROL//@@PACKAGENAME@@/${PACKAGENAME}-server}
     - CONTROL=${CONTROL//@@VERSION@@/${VERSION}}
+    - CONTROL=${CONTROL//@@JAVAVERSION@@/${JAVAVERSION}}
     - if [ "${PACKAGENAME}" == "dmx-server" ]; then CONFLICTS='dmx-latest, dmx-latest-server, dmx'; fi
     - if [ "${PACKAGENAME}" == "dmx-latest-server" ]; then CONFLICTS='dmx, dmx-server, dmx-latest'; fi
     - CONTROL=${CONTROL/@@CONFLICTS@@/${CONFLICTS}}
@@ -240,7 +238,6 @@ test-default:
     - cat ../${PACKAGENAME}_${COMMIT_VERSION}_all.changes
     - echo "Running test - lintian -i -I --show-overrides ../${PACKAGENAME}_${COMMIT_VERSION}_all.changes"
     - lintian -i -I --show-overrides ../${PACKAGENAME}_${COMMIT_VERSION}_all.changes
-
 
 
 test-server:
