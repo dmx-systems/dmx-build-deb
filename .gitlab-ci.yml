@@ -20,7 +20,8 @@ before_script:
   - export PACKAGENAME="${DMX}-latest"    ## [ dmx | dmx-latest ]
   - export ZIPFILE="${PACKAGENAME}.zip"
 
-build:
+build-default:
+  ## builds the default dmx (desktop) package
   only:
     refs:
       - master
@@ -94,8 +95,8 @@ build:
     ## To replace all occurrences, use ${parameter//pattern/string}
     - CONTROL=${CONTROL//@@PACKAGENAME@@/${PACKAGENAME}}
     - CONTROL=${CONTROL//@@VERSION@@/${VERSION}}
-    - if [ "${PACKAGENAME}" == "dmx" ]; then CONFLICTS='dmx-latest'; fi
-    - if [ "${PACKAGENAME}" == "dmx-latest" ]; then CONFLICTS='dmx'; fi
+    - if [ "${PACKAGENAME}" == "dmx" ]; then CONFLICTS='dmx-latest, dmx-latest-server, dmx-server'; fi
+    - if [ "${PACKAGENAME}" == "dmx-latest" ]; then CONFLICTS='dmx, dmx-server, dmx-latest-server'; fi
     - CONTROL=${CONTROL/@@CONFLICTS@@/${CONFLICTS}}
     - echo -e "new control file:\n\n${CONTROL}"
     - echo "${CONTROL}" >debian/control
@@ -121,7 +122,111 @@ build:
     - dpkg-buildpackage -A -us --force-sign -k'devops@dmx.systems'
     - tree
 
-test:
+
+build-server:
+  ## builds the dmx-server package
+  only:
+    refs:
+      - master
+      - dev-5.2
+  tags:
+    - deb
+  stage: build
+  variables:
+    PACKAGEVERSION: "1.0"
+    PLUGINS: "dmx-tableview dmx-geomaps dmx-mobile dmx-dita dmx-ldap"
+    WEBCGI: 'https://download.dmx.systems/cgi-bin/v1/latest-version.cgi?'
+    WEBDIR: 'https://download.dmx.systems/ci'
+    DEBFULLNAME: 'DMX Systems (DMX CI)'
+    DEBEMAIL: 'DMX Systems (DMX CI) <devops@dmx.systems>'
+  script:
+    - PLUGINS=(${PLUGINS})
+    - pwd
+    - echo "ZIPFILE = ${ZIPFILE}"
+    - echo "Starting job ${CI_JOB_ID} in pipeline ${CI_PIPELINE_ID}"
+    - echo "Download ${WEBDIR}/${ZIPFILE}"
+    - sleep 1
+    - wget -q "${WEBDIR}/${ZIPFILE}"
+    - echo "Unzip $(file ${ZIPFILE})"
+    - unzip -q ${ZIPFILE}
+    - VERSION="$( ls -d dmx-* | grep -v ${ZIPFILE} | cut -d'-' -f2- )"
+    - echo "VERSION=${VERSION}"
+    - rm -rf ${DMX}-${VERSION}/bundle/org.apache.felix.gogo.*
+    - mkdir -p bin/bin bin/bundle bin/bundle-deploy bin/bundle-available etc/dmx
+    - mv ${DMX}-${VERSION}/bin/* bin/bin/
+    - mv ${DMX}-${VERSION}/bundle/* bin/bundle/
+    - mv ${DMX}-${VERSION}/bundle-deploy/* bin/bundle-deploy/
+    - mv ${DMX}-${VERSION}/*.txt ./
+    ## add plugins
+    - echo -e "About the bundle-available directory" >bin/bundle-available/about-this-directory.txt
+    - echo -e "------------------------------------\n" >>bin/bundle-available/about-this-directory.txt
+    - echo -e "This directory contains a set of selected DMX plugins.\n" >>bin/bundle-available/about-this-directory.txt
+    - echo -e "To activate a plugin copy or link it to the bundles-deploy folder.\n" >>bin/bundle-available/about-this-directory.txt
+    - echo -e "Find more information on DMX plugins at" >>bin/bundle-available/about-this-directory.txt
+    - echo -e "https://git.dmx.systems/dmx-plugins" >>bin/bundle-available/about-this-directory.txt
+    - for plugin in "${PLUGINS[@]}"; do latest_version="$( wget -q -O - "${WEBCGI}/ci/${plugin}/${plugin}-latest.jar" )"; echo "Download latest version of ${plugin} [${latest_version}]"; wget -q "${latest_version}" -P bin/bundle-available/; done    
+    - tree bin/bundle-available/ 
+    - CONFIG=$(<${DMX}-${VERSION}/conf/config.properties)
+    - CONFIG=${CONFIG/dmx.security.anonymous_read_allowed = ALL/dmx.security.anonymous_read_allowed = NONE}
+    - CONFIG=${CONFIG/dmx.security.initial_admin_password = /dmx.security.initial_admin_password = YOUR_SECRET_PASSWORD_HERE}
+    - CONFIG=${CONFIG/dmx.filerepo.path = \//dmx.filerepo.path = \/var\/lib\/dmx\/dmx-filedir}
+    - CONFIG=${CONFIG/dmx.filerepo.per_workspace = false/dmx.filerepo.per_workspace = true}
+    - CONFIG=${CONFIG/felix.fileinstall.dir = bundle-deploy/felix.fileinstall.dir = \/usr\/share\/dmx\/bundle-deploy}
+    - CONFIG=${CONFIG/dmx.database.path = dmx-db/dmx.database.path = \/var\/lib\/dmx\/dmx-db}
+    - CONFIG=${CONFIG/java.util.logging.config.file = conf\/logging.properties/java.util.logging.config.file = \/etc\/dmx\/logging.properties}
+    - CONFIG=${CONFIG/org.osgi.framework.storage = bundle-cache/org.osgi.framework.storage = \/var\/cache\/dmx\/bundle-cache}
+    - echo "${CONFIG}" >etc/dmx/config.properties
+    - LOGGING=$(<${DMX}-${VERSION}/conf/logging.properties)
+    - LOGGING=${LOGGING/handlers=java.util.logging.ConsoleHandler/\# handlers=java.util.logging.ConsoleHandler}
+    - LOGGING=${LOGGING/java.util.logging.ConsoleHandler.level=ALL/\# java.util.logging.ConsoleHandler.level=ALL}
+    - LOGGING=${LOGGING/\# handlers=java.util.logging.FileHandler/handlers=java.util.logging.FileHandler}
+    ## The next line should be removed once jri updated the source from deepamehta.log to dmx.log 
+    - LOGGING=${LOGGING/java.util.logging.FileHandler.pattern=deepamehta.log/java.util.logging.FileHandler.pattern=\/var\/log\/dmx\/dmx.log}
+    - LOGGING=${LOGGING/java.util.logging.FileHandler.pattern=dmx.log/java.util.logging.FileHandler.pattern=\/var\/log\/dmx\/dmx.log}
+    - echo "${LOGGING}" >etc/dmx/logging.properties
+    ## add py4dmx example
+    - git clone https://git.dmx.systems/dmx-contrib/py4dmx examples/py4dmx
+    - rm -rf examples/py4dmx/.git*
+    ## patch debian files
+    - COPYRIGHT=$(<debian/copyright)
+    - echo "${COPYRIGHT/@@NUNC@@/$(date -R)}" >debian/copyright
+    - PREINST="$(<debian/preinst)"
+    - PREINST=${PREINST/DMVERSION=\'@@VERSION@@\'/DMVERSION=\'${VERSION}\'}
+    - echo "${PREINST}" >debian/preinst
+    - CONTROL="$(<debian/control)"
+    - echo -e "old control file:\n\n${CONTROL}"
+    ## To replace all occurrences, use ${parameter//pattern/string}
+    - CONTROL=${CONTROL//@@PACKAGENAME@@/${PACKAGENAME}-server}
+    - CONTROL=${CONTROL//@@VERSION@@/${VERSION}}
+    - if [ "${PACKAGENAME}" == "dmx-server" ]; then CONFLICTS='dmx-latest, dmx-latest-server, dmx'; fi
+    - if [ "${PACKAGENAME}" == "dmx-latest-server" ]; then CONFLICTS='dmx, dmx-server, dmx-latest'; fi
+    - CONTROL=${CONTROL/@@CONFLICTS@@/${CONFLICTS}}
+    - echo -e "new control file:\n\n${CONTROL}"
+    - echo "${CONTROL}" >debian/control
+    ## The next two cp commands are relevant when overriding the package name in debian/rules
+    - cp debian/dmx.service debian/${PACKAGENAME}.dmx.service
+    - cp debian/dmx.logrotate debian/${PACKAGENAME}.dmx.logrotate
+    - pwd
+    - tree
+    - dch --controlmaint --create --package "${PACKAGENAME}-server" --newversion "${VERSION}-${PACKAGEVERSION}+b${CI_PIPELINE_ID}" --empty
+    - dch --controlmaint -v "${VERSION}-${PACKAGEVERSION}+b${CI_PIPELINE_ID}" "A Debian Package for DMX - The Context Machine"
+    - dch --controlmaint -v "${VERSION}-${PACKAGEVERSION}+b${CI_PIPELINE_ID}" "DMX is the successor of Jörg Richter's <jri@deepamehta.de> DeepaMehta project."
+    - dch --controlmaint -v "${VERSION}-${PACKAGEVERSION}+b${CI_PIPELINE_ID}" "Thanks to Silke <silke@silkemeyer.net> for the initial work on the debian package."
+    - dch --controlmaint -r --distribution "${TARGET}" ignored
+    - LASTCOMMIT="$( git rev-parse HEAD )"
+    - git add debian/changelog
+    - sleep 1
+    - NUNC="$( date -R )"
+    - 'git commit --date="${NUNC}" -m"DMX debian package build from ${DMX}-${VERSION} - Package Version ${PACKAGEVERSION}+b${CI_PIPELINE_ID}" -m"Binaries from ${WEBDIR}/${ZIPFILE}" -m"Thanks: GitLab Team for providing great CI infrastructure!"'
+    - git log -1
+    - gbp dch --distribution "${TARGET}" --ignore-branch --new-version "${VERSION}-${PACKAGEVERSION}+b${CI_PIPELINE_ID}" --commit --since=${LASTCOMMIT} --release --spawn-editor=never --full --meta
+    ## - export GPG_TTY=$(tty) <= moved to .bashrc
+    #- dpkg-buildpackage -A -us --force-sign -k'gitlab.runner@dmx.systems'
+    - dpkg-buildpackage -A -us --force-sign -k'devops@dmx.systems'
+    - tree
+
+
+test-default:
   only:
     refs:
       - master
@@ -135,6 +240,25 @@ test:
     - cat ../${PACKAGENAME}_${COMMIT_VERSION}_all.changes
     - echo "Running test - lintian -i -I --show-overrides ../${PACKAGENAME}_${COMMIT_VERSION}_all.changes"
     - lintian -i -I --show-overrides ../${PACKAGENAME}_${COMMIT_VERSION}_all.changes
+
+
+
+test-server:
+  only:
+    refs:
+      - master
+      - dev-5.2
+  tags:
+    - deb
+  stage: test
+  script:
+    - COMMIT_VERSION="$( cat .git/COMMIT_EDITMSG | cut -d' ' -f4 )"
+    - ls -la ../*
+    - cat ../${PACKAGENAME}-server_${COMMIT_VERSION}_all.changes
+    - echo "Running test - lintian -i -I --show-overrides ../${PACKAGENAME}-server_${COMMIT_VERSION}_all.changes"
+    - lintian -i -I --show-overrides ../${PACKAGENAME}-server_${COMMIT_VERSION}_all.changes
+
+
 
 deploy:
   only:
