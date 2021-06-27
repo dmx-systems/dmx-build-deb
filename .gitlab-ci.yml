@@ -2,7 +2,7 @@
 ## of the dmx core modules and adds the curated dmx plugins.  
 
 stages:
-  - dowload
+  - download
   - build
   - test
   - deploy
