@@ -27,7 +27,7 @@ build:
     - deb
   stage: build
   variables:
-    DEBVERSION: "1.0"
+    PACKAGEVERSION: "1.0"
     PLUGINS: "dmx-tableview dmx-geomaps dmx-mobile dmx-dita dmx-ldap"
     WEBCGI: 'https://download.dmx.systems/cgi-bin/v1/latest-version.cgi?'
     WEBDIR: 'https://download.dmx.systems/ci'
@@ -102,18 +102,18 @@ build:
     - cp debian/dmx.logrotate debian/${PACKAGENAME}.dmx.logrotate
     - pwd
     - tree
-    - dch --controlmaint --create --package "${PACKAGENAME}" --newversion "${VERSION}-${DEBVERSION}+b${CI_PIPELINE_ID}" --empty
-    - dch --controlmaint -v "${VERSION}-${DEBVERSION}+b${CI_PIPELINE_ID}" "A Debian Package for DMX - The Context Machine"
-    - dch --controlmaint -v "${VERSION}-${DEBVERSION}+b${CI_PIPELINE_ID}" "DMX is the successor of Jörg Richter's <jri@deepamehta.de> DeepaMehta project."
-    - dch --controlmaint -v "${VERSION}-${DEBVERSION}+b${CI_PIPELINE_ID}" "Thanks to Silke <silke@silkemeyer.net> for the initial work on the debian package."
+    - dch --controlmaint --create --package "${PACKAGENAME}" --newversion "${VERSION}-${PACKAGEVERSION}+b${CI_PIPELINE_ID}" --empty
+    - dch --controlmaint -v "${VERSION}-${PACKAGEVERSION}+b${CI_PIPELINE_ID}" "A Debian Package for DMX - The Context Machine"
+    - dch --controlmaint -v "${VERSION}-${PACKAGEVERSION}+b${CI_PIPELINE_ID}" "DMX is the successor of Jörg Richter's <jri@deepamehta.de> DeepaMehta project."
+    - dch --controlmaint -v "${VERSION}-${PACKAGEVERSION}+b${CI_PIPELINE_ID}" "Thanks to Silke <silke@silkemeyer.net> for the initial work on the debian package."
     - dch --controlmaint -r --distribution "${TARGET}" ignored 
     - LASTCOMMIT="$( git rev-parse HEAD )"
     - git add debian/changelog
     - sleep 1
     - NUNC="$( date -R )"
-    - 'git commit --date="${NUNC}" -m"DMX debian package build from ${DMX}-${VERSION} - Package Version ${DEBVERSION} - Build Pipeline ${CI_PIPELINE_ID}" -m"Binaries from ${WEBDIR}/${ZIPFILE}" -m"Thanks: GitLab Team for providing great CI infrastructure!"'
+    - 'git commit --date="${NUNC}" -m"DMX debian package build from ${DMX}-${VERSION} - Package Version ${PACKAGEVERSION}+b${CI_PIPELINE_ID}" -m"Binaries from ${WEBDIR}/${ZIPFILE}" -m"Thanks: GitLab Team for providing great CI infrastructure!"'
     - git log -1
-    - gbp dch --distribution "${TARGET}" --ignore-branch --new-version "${VERSION}-${DEBVERSION}+b${CI_PIPELINE_ID}" --commit --since=${LASTCOMMIT} --release --spawn-editor=never --full --meta
+    - gbp dch --distribution "${TARGET}" --ignore-branch --new-version "${VERSION}-${PACKAGEVERSION}+b${CI_PIPELINE_ID}" --commit --since=${LASTCOMMIT} --release --spawn-editor=never --full --meta
     ## - export GPG_TTY=$(tty) <= moved to .bashrc
     #- dpkg-buildpackage -A -us --force-sign -k'gitlab.runner@dmx.systems'
     - dpkg-buildpackage -A -us --force-sign -k'devops@dmx.systems'

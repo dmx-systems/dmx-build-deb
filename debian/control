@@ -1,4 +1,4 @@
-Source: @@PACKAGENAME@@
+Source: @@PACKAGENAME@@-@@VERSION@@
 Section: misc
 Priority: optional
 Maintainer: Juergen Neumann <juergen.neumann@dmx.berlin>
