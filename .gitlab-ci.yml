@@ -14,7 +14,7 @@ variables:
   #TARGET: "unstable" # <= This does not work!
   #TARGET: "debian"   # <= This does not work!
   DMX: 'dmx'                              ## [ dmx | deepamehta ]
-  
+
 before_script:
   ## Workaround for https://gitlab.com/gitlab-org/gitlab-runner/-/issues/1809
   ## Using variables in variables does not work in GitLab
@@ -81,6 +81,7 @@ build-default:
     DEBEMAIL: 'DMX Systems (DMX CI) <devops@dmx.systems>'
     JAVAVERSION: 'openjdk-8-jre'
   script:
+    - VERSION="$( ls -d dmx-* | grep -v ${ZIPFILE} | cut -d'-' -f2- )"
     - JAVAVERSION=(${JAVAVERSION})
     - CONFIG=$(<${DMX}-${VERSION}/conf/config.properties)
     - CONFIG=${CONFIG/dmx.security.anonymous_read_allowed = ALL/dmx.security.anonymous_read_allowed = NONE}
@@ -161,7 +162,7 @@ build-server:
     DEBEMAIL: 'DMX Systems (DMX CI) <devops@dmx.systems>'
     JAVAVERSION: 'openjdk-8-jre-headless'
   script:
-    - PLUGINS=(${PLUGINS})
+    - VERSION="$( ls -d dmx-* | grep -v ${ZIPFILE} | cut -d'-' -f2- )"
     - JAVAVERSION=(${JAVAVERSION})
     - CONFIG=$(<${DMX}-${VERSION}/conf/config.properties)
     - CONFIG=${CONFIG/dmx.security.anonymous_read_allowed = ALL/dmx.security.anonymous_read_allowed = NONE}
