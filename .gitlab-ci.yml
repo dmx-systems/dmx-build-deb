@@ -276,6 +276,8 @@ deploy:
   only:
     refs:
       - dev-5.2
+  tags:
+    - deb
   script:
     - COMMIT_VERSION="$( cat .git/COMMIT_EDITMSG | cut -d' ' -f4 )"
   artifacts:
