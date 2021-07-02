@@ -272,6 +272,18 @@ test-server:
     - lintian -i -I --show-overrides ../${PACKAGENAME}-server_${COMMIT_VERSION}_all.changes
 
 
+deploy:
+  only:
+    refs:
+      - dev-5.2
+  script:
+    - COMMIT_VERSION="$( cat .git/COMMIT_EDITMSG | cut -d' ' -f4 )"
+  artifacts:
+    path:
+      - ../${PACKAGENAME}_${COMMIT_VERSION}_all.deb
+      - ../${PACKAGENAME}-server_${COMMIT_VERSION}_all.deb
+    expire_in: 1 day
+
 
 deploy:
   only:
