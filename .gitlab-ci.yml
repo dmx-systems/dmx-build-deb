@@ -284,8 +284,8 @@ deploy-dev:
     - echo "${PACKAGENAME}_${COMMIT_VERSION}"
   artifacts:
     paths:
-      - ../${PACKAGENAME}_${COMMIT_VERSION}_all.deb
-      - ../${PACKAGENAME}-server_${COMMIT_VERSION}_all.deb
+      - "../${PACKAGENAME}_${COMMIT_VERSION}_all.deb"
+      - "../${PACKAGENAME}-server_${COMMIT_VERSION}_all.deb"
     expire_in: 1 day
 
 
