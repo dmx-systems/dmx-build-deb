@@ -88,7 +88,6 @@ build-default:
     JAVAVERSION: 'openjdk-8-jre'
   script:
     # - cd ${WORKDIR}
-    - echo ${PWD}
     - tree ${PWD}/
     - VERSION="$( cat ${WORKDIR}/dmx-version )"
     - JAVAVERSION=(${JAVAVERSION})
@@ -101,7 +100,7 @@ build-default:
     - CONFIG=${CONFIG/dmx.database.path = dmx-db/dmx.database.path = \/var\/lib\/dmx\/dmx-db}
     - CONFIG=${CONFIG/java.util.logging.config.file = conf\/logging.properties/java.util.logging.config.file = \/etc\/dmx\/logging.properties}
     - CONFIG=${CONFIG/org.osgi.framework.storage = bundle-cache/org.osgi.framework.storage = \/var\/cache\/dmx\/bundle-cache}
-    - echo "${CONFIG}" >etc/dmx/config.properties
+    - echo "${CONFIG}" >${WORKDIR}/etc/dmx/config.properties
     - LOGGING=$(<${WORKDIR}/${DMX}-${VERSION}/conf/logging.properties)
     - LOGGING=${LOGGING/handlers=java.util.logging.ConsoleHandler/\# handlers=java.util.logging.ConsoleHandler}
     - LOGGING=${LOGGING/java.util.logging.ConsoleHandler.level=ALL/\# java.util.logging.ConsoleHandler.level=ALL}
@@ -109,7 +108,7 @@ build-default:
     ## The next line should be removed once jri updated the source from deepamehta.log to dmx.log 
     - LOGGING=${LOGGING/java.util.logging.FileHandler.pattern=deepamehta.log/java.util.logging.FileHandler.pattern=\/var\/log\/dmx\/dmx.log}
     - LOGGING=${LOGGING/java.util.logging.FileHandler.pattern=dmx.log/java.util.logging.FileHandler.pattern=\/var\/log\/dmx\/dmx.log}
-    - echo "${LOGGING}" >etc/dmx/logging.properties
+    - echo "${LOGGING}" >${WORKDIR}/etc/dmx/logging.properties
     ## add py4dmx example
     - git clone https://git.dmx.systems/dmx-contrib/py4dmx examples/py4dmx
     - rm -rf examples/py4dmx/.git*
@@ -133,8 +132,8 @@ build-default:
     ## The next two cp commands are relevant when overriding the package name in debian/rules
     - cp debian/dmx.service debian/${PACKAGENAME}.dmx.service
     - cp debian/dmx.logrotate debian/${PACKAGENAME}.dmx.logrotate
-    - pwd
-    - tree
+    #- pwd
+    - tree ${PWD}
     - dch --controlmaint --create --package "${PACKAGENAME}" --newversion "${VERSION}-${PACKAGEVERSION}+b${CI_PIPELINE_ID}" --empty
     - dch --controlmaint -v "${VERSION}-${PACKAGEVERSION}+b${CI_PIPELINE_ID}" "A Debian Package for DMX - The Context Machine"
     - dch --controlmaint -v "${VERSION}-${PACKAGEVERSION}+b${CI_PIPELINE_ID}" "DMX is the successor of Jörg Richter's <jri@deepamehta.de> DeepaMehta project."
