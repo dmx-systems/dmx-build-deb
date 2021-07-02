@@ -20,6 +20,8 @@ before_script:
   ## Using variables in variables does not work in GitLab
   - export PACKAGENAME="${DMX}-latest"    ## [ dmx | dmx-latest ]
   - export ZIPFILE="${PACKAGENAME}.zip"
+  - export WORKDIR="../${CI_PROJECT_NAME}.TMP"
+  - if [ ! -d ${WORKDIR} ]; then mkdir ${WORKDIR}; fi
 
 
 fetch-binaries:
@@ -42,14 +44,15 @@ fetch-binaries:
     - pwd
     - echo "ZIPFILE = ${ZIPFILE}"
     - echo "Starting job ${CI_JOB_ID} in pipeline ${CI_PIPELINE_ID}"
-    - echo "Download ${WEBDIR}/${ZIPFILE}"
+    - echo "Download ${WEBDIR}/${ZIPFILE} to ${WORKDIR}"
     - sleep 1
-    - wget -q "${WEBDIR}/${ZIPFILE}"
+    - wget -q "${WEBDIR}/${ZIPFILE}" --directory-prefix "${WORKDIR}"
+    - cd ${WORKDIR}
     - echo "Unzip $(file ${ZIPFILE})"
     - unzip -q ${ZIPFILE}
     - VERSION="$( ls -d dmx-* | grep -v ${ZIPFILE} | cut -d'-' -f2- )"
     - echo "VERSION=${VERSION}"
-    - echo "${VERSION}" >../dmx-version
+    - echo "${VERSION}" >${WORKDIR}/dmx-version
     - rm -rf ${DMX}-${VERSION}/bundle/org.apache.felix.gogo.*
     - mkdir -p bin/bin bin/bundle bin/bundle-deploy bin/bundle-available etc/dmx
     - mv ${DMX}-${VERSION}/bin/* bin/bin/
@@ -82,7 +85,8 @@ build-default:
     DEBEMAIL: 'DMX Systems (DMX CI) <devops@dmx.systems>'
     JAVAVERSION: 'openjdk-8-jre'
   script:
-    - VERSION="$( cat ../dmx-version )"
+    - cd ${WORKDIR}
+    - VERSION="$( cat ${WORKDIR}/dmx-version )"
     - JAVAVERSION=(${JAVAVERSION})
     - CONFIG=$(<${DMX}-${VERSION}/conf/config.properties)
     - CONFIG=${CONFIG/dmx.security.anonymous_read_allowed = ALL/dmx.security.anonymous_read_allowed = NONE}
@@ -163,7 +167,7 @@ build-server:
     DEBEMAIL: 'DMX Systems (DMX CI) <devops@dmx.systems>'
     JAVAVERSION: 'openjdk-8-jre-headless'
   script:
-    - VERSION="$( cat ../dmx-version )"
+    - VERSION="$( cat ${WORKDIR}/dmx-version )"
     - JAVAVERSION=(${JAVAVERSION})
     - CONFIG=$(<${DMX}-${VERSION}/conf/config.properties)
     - CONFIG=${CONFIG/dmx.security.anonymous_read_allowed = ALL/dmx.security.anonymous_read_allowed = NONE}
