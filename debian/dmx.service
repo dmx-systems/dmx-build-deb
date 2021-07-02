@@ -8,24 +8,29 @@ After=network.target
 Type=simple
 User=dmx
 Group=dmx
-Environment=JAVA_XMS=128
-Environment=JAVA_XMX=256
 ExecStartPre=/bin/mkdir -p /var/run/dmx
+ExecStartPre=/bin/sh -c "echo JAVA_EXEC=$$( update-alternatives \
+    --list java \
+    | grep java-8 \
+    | grep java$ \
+    | tail -n1 ) >/var/run/dmx/environment.txt"
 PIDFile=/var/run/dmx/dmx.pid
 WorkingDirectory=/usr/share/dmx
 PermissionsStartOnly=true
 SyslogIdentifier=DMX
+Environment=JAVA_XMS=128
+Environment=JAVA_XMX=256
+EnvironmentFile=/var/run/dmx/environment.txt
 
-ExecStart=/usr/bin/java \
+ExecStart=/bin/bash -c "${JAVA_EXEC} \
     -Xms${JAVA_XMS}M \
     -Xmx${JAVA_XMX}M \
     -Dfile.encoding=UTF-8 \
     -Dfelix.system.properties=file:/etc/dmx/config.properties \
     -Dfelix.config.properties=file:/etc/dmx/config.properties \
     -Dpidfile.path=/var/run/dmx/dmx.pid \
-    -jar /usr/share/dmx/bin/felix.jar
+    -jar /usr/share/dmx/bin/felix.jar"
 
 
 [Install]
 WantedBy=multi-user.target
-
