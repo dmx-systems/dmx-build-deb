@@ -280,10 +280,9 @@ deploy-dev:
     - deb
   stage: deploy
   script:
-    - echo "Huhu!"
     - COMMIT_VERSION="$( cat .git/COMMIT_EDITMSG | cut -d' ' -f4 )"
   artifacts:
-    path:
+    paths:
       - ../${PACKAGENAME}_${COMMIT_VERSION}_all.deb
       - ../${PACKAGENAME}-server_${COMMIT_VERSION}_all.deb
     expire_in: 1 day
