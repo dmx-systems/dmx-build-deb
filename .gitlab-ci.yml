@@ -46,6 +46,7 @@ fetch-binaries:
     - echo "Starting job ${CI_JOB_ID} in pipeline ${CI_PIPELINE_ID}"
     - echo "Download ${WEBDIR}/${ZIPFILE} to ${WORKDIR}"
     - sleep 1
+    # - wget -q "${WEBDIR}/${ZIPFILE}"
     - wget -q "${WEBDIR}/${ZIPFILE}" --directory-prefix "${WORKDIR}"
     - cd ${WORKDIR}
     - echo "Unzip $(file ${ZIPFILE})"
@@ -85,10 +86,10 @@ build-default:
     DEBEMAIL: 'DMX Systems (DMX CI) <devops@dmx.systems>'
     JAVAVERSION: 'openjdk-8-jre'
   script:
-    - cd ${WORKDIR}
+    # - cd ${WORKDIR}
     - VERSION="$( cat ${WORKDIR}/dmx-version )"
     - JAVAVERSION=(${JAVAVERSION})
-    - CONFIG=$(<${DMX}-${VERSION}/conf/config.properties)
+    - CONFIG=$(<${WORKDIR}/${DMX}-${VERSION}/conf/config.properties)
     - CONFIG=${CONFIG/dmx.security.anonymous_read_allowed = ALL/dmx.security.anonymous_read_allowed = NONE}
     - CONFIG=${CONFIG/dmx.security.initial_admin_password = /dmx.security.initial_admin_password = YOUR_SECRET_PASSWORD_HERE}
     - CONFIG=${CONFIG/dmx.filerepo.path = \//dmx.filerepo.path = \/var\/lib\/dmx\/dmx-filedir}
@@ -169,7 +170,7 @@ build-server:
   script:
     - VERSION="$( cat ${WORKDIR}/dmx-version )"
     - JAVAVERSION=(${JAVAVERSION})
-    - CONFIG=$(<${DMX}-${VERSION}/conf/config.properties)
+    - CONFIG=$(<${WORKDIR}/${DMX}-${VERSION}/conf/config.properties)
     - CONFIG=${CONFIG/dmx.security.anonymous_read_allowed = ALL/dmx.security.anonymous_read_allowed = NONE}
     - CONFIG=${CONFIG/dmx.security.initial_admin_password = /dmx.security.initial_admin_password = YOUR_SECRET_PASSWORD_HERE}
     - CONFIG=${CONFIG/dmx.filerepo.path = \//dmx.filerepo.path = \/var\/lib\/dmx\/dmx-filedir}
