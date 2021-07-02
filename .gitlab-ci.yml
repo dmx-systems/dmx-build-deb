@@ -282,9 +282,11 @@ deploy-dev:
   script:
     - COMMIT_VERSION="$( cat .git/COMMIT_EDITMSG | cut -d' ' -f4 )"
     - echo "${PACKAGENAME}_${COMMIT_VERSION}"
+    - cp ../${PACKAGENAME}_${COMMIT_VERSION}_all.deb ./
+    - cp ../${PACKAGENAME}-headless_${COMMIT_VERSION}_all.deb ./
   artifacts:
     paths:
-      - ../*_all.deb
+      - ./*_all.deb
       # - "../${PACKAGENAME}-headless_${COMMIT_VERSION}_all.deb" <= in GitLab one cannot use vars in paths 
       #   => https://gitlab.com/gitlab-org/gitlab-runner/-/issues/1664)
     expire_in: 1 day
