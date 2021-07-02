@@ -76,7 +76,7 @@ fetch-binaries:
     - tree bin/bundle-available/ 
 
 
-build-default:
+build-dmx:
   ## builds the default dmx (desktop) package
   only:
     refs:
@@ -128,8 +128,8 @@ build-default:
     - CONTROL=${CONTROL//@@PACKAGENAME@@/${PACKAGENAME}}
     - CONTROL=${CONTROL//@@VERSION@@/${VERSION}}
     - CONTROL=${CONTROL//@@JAVAVERSION@@/${JAVAVERSION}}
-    - if [ "${PACKAGENAME}" == "dmx" ]; then CONFLICTS='dmx-latest, dmx-latest-server, dmx-server'; fi
-    - if [ "${PACKAGENAME}" == "dmx-latest" ]; then CONFLICTS='dmx, dmx-server, dmx-latest-server'; fi
+    - if [ "${PACKAGENAME}" == "dmx" ]; then CONFLICTS='dmx-latest, dmx-latest-headless, dmx-headless'; fi
+    - if [ "${PACKAGENAME}" == "dmx-latest" ]; then CONFLICTS='dmx, dmx-headless, dmx-latest-headless'; fi
     - CONTROL=${CONTROL/@@CONFLICTS@@/${CONFLICTS}}
     - echo -e "new control file:\n\n${CONTROL}"
     - echo "${CONTROL}" >debian/control
@@ -158,8 +158,8 @@ build-default:
     - tree
 
 
-build-server:
-  ## builds the dmx-server package
+build-dmx-headless:
+  ## builds the dmx-headless package
   only:
     refs:
       - master
@@ -208,11 +208,11 @@ build-server:
     - CONTROL="$(<debian/control)"
     - echo -e "old control file:\n\n${CONTROL}"
     ## To replace all occurrences, use ${parameter//pattern/string}
-    - CONTROL=${CONTROL//@@PACKAGENAME@@/${PACKAGENAME}-server}
+    - CONTROL=${CONTROL//@@PACKAGENAME@@/${PACKAGENAME}-headless}
     - CONTROL=${CONTROL//@@VERSION@@/${VERSION}}
     - CONTROL=${CONTROL//@@JAVAVERSION@@/${JAVAVERSION}}
-    - if [ "${PACKAGENAME}" == "dmx-server" ]; then CONFLICTS='dmx-latest, dmx-latest-server, dmx'; fi
-    - if [ "${PACKAGENAME}" == "dmx-latest-server" ]; then CONFLICTS='dmx, dmx-server, dmx-latest'; fi
+    - if [ "${PACKAGENAME}" == "dmx-headless" ]; then CONFLICTS='dmx-latest, dmx-latest-headless, dmx'; fi
+    - if [ "${PACKAGENAME}" == "dmx-latest-headless" ]; then CONFLICTS='dmx, dmx-headless, dmx-latest'; fi
     - CONTROL=${CONTROL/@@CONFLICTS@@/${CONFLICTS}}
     - echo -e "new control file:\n\n${CONTROL}"
     - echo "${CONTROL}" >debian/control
@@ -222,7 +222,7 @@ build-server:
     - cp -a ${WORKDIR}/bin ./
     - cp -a ${WORKDIR}/etc ./
     - tree ${PWD}
-    - dch --controlmaint --create --package "${PACKAGENAME}-server" --newversion "${VERSION}-${PACKAGEVERSION}+b${CI_PIPELINE_ID}" --empty
+    - dch --controlmaint --create --package "${PACKAGENAME}-headless" --newversion "${VERSION}-${PACKAGEVERSION}+b${CI_PIPELINE_ID}" --empty
     - dch --controlmaint -v "${VERSION}-${PACKAGEVERSION}+b${CI_PIPELINE_ID}" "A Debian Package for DMX - The Context Machine"
     - dch --controlmaint -v "${VERSION}-${PACKAGEVERSION}+b${CI_PIPELINE_ID}" "DMX is the successor of Jörg Richter's <jri@deepamehta.de> DeepaMehta project."
     - dch --controlmaint -v "${VERSION}-${PACKAGEVERSION}+b${CI_PIPELINE_ID}" "Thanks to Silke <silke@silkemeyer.net> for the initial work on the debian package."
@@ -256,7 +256,7 @@ test-default:
     - lintian -i -I --show-overrides ../${PACKAGENAME}_${COMMIT_VERSION}_all.changes
 
 
-test-server:
+test-headless:
   only:
     refs:
       - master
@@ -267,9 +267,9 @@ test-server:
   script:
     - COMMIT_VERSION="$( cat .git/COMMIT_EDITMSG | cut -d' ' -f4 )"
     - ls -la ../*
-    - cat ../${PACKAGENAME}-server_${COMMIT_VERSION}_all.changes
-    - echo "Running test - lintian -i -I --show-overrides ../${PACKAGENAME}-server_${COMMIT_VERSION}_all.changes"
-    - lintian -i -I --show-overrides ../${PACKAGENAME}-server_${COMMIT_VERSION}_all.changes
+    - cat ../${PACKAGENAME}-headless_${COMMIT_VERSION}_all.changes
+    - echo "Running test - lintian -i -I --show-overrides ../${PACKAGENAME}-headless_${COMMIT_VERSION}_all.changes"
+    - lintian -i -I --show-overrides ../${PACKAGENAME}-headless_${COMMIT_VERSION}_all.changes
 
 
 deploy-dev:
@@ -285,7 +285,7 @@ deploy-dev:
   artifacts:
     paths:
       - ../*_all.deb
-      # - "../${PACKAGENAME}-server_${COMMIT_VERSION}_all.deb" <= in GitLab one cannot use vars in paths 
+      # - "../${PACKAGENAME}-headless_${COMMIT_VERSION}_all.deb" <= in GitLab one cannot use vars in paths 
       #   => https://gitlab.com/gitlab-org/gitlab-runner/-/issues/1664)
     expire_in: 1 day
 
