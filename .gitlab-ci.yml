@@ -49,7 +49,7 @@ fetch-binaries:
     - unzip -q ${ZIPFILE}
     - VERSION="$( ls -d dmx-* | grep -v ${ZIPFILE} | cut -d'-' -f2- )"
     - echo "VERSION=${VERSION}"
-    - echo "${VERSION}" >./version
+    - echo "${VERSION}" >../dmx-version
     - rm -rf ${DMX}-${VERSION}/bundle/org.apache.felix.gogo.*
     - mkdir -p bin/bin bin/bundle bin/bundle-deploy bin/bundle-available etc/dmx
     - mv ${DMX}-${VERSION}/bin/* bin/bin/
@@ -82,7 +82,7 @@ build-default:
     DEBEMAIL: 'DMX Systems (DMX CI) <devops@dmx.systems>'
     JAVAVERSION: 'openjdk-8-jre'
   script:
-    - VERSION="$( cat ./version )"
+    - VERSION="$( cat ../dmx-version )"
     - JAVAVERSION=(${JAVAVERSION})
     - CONFIG=$(<${DMX}-${VERSION}/conf/config.properties)
     - CONFIG=${CONFIG/dmx.security.anonymous_read_allowed = ALL/dmx.security.anonymous_read_allowed = NONE}
@@ -163,7 +163,7 @@ build-server:
     DEBEMAIL: 'DMX Systems (DMX CI) <devops@dmx.systems>'
     JAVAVERSION: 'openjdk-8-jre-headless'
   script:
-    - VERSION="$( cat ./version )"
+    - VERSION="$( cat ../dmx-version )"
     - JAVAVERSION=(${JAVAVERSION})
     - CONFIG=$(<${DMX}-${VERSION}/conf/config.properties)
     - CONFIG=${CONFIG/dmx.security.anonymous_read_allowed = ALL/dmx.security.anonymous_read_allowed = NONE}
