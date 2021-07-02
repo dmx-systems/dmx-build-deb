@@ -281,6 +281,7 @@ deploy-dev:
   stage: deploy
   script:
     - COMMIT_VERSION="$( cat .git/COMMIT_EDITMSG | cut -d' ' -f4 )"
+    - echo "${PACKAGENAME}_${COMMIT_VERSION}"
   artifacts:
     paths:
       - ../${PACKAGENAME}_${COMMIT_VERSION}_all.deb
