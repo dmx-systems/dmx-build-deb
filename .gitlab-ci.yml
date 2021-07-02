@@ -272,7 +272,7 @@ test-server:
     - lintian -i -I --show-overrides ../${PACKAGENAME}-server_${COMMIT_VERSION}_all.changes
 
 
-deploy-dev-5.2:
+deploy-dev:
   only:
     refs:
       - dev-5.2
