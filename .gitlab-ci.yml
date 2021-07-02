@@ -88,6 +88,8 @@ build-default:
     JAVAVERSION: 'openjdk-8-jre'
   script:
     # - cd ${WORKDIR}
+    - echo ${PWD}
+    - tree ${PWD}/
     - VERSION="$( cat ${WORKDIR}/dmx-version )"
     - JAVAVERSION=(${JAVAVERSION})
     - CONFIG=$(<${WORKDIR}/${DMX}-${VERSION}/conf/config.properties)
