@@ -280,6 +280,7 @@ deploy-dev:
     - deb
   stage: deploy
   script:
+    - echo "Huhu!"
     - COMMIT_VERSION="$( cat .git/COMMIT_EDITMSG | cut -d' ' -f4 )"
   artifacts:
     path:
