@@ -272,12 +272,13 @@ test-server:
     - lintian -i -I --show-overrides ../${PACKAGENAME}-server_${COMMIT_VERSION}_all.changes
 
 
-deploy:
+deploy-dev-5.2:
   only:
     refs:
       - dev-5.2
   tags:
     - deb
+  stage: deploy
   script:
     - COMMIT_VERSION="$( cat .git/COMMIT_EDITMSG | cut -d' ' -f4 )"
   artifacts:
@@ -287,7 +288,7 @@ deploy:
     expire_in: 1 day
 
 
-deploy:
+deploy-to-repo:
   only:
     refs:
       - master
