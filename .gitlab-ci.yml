@@ -133,6 +133,8 @@ build-default:
     - cp debian/dmx.service debian/${PACKAGENAME}.dmx.service
     - cp debian/dmx.logrotate debian/${PACKAGENAME}.dmx.logrotate
     #- pwd
+    - cp -a ${WORKDIR}/bin ./
+    - cp -a ${WORKDIR}/etc ./
     - tree ${PWD}
     - dch --controlmaint --create --package "${PACKAGENAME}" --newversion "${VERSION}-${PACKAGEVERSION}+b${CI_PIPELINE_ID}" --empty
     - dch --controlmaint -v "${VERSION}-${PACKAGEVERSION}+b${CI_PIPELINE_ID}" "A Debian Package for DMX - The Context Machine"
