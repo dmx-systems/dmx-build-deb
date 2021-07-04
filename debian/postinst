@@ -189,10 +189,10 @@ case "$1" in
     fi
 
     ## copy desktop script to user's autostart folder, if it exists
-    ASDIRS="$( find /home/ -maxdepth 3 -type d -wholename "/home/*/.config/autostart" )"
+    ASDIRS="$(find /home/ -maxdepth 3 -type d -wholename "/home/*/.config/autostart")"
     if [ -f /usr/share/doc/dmx/examples/dmx.desktop.autostart ]; then
 	for homedir in ${ASDIRS}; do
-            username="$( cut -d'/' -f3 <<<${homedir} )"
+            username="$(echo ${homedir} | cut -d'/' -f3)"
 	    cp /usr/share/doc/dmx/examples/dmx.desktop.autostart ${homedir}/dmx.desktop
             chown ${username}:${username} ${homedir}/dmx.desktop
             chmod 660 ${homedir}/dmx.desktop
