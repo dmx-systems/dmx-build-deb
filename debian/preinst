@@ -23,6 +23,17 @@ DBDIR='/var/lib/dmx/dmx-db'
 
 PREVIOUSVERSION="$( if [ -d ${DBDIR} ]; then find ${DBDIR} -name ".dm-version.*" | cut -d'.' -f'3-' | sort -V | tail -n1; fi )"
 
+
+## Is this a desktop system?
+PACKAGE = $(shell dh_listpackages)
+local socket_status="$( netstat -lp 2>/dev/null | grep -E 'Xorg|Xwayland' | grep 'X11' )"
+local process_status="$( pgrep 'Xorg|Xwayland' )"
+if [ "${socket_status}" ] && [ "${process_status}" ]; then
+    echo "Check X11 Status for ${PACKAGE}: X11 found running."
+else
+    echo "Check X11 Status for ${PACKAGE}: X11 not found."
+fi
+
 # echo "running preinst $1"
 echo "Installing version ${DMVERSION}"
 
