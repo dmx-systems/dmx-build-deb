@@ -86,7 +86,7 @@ build-dmx:
     - deb
   stage: build
   variables:
-    PACKAGEVERSION: "1.0"
+    PACKAGEVERSION: "1"
     # DEBFULLNAME: 'DMX Systems (DMX CI)'
     # DEBEMAIL: 'DMX Systems (DMX CI) <devops@dmx.systems>'
     JAVAVERSION: 'openjdk-8-jre'
@@ -136,14 +136,16 @@ build-dmx:
     ## The next two cp commands are relevant when overriding the package name in debian/rules
     - cp debian/dmx.service debian/${PACKAGENAME}.dmx.service
     - cp debian/dmx.logrotate debian/${PACKAGENAME}.dmx.logrotate
+    ## Remove the headless service from the default
+    - rm debian/dmx.service.headless
     #- pwd
     - cp -a ${WORKDIR}/bin ./
     - cp -a ${WORKDIR}/etc ./
     - tree ${PWD}
-    - dch --controlmaint --create --package "${PACKAGENAME}" --newversion "${VERSION}-${PACKAGEVERSION}+b${CI_PIPELINE_ID}" --empty
-    - dch --controlmaint -v "${VERSION}-${PACKAGEVERSION}+b${CI_PIPELINE_ID}" "A Debian Package for DMX - The Context Machine"
-    - dch --controlmaint -v "${VERSION}-${PACKAGEVERSION}+b${CI_PIPELINE_ID}" "DMX is the successor of Jörg Richter's <jri@deepamehta.de> DeepaMehta project."
-    - dch --controlmaint -v "${VERSION}-${PACKAGEVERSION}+b${CI_PIPELINE_ID}" "Thanks to Silke <silke@silkemeyer.net> for the initial work on the debian package."
+    - dch --controlmaint --create --package "${PACKAGENAME}" --newversion "${VERSION}~${PACKAGEVERSION}deb+b${CI_PIPELINE_ID}" --empty
+    - dch --controlmaint -v "${VERSION}~${PACKAGEVERSION}deb+b${CI_PIPELINE_ID}" "A Debian Package for DMX - The Context Machine"
+    - dch --controlmaint -v "${VERSION}~${PACKAGEVERSION}deb+b${CI_PIPELINE_ID}" "DMX is the successor of Jörg Richter's <jri@deepamehta.de> DeepaMehta project."
+    - dch --controlmaint -v "${VERSION}~${PACKAGEVERSION}deb+b${CI_PIPELINE_ID}" "Thanks to Silke <silke@silkemeyer.net> for the initial work on the debian package."
     - dch --controlmaint -r --distribution "${TARGET}" ignored 
     - LASTCOMMIT="$( git rev-parse HEAD )"
     - git add debian/changelog
@@ -151,7 +153,7 @@ build-dmx:
     - NUNC="$( date -R )"
     - 'git commit --date="${NUNC}" -m"DMX debian package build from ${DMX}-${VERSION} - Package Version ${PACKAGEVERSION}+b${CI_PIPELINE_ID}" -m"Binaries from ${WEBDIR}/${ZIPFILE}" -m"Thanks: GitLab Team for providing great CI infrastructure!"'
     - git log -1
-    - gbp dch --distribution "${TARGET}" --ignore-branch --new-version "${VERSION}-${PACKAGEVERSION}+b${CI_PIPELINE_ID}" --commit --since=${LASTCOMMIT} --release --spawn-editor=never --full --meta
+    - gbp dch --distribution "${TARGET}" --ignore-branch --new-version "${VERSION}~${PACKAGEVERSION}deb+b${CI_PIPELINE_ID}" --commit --since=${LASTCOMMIT} --release --spawn-editor=never --full --meta
     ## - export GPG_TTY=$(tty) <= moved to .bashrc
     #- dpkg-buildpackage -A -us --force-sign -k'gitlab.runner@dmx.systems'
     - dpkg-buildpackage -A -us --force-sign -k'devops@dmx.systems'
@@ -168,7 +170,7 @@ build-dmx-headless:
     - deb
   stage: build
   variables:
-    PACKAGEVERSION: "1.0"
+    PACKAGEVERSION: "1"
     PLUGINS: "dmx-tableview dmx-geomaps dmx-mobile dmx-dita dmx-ldap"
     WEBCGI: 'https://download.dmx.systems/cgi-bin/v1/latest-version.cgi?'
     WEBDIR: 'https://download.dmx.systems/ci'
@@ -216,16 +218,18 @@ build-dmx-headless:
     - CONTROL=${CONTROL/@@CONFLICTS@@/${CONFLICTS}}
     - echo -e "new control file:\n\n${CONTROL}"
     - echo "${CONTROL}" >debian/control
+    ## Move the headless service to the default
+    - mv debian/dmx.service.headless debian/dmx.service
     ## The next two cp commands are relevant when overriding the package name in debian/rules
     - cp debian/dmx.service debian/${PACKAGENAME}.dmx.service
     - cp debian/dmx.logrotate debian/${PACKAGENAME}.dmx.logrotate
     - cp -a ${WORKDIR}/bin ./
     - cp -a ${WORKDIR}/etc ./
     - tree ${PWD}
-    - dch --controlmaint --create --package "${PACKAGENAME}-headless" --newversion "${VERSION}-${PACKAGEVERSION}+b${CI_PIPELINE_ID}" --empty
-    - dch --controlmaint -v "${VERSION}-${PACKAGEVERSION}+b${CI_PIPELINE_ID}" "A Debian Package for DMX - The Context Machine"
-    - dch --controlmaint -v "${VERSION}-${PACKAGEVERSION}+b${CI_PIPELINE_ID}" "DMX is the successor of Jörg Richter's <jri@deepamehta.de> DeepaMehta project."
-    - dch --controlmaint -v "${VERSION}-${PACKAGEVERSION}+b${CI_PIPELINE_ID}" "Thanks to Silke <silke@silkemeyer.net> for the initial work on the debian package."
+    - dch --controlmaint --create --package "${PACKAGENAME}-headless" --newversion "${VERSION}~${PACKAGEVERSION}deb+b${CI_PIPELINE_ID}" --empty
+    - dch --controlmaint -v "${VERSION}~${PACKAGEVERSION}deb+b${CI_PIPELINE_ID}" "A Debian Package for DMX - The Context Machine"
+    - dch --controlmaint -v "${VERSION}~${PACKAGEVERSION}deb+b${CI_PIPELINE_ID}" "DMX is the successor of Jörg Richter's <jri@deepamehta.de> DeepaMehta project."
+    - dch --controlmaint -v "${VERSION}~${PACKAGEVERSION}deb+b${CI_PIPELINE_ID}" "Thanks to Silke <silke@silkemeyer.net> for the initial work on the debian package."
     - dch --controlmaint -r --distribution "${TARGET}" ignored
     - LASTCOMMIT="$( git rev-parse HEAD )"
     - git add debian/changelog
@@ -233,7 +237,7 @@ build-dmx-headless:
     - NUNC="$( date -R )"
     - 'git commit --date="${NUNC}" -m"DMX debian package build from ${DMX}-${VERSION} - Package Version ${PACKAGEVERSION}+b${CI_PIPELINE_ID}" -m"Binaries from ${WEBDIR}/${ZIPFILE}" -m"Thanks: GitLab Team for providing great CI infrastructure!"'
     - git log -1
-    - gbp dch --distribution "${TARGET}" --ignore-branch --new-version "${VERSION}-${PACKAGEVERSION}+b${CI_PIPELINE_ID}" --commit --since=${LASTCOMMIT} --release --spawn-editor=never --full --meta
+    - gbp dch --distribution "${TARGET}" --ignore-branch --new-version "${VERSION}~${PACKAGEVERSION}deb+b${CI_PIPELINE_ID}" --commit --since=${LASTCOMMIT} --release --spawn-editor=never --full --meta
     ## - export GPG_TTY=$(tty) <= moved to .bashrc
     #- dpkg-buildpackage -A -us --force-sign -k'gitlab.runner@dmx.systems'
     - dpkg-buildpackage -A -us --force-sign -k'devops@dmx.systems'

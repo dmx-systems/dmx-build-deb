@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Exec=/bin/bash -c "sleep 1 && xhost +SI:localuser:dmx && sudo /bin/systemctl restart dmx"
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+Name[de_DE]=DMX
+Name=DMX - The Context Machine
+Comment[de_DE]=Grants dmx access to the X11 session and starts it.
+Comment=Grants dmx access to the X11 session and starts it.

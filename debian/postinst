@@ -188,6 +188,23 @@ case "$1" in
         mkdir /var/cache/dmx
     fi
 
+    ## copy desktop script to user's autostart folder, if it exists
+    ASDIRS="$( find /home/ -maxdepth 3 -type d -wholename "/home/*/.config/autostart" )"
+    if [ -f /usr/share/doc/dmx/examples/dmx.desktop.autostart ]; then
+	for homedir in ${ASDIRS}; do
+            username="$( cut -d'/' -f3 <<<${homedir} )"
+	    cp /usr/share/doc/dmx/examples/dmx.desktop.autostart ${homedir}/dmx.desktop
+            chown ${username}:${username} ${homedir}/dmx.desktop
+            chmod 660 ${homedir}/dmx.desktop
+	done
+    fi
+    ## add sudoers.d config if autostart folder (aka desktop) is present
+    if [ -n "${ASDIRS}" ] && [ -f /usr/share/doc/dmx/examples/42-systemctl_dmx.sudoers.d ]; then
+	cp /usr/share/doc/dmx/examples/42-systemctl_dmx.sudoers.d /etc/sudoers.d/42-systemctl_dmx
+	chown root:root /etc/sudoers.d/42-systemctl_dmx
+	chmod 440 /etc/sudoers.d/42-systemctl_dmx
+    fi
+
     ## Set permissions
     chmod 750 /etc/dmx
     chmod 640 /etc/dmx/config.properties
