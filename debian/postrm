@@ -25,6 +25,17 @@ case "$1" in
         if [ -d /var/cache/dmx ]; then
             rm -rf /var/cache/dmx
         fi
+    ## remove dmx.desktop from autostart folder
+    ASDIRS="$(find /home/ -maxdepth 3 -type d -wholename "/home/*/.config/autostart")"
+    for homedir in ${ASDIRS}; do
+        if [ -f ${homedir}/dmx.desktop ]; then
+            rm ${homedir}/dmx.desktop
+        fi
+    done
+    ## remove sudoers file
+    if [ -f /etc/sudoers.d/42-systemctl_dmx ]; then
+        rm /etc/sudoers.d/42-systemctl_dmx
+    fi
     ;;
 
     *)
