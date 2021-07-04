@@ -197,9 +197,20 @@ case "$1" in
             chown ${username}:${username} ${homedir}/dmx.desktop
             chmod 660 ${homedir}/dmx.desktop
 	done
+    elif [ -f /usr/share/doc/dmx-latest/examples/dmx.desktop.autostart ]; then
+	for homedir in ${ASDIRS}; do
+            username="$(echo ${homedir} | cut -d'/' -f3)"
+	    cp /usr/share/doc/dmx/examples/dmx.desktop.autostart ${homedir}/dmx.desktop
+            chown ${username}:${username} ${homedir}/dmx.desktop
+            chmod 660 ${homedir}/dmx.desktop
+	done
     fi
     ## add sudoers.d config if autostart folder (aka desktop) is present
     if [ -n "${ASDIRS}" ] && [ -f /usr/share/doc/dmx/examples/42-systemctl_dmx.sudoers.d ]; then
+	cp /usr/share/doc/dmx/examples/42-systemctl_dmx.sudoers.d /etc/sudoers.d/42-systemctl_dmx
+	chown root:root /etc/sudoers.d/42-systemctl_dmx
+	chmod 440 /etc/sudoers.d/42-systemctl_dmx
+    elif [ -n "${ASDIRS}" ] && [ -f /usr/share/doc/dmx-latest/examples/42-systemctl_dmx.sudoers.d ]; then
 	cp /usr/share/doc/dmx/examples/42-systemctl_dmx.sudoers.d /etc/sudoers.d/42-systemctl_dmx
 	chown root:root /etc/sudoers.d/42-systemctl_dmx
 	chmod 440 /etc/sudoers.d/42-systemctl_dmx
