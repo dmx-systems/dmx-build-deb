@@ -25,13 +25,14 @@ PREVIOUSVERSION="$( if [ -d ${DBDIR} ]; then find ${DBDIR} -name ".dm-version.*"
 
 
 ## Is this a desktop system?
-PACKAGE = "$(dh_listpackages)"
+PACKAGE = "${DPKG_MAINTSCRIPT_PACKAGE}"
+PACKAGEVERSION = "$( dpkg -s ${PACKAGE_VERSION} | sed -n 's/^Version: //p' )"
 local socket_status="$( netstat -lp 2>/dev/null | grep -E 'Xorg|Xwayland' | grep 'X11' )"
 local process_status="$( pgrep 'Xorg|Xwayland' )"
 if [ "${socket_status}" ] && [ "${process_status}" ]; then
-    echo "Check X11 Status for ${PACKAGE}: X11 found running."
+    echo "Check X11 Status for ${PACKAGE} ${PACKAGEVERSION}: X11 found running."
 else
-    echo "Check X11 Status for ${PACKAGE}: X11 not found."
+    echo "Check X11 Status for ${PACKAGE} ${PACKAGEVERSION}: X11 not found."
 fi
 
 # echo "running preinst $1"
