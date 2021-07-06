@@ -32,9 +32,9 @@ echo "PREVIOUSDBVERSION=${PREVIOUSDBVERSION}"
 SOCKET_STATUS="$( netstat -lp 2>/dev/null | grep -E 'Xorg|Xwayland' | grep 'X11' )"
 PROCESS_STATUS="$( pgrep 'Xorg|Xwayland' )"
 if [ "${SOCKET_STATUS}" ] && [ "${PROCESS_STATUS}" ]; then
-    echo "Check X11 Status on host ${HOSTNAME} for ${PACKAGE}: X11 found running."
+    echo "Check X11 Status for ${PACKAGE}: X11 found running."
 else
-    echo "Check X11 Status on host ${HOSTNAME}for ${PACKAGE}: X11 not found."
+    echo "Check X11 Status for ${PACKAGE}: X11 not found."
 fi
 
 # echo "running preinst $1"
