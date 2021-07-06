@@ -61,10 +61,11 @@ case "$1" in
         else
             BACKUPDIR="${DBDIR}-preinst_${DMVERSION}-backup-$BACKUPDATE"
         fi
-        mv ${DBDIR} ${BACKUPDIR}
-	echo "Your existing database has been moved to ${BACKUPDIR}."
+        cp -a ${DBDIR} ${BACKUPDIR}
+	echo "Your existing database has been saved to ${BACKUPDIR}."
+    else
+        mkdir ${DBDIR}
     fi
-    mkdir ${DBDIR}
     chown dmx:dmx ${DBDIR}
     chmod 750 ${DBDIR}
     touch ${DBDIR}/.dm-version.$DMVERSION
@@ -85,7 +86,8 @@ case "$1" in
             BACKUPDIR="${DBDIR}-preinst_${DMVERSION}-backup-$BACKUPDATE"
         fi
         cp -a ${DBDIR} ${BACKUPDIR}
-	echo "Your existing database has been copied to ${DBDIR}-${PREVIOUSDBVERSION}-backup-$BACKUPDATE."
+	echo "Your existing database has been saved to ${BACKUPDIR}."
+        touch ${DBDIR}/.dm-version.$DMVERSION
         touch ${DBDIR}/.dm-version.$DMVERSION
     fi
     ;;
