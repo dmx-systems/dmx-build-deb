@@ -21,28 +21,30 @@ DMVERSION='@@VERSION@@'
 ###  So in the funture we have to read that!
 DBDIR='/var/lib/dmx/dmx-db'
 
-PREVIOUSVERSION="$( if [ -d ${DBDIR} ]; then find ${DBDIR} -name ".dm-version.*" | cut -d'.' -f'3-' | sort -V | tail -n1; fi )"
-
+## was there a previously installed DMX
+PACKAGE="${DPKG_MAINTSCRIPT_PACKAGE}"
+INSTALLED_VERSION="$( dpkg -s ${PACKAGE} 2>/dev/null | sed -n 's/^Version: //p' | cut -d'~' -f1 )"
+PREVIOUSDBVERSION="$( if [ -d ${DBDIR} ]; then find ${DBDIR} -name ".dm-version.*" | cut -d'.' -f'3-' | sort -V | tail -n1; fi )"
+echo "INSTALLED_VERSION=${INSTALLED_VERSION}"
+echo "PREVIOUSDBVERSION=${PREVIOUSDBVERSION}"
 
 ## Is this a desktop system?
-PACKAGE="${DPKG_MAINTSCRIPT_PACKAGE}"
-PACKAGEVERSION="$( dpkg -s ${PACKAGE} | sed -n 's/^Version: //p' )"
-socket_status="$( netstat -lp 2>/dev/null | grep -E 'Xorg|Xwayland' | grep 'X11' )"
-process_status="$( pgrep 'Xorg|Xwayland' )"
-if [ "${socket_status}" ] && [ "${process_status}" ]; then
-    echo "Check X11 Status for ${PACKAGE} ${PACKAGEVERSION}: X11 found running."
+SOCKET_STATUS="$( netstat -lp 2>/dev/null | grep -E 'Xorg|Xwayland' | grep 'X11' )"
+PROCESS_STATUS="$( pgrep 'Xorg|Xwayland' )"
+if [ "${SOCKET_STATUS}" ] && [ "${PROCESS_STATUS}" ]; then
+    echo "Check X11 Status on host ${HOSTNAME} for ${PACKAGE}: X11 found running."
 else
-    echo "Check X11 Status for ${PACKAGE} ${PACKAGEVERSION}: X11 not found."
+    echo "Check X11 Status on host ${HOSTNAME}for ${PACKAGE}: X11 not found."
 fi
 
 # echo "running preinst $1"
 echo "Installing version ${DMVERSION}"
 
-if [ ! -z "${PREVIOUSVERSION}" ]; then
-    echo "Found previous db-version ${PREVIOUSVERSION}"
+if [ -n "${PREVIOUSDBVERSION}" ]; then
+    echo "Found previous db-version ${PREVIOUSDBVERSION}"
 fi
 
-# check if dmx is already running and stop it then
+## check if dmx is already running and stop it then
 systemctl is-active --quiet dmx.service && deb-systemd-invoke stop dmx
 
 case "$1" in
@@ -52,58 +54,40 @@ case "$1" in
 	mkdir /var/lib/dmx
 	chown dmx:dmx /var/lib/dmx
     fi
+    ## backup existing database
     if [ -d ${DBDIR} ]; then
-	    if [ -f ${DBDIR}/.dm-version.${PREVIOUSVERSION} ]; then
-		    mv ${DBDIR} ${DBDIR}-${PREVIOUSVERSION}-backup-$BACKUPDATE
-		    mkdir ${DBDIR}
-		    chown dmx:dmx ${DBDIR}
-		    chmod 750 ${DBDIR}
-		    touch ${DBDIR}/.dm-version.$DMVERSION
-		    echo "Your existing database has been moved to /var/lib/dmx/dmx-db-${PREVIOUSVERSION}-backup-$BACKUPDATE."
-	    fi
-    else
-	    mkdir ${DBDIR}
-	    chown dmx:dmx ${DBDIR}
-	    chmod 750 ${DBDIR}
-	    touch ${DBDIR}/.dm-version.$DMVERSION
+        if [ -n "${PREVIOUSDBVERSION}" ]; then
+            BACKUPDIR="${DBDIR}-${PREVIOUSDBVERSION}-backup-$BACKUPDATE"
+        else
+            BACKUPDIR="${DBDIR}-preinst_${DMVERSION}-backup-$BACKUPDATE"
+        fi
+        mv ${DBDIR} ${BACKUPDIR}
+	echo "Your existing database has been moved to ${BACKUPDIR}."
     fi
+    mkdir ${DBDIR}
+    chown dmx:dmx ${DBDIR}
+    chmod 750 ${DBDIR}
+    touch ${DBDIR}/.dm-version.$DMVERSION
     if [ -d /etc/dmx ]; then
 	    chown root:dmx /etc/dmx
 	    chmod 750 /etc/dmx
     fi
-#    if [ -d /var/cache/dmx/bundle-cache ]; then
-#	    rm -rf /var/cache/dmx/bundle-cache
-#    fi
-#    if [ -d /var/cache/dmx/dmx-bundle-cache ]; then
-#	    rm -rf /var/cache/dmx/dmx-bundle-cache
-#    fi
-##    if [ -d /var/cache/dmx ]; then
-##	    rm -rf /var/cache/dmx
-##   fi
-
     ;;
 
     upgrade)
-    # backup existing database
+    ## backup existing database
     if [ -d ${DBDIR} ]; then
-        cp -a ${DBDIR} ${DBDIR}-${PREVIOUSVERSION}-backup-$BACKUPDATE
+        if [ -n "${PREVIOUSDBVERSION}" ]; then
+            BACKUPDIR="${DBDIR}-${PREVIOUSDBVERSION}-backup-$BACKUPDATE"
+        elif [ -n "${INSTALLED_VERSION}" ]; then
+            BACKUPDIR="${DBDIR}-${INSTALLEDDBVERSION}-backup-$BACKUPDATE"
+        else
+            BACKUPDIR="${DBDIR}-preinst_${DMVERSION}-backup-$BACKUPDATE"
+        fi
+        cp -a ${DBDIR} ${BACKUPDIR}
+	echo "Your existing database has been copied to ${DBDIR}-${PREVIOUSDBVERSION}-backup-$BACKUPDATE."
         touch ${DBDIR}/.dm-version.$DMVERSION
-	echo "Your existing database has been copied to ${DBDIR}-${PREVIOUSVERSION}-backup-$BACKUPDATE."
-	# if [ -f ${DBDIR}/.dm-version.${PREVIOUSVERSION} ]; then
-        #    rm ${DBDIR}/.dm-version.$PREVIOUSVERSION
-    	# fi
     fi
-
-    ### bundle cache dir is a config parameter. We need to read it from config properties.
-#    if [ -d /var/cache/dmx/bundle-cache ]; then
-#	    rm -rf /var/cache/dmx/bundle-cache
-#    fi
-#    if [ -d /var/cache/dmx/dmx-bundle-cache ]; then
-#	    rm -rf /var/cache/dmx/dmx-bundle-cache
-#    fi
-##    if [ -d /var/cache/dmx ]; then
-##	    rm -rf /var/cache/dmx
-##   fi
     ;;
 
     abort-upgrade)
