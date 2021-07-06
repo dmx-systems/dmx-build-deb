@@ -26,7 +26,7 @@ PREVIOUSVERSION="$( if [ -d ${DBDIR} ]; then find ${DBDIR} -name ".dm-version.*"
 
 ## Is this a desktop system?
 PACKAGE="${DPKG_MAINTSCRIPT_PACKAGE}"
-PACKAGEVERSION="$( dpkg -s ${PACKAGE_VERSION} | sed -n 's/^Version: //p' )"
+PACKAGEVERSION="$( dpkg -s ${PACKAGE} | sed -n 's/^Version: //p' )"
 socket_status="$( netstat -lp 2>/dev/null | grep -E 'Xorg|Xwayland' | grep 'X11' )"
 process_status="$( pgrep 'Xorg|Xwayland' )"
 if [ "${socket_status}" ] && [ "${process_status}" ]; then
