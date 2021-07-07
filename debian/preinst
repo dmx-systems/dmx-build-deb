@@ -19,7 +19,7 @@ set -e
 ## Get the name of the package
 PACKAGE="${DPKG_MAINTSCRIPT_PACKAGE}"
 DMVERSION='@@VERSION@@'
-echo "$1 ${PACKAGE} version ${DMVERSION}"
+echo "Running $1 ${PACKAGE} version ${DMVERSION}."
 
 ## Is this the headless package?
 HEADLESS_PACKAGE="$( echo "${PACKAGE}" | grep 'headless' )" || true
