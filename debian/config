@@ -14,8 +14,10 @@ if [ -z "${SOCKET_STATUS}" ] && [ -z "${PROCESS_STATUS}" ]; then
     db_input high dmx/headless_warning || true
     db_input high dmx/continue_installation || true
     db_go
+else
+    ## TODO: remove this
+    echo "X11 check: ok."
 fi
-
 
 ## Abort installation
 db_get dmx/continue_installation
