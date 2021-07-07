@@ -10,7 +10,7 @@ Description: This host seems to be headless - meaning it has
 
 Template: dmx/continue_installation
 Type: boolean
-Default: False
+Default: false
 Description: Are you sure you want to continue? [y/N]
  WARNING: Continuing with the installation might lead
  to an unsecure and non-working result!
