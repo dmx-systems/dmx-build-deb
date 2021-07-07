@@ -33,7 +33,8 @@ fi
 
 ## Abort installation
 db_get dmx/continue_installation
-if [ "$RET" != true ]; then
+echo "<$RET>"
+if [ "$RET" != "true" ]; then
     ## Remove my changes to the db.
     db_purge
     exit 0
