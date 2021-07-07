@@ -1,11 +1,11 @@
 Template: dmx/headless_warning
 Type: note
 Description: This host seems to be headless ...
- ... meaning it has no graphical user insterface (X-Windows or Wayland) installed.
+ ... meaning it has no graphical user insterface (Xorg or Xwayland) installed.
  Since DMX version 5.2 there are two different packages:
- 1. dmx - the default package for desktop systems (your private computer)
- 2. dmx-headless - a package for non-desktop systems (public web-server)
- It is highly recommend to uninstall the previously installed package (sudo apt remove dmx)
+ 1. dmx - the default package for desktop systems (your private computer).
+ 2. dmx-headless - a package for non-desktop systems (public web-server).
+ It is highly recommended to uninstall the previously installed package (sudo apt remove dmx)
  and to install the dmx-headless package instead (sudo apt install dmx-headless).
 
 Template: dmx/continue_installation
