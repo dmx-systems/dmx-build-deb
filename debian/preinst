@@ -28,6 +28,10 @@ HEADLESS_PACKAGE="$( echo "${PACKAGE}" | grep 'headless' )" || true
 SOCKET_STATUS="$( netstat -lp 2>/dev/null | grep -E 'Xorg|Xwayland' | grep 'X11' )" || true
 PROCESS_STATUS="$( pgrep 'Xorg|Xwayland' )" || true
 
+echo "HEADLESS_PACKAGE=${HEADLESS_PACKAGE}"
+echo "SOCKET_STATUS=${SOCKET_STATUS}"
+echo "PROCESS_STATUS=${PROCESS_STATUS}"
+
 ## Check system and ask user
 if [ -n "${SOCKET_STATUS}" ] && [ -n "${PROCESS_STATUS}" ] && [ -z "${HEADLESS_PACKAGE}" ]; then
     ## prompt headless warning
