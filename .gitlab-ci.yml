@@ -7,6 +7,7 @@ stages:
   - test
   - deploy
 
+
 variables:
   ## target distribution
   # TARGET="$(lsb_release -sc)"
@@ -96,10 +97,10 @@ build-dmx:
     - VERSION="$( cat ${WORKDIR}/dmx-version )"
     - JAVAVERSION=(${JAVAVERSION})
     - CONFIG=$(<${WORKDIR}/${DMX}-${VERSION}/conf/config.properties)
-    - CONFIG=${CONFIG/dmx.security.anonymous_read_allowed = ALL/dmx.security.anonymous_read_allowed = NONE}
+    # - CONFIG=${CONFIG/dmx.security.anonymous_read_allowed = ALL/dmx.security.anonymous_read_allowed = NONE}
     - CONFIG=${CONFIG/dmx.security.initial_admin_password = /dmx.security.initial_admin_password = YOUR_SECRET_PASSWORD_HERE}
-    - CONFIG=${CONFIG/dmx.filerepo.path = \//dmx.filerepo.path = \/var\/lib\/dmx\/dmx-filedir}
-    - CONFIG=${CONFIG/dmx.filerepo.per_workspace = false/dmx.filerepo.per_workspace = true}
+    # - CONFIG=${CONFIG/dmx.filerepo.path = \//dmx.filerepo.path = \/var\/lib\/dmx\/dmx-filedir}
+    # - CONFIG=${CONFIG/dmx.filerepo.per_workspace = false/dmx.filerepo.per_workspace = true}
     - CONFIG=${CONFIG/felix.fileinstall.dir = bundle-deploy/felix.fileinstall.dir = \/usr\/share\/dmx\/bundle-deploy}
     - CONFIG=${CONFIG/dmx.database.path = dmx-db/dmx.database.path = \/var\/lib\/dmx\/dmx-db}
     - CONFIG=${CONFIG/java.util.logging.config.file = conf\/logging.properties/java.util.logging.config.file = \/etc\/dmx\/logging.properties}
@@ -109,8 +110,6 @@ build-dmx:
     - LOGGING=${LOGGING/handlers=java.util.logging.ConsoleHandler/\# handlers=java.util.logging.ConsoleHandler}
     - LOGGING=${LOGGING/java.util.logging.ConsoleHandler.level=ALL/\# java.util.logging.ConsoleHandler.level=ALL}
     - LOGGING=${LOGGING/\# handlers=java.util.logging.FileHandler/handlers=java.util.logging.FileHandler}
-    ## The next line should be removed once jri updated the source from deepamehta.log to dmx.log 
-    - LOGGING=${LOGGING/java.util.logging.FileHandler.pattern=deepamehta.log/java.util.logging.FileHandler.pattern=\/var\/log\/dmx\/dmx.log}
     - LOGGING=${LOGGING/java.util.logging.FileHandler.pattern=dmx.log/java.util.logging.FileHandler.pattern=\/var\/log\/dmx\/dmx.log}
     - echo "${LOGGING}" >${WORKDIR}/etc/dmx/logging.properties
     ## add py4dmx example
@@ -136,9 +135,8 @@ build-dmx:
     ## The next two cp commands are relevant when overriding the package name in debian/rules
     - cp debian/dmx.service debian/${PACKAGENAME}.dmx.service
     - cp debian/dmx.logrotate debian/${PACKAGENAME}.dmx.logrotate
-    ## Remove the headless service from the default
+    ## Remove the headless service (as we do build the default here)
     - rm debian/dmx.service.headless
-    #- pwd
     - cp -a ${WORKDIR}/bin ./
     - cp -a ${WORKDIR}/etc ./
     - tree ${PWD}
@@ -155,7 +153,6 @@ build-dmx:
     - git log -1
     - gbp dch --distribution "${TARGET}" --ignore-branch --new-version "${VERSION}~${PACKAGEVERSION}deb+b${CI_PIPELINE_ID}" --commit --since=${LASTCOMMIT} --release --spawn-editor=never --full --meta
     ## - export GPG_TTY=$(tty) <= moved to .bashrc
-    #- dpkg-buildpackage -A -us --force-sign -k'gitlab.runner@dmx.systems'
     - dpkg-buildpackage -A -us --force-sign -k'devops@dmx.systems'
     - tree
 
@@ -194,8 +191,6 @@ build-dmx-headless:
     - LOGGING=${LOGGING/handlers=java.util.logging.ConsoleHandler/\# handlers=java.util.logging.ConsoleHandler}
     - LOGGING=${LOGGING/java.util.logging.ConsoleHandler.level=ALL/\# java.util.logging.ConsoleHandler.level=ALL}
     - LOGGING=${LOGGING/\# handlers=java.util.logging.FileHandler/handlers=java.util.logging.FileHandler}
-    ## The next line should be removed once jri updated the source from deepamehta.log to dmx.log 
-    - LOGGING=${LOGGING/java.util.logging.FileHandler.pattern=deepamehta.log/java.util.logging.FileHandler.pattern=\/var\/log\/dmx\/dmx.log}
     - LOGGING=${LOGGING/java.util.logging.FileHandler.pattern=dmx.log/java.util.logging.FileHandler.pattern=\/var\/log\/dmx\/dmx.log}
     - echo "${LOGGING}" >${WORKDIR}/etc/dmx/logging.properties
     ## add py4dmx example
@@ -218,7 +213,7 @@ build-dmx-headless:
     - CONTROL=${CONTROL/@@CONFLICTS@@/${CONFLICTS}}
     - echo -e "new control file:\n\n${CONTROL}"
     - echo "${CONTROL}" >debian/control
-    ## Move the headless service to the default
+    ## Move the headless service over the default (as we do build headless here)
     - mv debian/dmx.service.headless debian/dmx.service
     ## The next two cp commands are relevant when overriding the package name in debian/rules
     - cp debian/dmx.service debian/${PACKAGENAME}.dmx.service
@@ -239,7 +234,6 @@ build-dmx-headless:
     - git log -1
     - gbp dch --distribution "${TARGET}" --ignore-branch --new-version "${VERSION}~${PACKAGEVERSION}deb+b${CI_PIPELINE_ID}" --commit --since=${LASTCOMMIT} --release --spawn-editor=never --full --meta
     ## - export GPG_TTY=$(tty) <= moved to .bashrc
-    #- dpkg-buildpackage -A -us --force-sign -k'gitlab.runner@dmx.systems'
     - dpkg-buildpackage -A -us --force-sign -k'devops@dmx.systems'
     - tree
 
@@ -290,9 +284,9 @@ deploy-dev:
     - cp ../${PACKAGENAME}-headless_${COMMIT_VERSION}_all.deb ./
   artifacts:
     paths:
+      ## - "../${PACKAGENAME}-headless_${COMMIT_VERSION}_all.deb" <= in GitLab one cannot use vars in paths 
+      ##   => https://gitlab.com/gitlab-org/gitlab-runner/-/issues/1664)
       - ./*_all.deb
-      # - "../${PACKAGENAME}-headless_${COMMIT_VERSION}_all.deb" <= in GitLab one cannot use vars in paths 
-      #   => https://gitlab.com/gitlab-org/gitlab-runner/-/issues/1664)
     expire_in: 1 day
 
 
@@ -321,7 +315,7 @@ deploy-to-repo:
     - WORKDIR="$( pwd )"
     - echo "cleaning up ${WORKDIR}/* ..."
     - find . -type f -name "*${PACKAGENAME}_*" -exec rm -f {} \;
-    ## trigger pipeline to re-deploy docker image for dmx demo
+    ## trigger pipeline to re-deploy docker image for dmx dev
     - MY_JOB_TOKEN="$(</home/gitlab-runner/.after-deb-repo.token)"
     - TRIGGER="$(curl --silent --write-out '%{http_code}' --output /dev/null --request POST --form token="${MY_JOB_TOKEN}" --form ref=master https://git.dmx.systems/api/v4/projects/17/trigger/pipeline)"
     - echo "${TRIGGER}"
