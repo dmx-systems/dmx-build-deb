@@ -19,7 +19,7 @@ set -e
 ## Get the name of the package
 PACKAGE="${DPKG_MAINTSCRIPT_PACKAGE}"
 DMVERSION='@@VERSION@@'
-echo "Installing ${PACKAGE} version ${DMVERSION}."
+echo "$1 ${PACKAGE} version ${DMVERSION}"
 
 ## Is this the headless package?
 HEADLESS_PACKAGE="$( echo "${PACKAGE}" | grep 'headless' )"
@@ -27,7 +27,9 @@ HEADLESS_PACKAGE="$( echo "${PACKAGE}" | grep 'headless' )"
 ## Is this a desktop system?
 SOCKET_STATUS="$( netstat -lp 2>/dev/null | grep -E 'Xorg|Xwayland' | grep 'X11' )"
 PROCESS_STATUS="$( pgrep 'Xorg|Xwayland' )"
-if [ -z "${SOCKET_STATUS}" ] && [ -z "${PROCESS_STATUS}" ] && [ -n "${HEADLESS_PACKAGE}" ]; then
+
+## 
+if [ -z "${SOCKET_STATUS}" ] && [ -z "${PROCESS_STATUS}" ] && [ -z "${HEADLESS_PACKAGE}" ]; then
     ## prompt headless warning
     db_input high dmx/headless_warning || true
     db_input high dmx/continue_installation || true
