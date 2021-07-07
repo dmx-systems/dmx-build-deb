@@ -140,11 +140,11 @@ build-dmx:
     - cp -a ${WORKDIR}/bin ./
     - cp -a ${WORKDIR}/etc ./
     - tree ${PWD}
-    #- dch --controlmaint --create --package "${PACKAGENAME}" --newversion "${VERSION}~${PACKAGEVERSION}deb+b${CI_PIPELINE_ID}" --empty
+    # - dch --controlmaint --create --package "${PACKAGENAME}" --newversion "${VERSION}~${PACKAGEVERSION}deb+b${CI_PIPELINE_ID}" --empty
     - dch --controlmaint --create --package "${PACKAGENAME}" --newversion "${VERSION}~0deb" --empty
-    #- dch --controlmaint -v "${VERSION}~${PACKAGEVERSION}deb+b${CI_PIPELINE_ID}" "A Debian Package for DMX - The Context Machine"
-    #- dch --controlmaint -v "${VERSION}~${PACKAGEVERSION}deb+b${CI_PIPELINE_ID}" "DMX is the successor of Jörg Richter's <jri@deepamehta.de> DeepaMehta project."
-    #- dch --controlmaint -v "${VERSION}~${PACKAGEVERSION}deb+b${CI_PIPELINE_ID}" "Thanks to Silke <silke@silkemeyer.net> for the initial work on the debian package."
+    # - dch --controlmaint -v "${VERSION}~${PACKAGEVERSION}deb+b${CI_PIPELINE_ID}" "A Debian Package for DMX - The Context Machine"
+    # - dch --controlmaint -v "${VERSION}~${PACKAGEVERSION}deb+b${CI_PIPELINE_ID}" "DMX is the successor of Jörg Richter's <jri@deepamehta.de> DeepaMehta project."
+    # - dch --controlmaint -v "${VERSION}~${PACKAGEVERSION}deb+b${CI_PIPELINE_ID}" "Thanks to Silke <silke@silkemeyer.net> for the initial work on the debian package."
     - dch --controlmaint -v "${VERSION}~0deb" "A Debian Package for DMX - The Context Machine"
     - dch --controlmaint -v "${VERSION}~0deb" "DMX is the successor of Jörg Richter's <jri@deepamehta.de> DeepaMehta project."
     - dch --controlmaint -v "${VERSION}~0deb" "Thanks: Silke <silke@silkemeyer.net> for the initial work on the debian package."
