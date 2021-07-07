@@ -25,8 +25,6 @@ DBDIR='/var/lib/dmx/dmx-db'
 PACKAGE="${DPKG_MAINTSCRIPT_PACKAGE}"
 INSTALLED_VERSION="$( dpkg -s ${PACKAGE} 2>/dev/null | sed -n 's/^Version: //p' | cut -d'~' -f1 )"
 PREVIOUSDBVERSION="$( if [ -d ${DBDIR} ]; then find ${DBDIR} -name ".dm-version.*" | cut -d'.' -f'3-' | sort -V | tail -n1; fi )"
-echo "INSTALLED_VERSION=${INSTALLED_VERSION}"
-echo "PREVIOUSDBVERSION=${PREVIOUSDBVERSION}"
 
 ## Is this a desktop system?
 SOCKET_STATUS="$( netstat -lp 2>/dev/null | grep -E 'Xorg|Xwayland' | grep 'X11' )"
@@ -62,7 +60,7 @@ case "$1" in
             BACKUPDIR="${DBDIR}-preinst_${DMVERSION}-backup-$BACKUPDATE"
         fi
         cp -a ${DBDIR} ${BACKUPDIR}
-	echo "Your existing database has been saved to ${BACKUPDIR}."
+	echo "Your existing database has been backed-up (copied) to ${BACKUPDIR}."
     else
         mkdir ${DBDIR}
     fi
@@ -86,7 +84,7 @@ case "$1" in
             BACKUPDIR="${DBDIR}-preinst_${DMVERSION}-backup-$BACKUPDATE"
         fi
         cp -a ${DBDIR} ${BACKUPDIR}
-	echo "Your existing database has been saved to ${BACKUPDIR}."
+	echo "Your existing database has been backed-up (copied) to ${BACKUPDIR}."
         touch ${DBDIR}/.dm-version.$DMVERSION
         touch ${DBDIR}/.dm-version.$DMVERSION
     fi
