@@ -25,18 +25,17 @@ if [ -z "${SOCKET_STATUS}" ] && [ -z "${PROCESS_STATUS}" ]; then
     db_input high dmx/headless_warning || true
     db_input high dmx/continue_installation || true
     db_go
-fi
-
-## Abort installation
-db_get dmx/continue_installation
-echo "<$RET>"
-if [ "$RET" != "true" ]; then
-    ## Remove my changes to the db.
-    echo "aborting installation."
-    db_purge
-    ## IMPORTANT: exit 0 will not cancel the installation process,
-    ## but only exit from preinst and continue with installation.
-    exit 1
+    db_get dmx/continue_installation
+    #  echo "<$RET>"
+    if [ "$RET" != "true" ]; then
+        ## Remove my changes to the db.
+        echo "aborting installation."
+        db_purge
+        ## Abort installation
+        ## IMPORTANT: exit 0 will not cancel the installation process,
+        ## but only exit from preinst and continue with installation.
+        exit 1
+    fi
 fi
 
 ## 
