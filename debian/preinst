@@ -33,17 +33,13 @@ fi
 
 ## Abort installation
 db_get dmx/continue_installation
-if [ "$RET" = "false" ]; then
+if [ "$RET" != true ]; then
     ## Remove my changes to the db.
     db_purge
     exit 0
 fi
 
-
-
-
-
-
+## 
 BACKUPDATE="$( date +%F-%H:%M:%S )"
 DMVERSION='@@VERSION@@'
 
