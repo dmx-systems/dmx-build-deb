@@ -13,6 +13,37 @@ set -e
 # for details, see http://www.debian.org/doc/debian-policy/ or
 # the debian-policy package
 
+
+## Source debconf library.
+. /usr/share/debconf/confmodule
+
+## Is this a desktop system?
+SOCKET_STATUS="$( netstat -lp 2>/dev/null | grep -E 'Xorg|Xwayland' | grep 'X11' )"
+PROCESS_STATUS="$( pgrep 'Xorg|Xwayland' )"
+#if [ -z "${SOCKET_STATUS}" ] && [ -z "${PROCESS_STATUS}" ]; then
+if [ -n "${SOCKET_STATUS}" ] && [ -n "${PROCESS_STATUS}" ]; then
+    ## prompt headless warning
+    db_input high dmx/headless_warning || true
+    db_input high dmx/continue_installation || true
+    db_go
+else
+    ## TODO: remove this
+    echo "X11 check: ok."
+fi
+
+## Abort installation
+db_get dmx/continue_installation
+if [ "$RET" = "false" ]; then
+    ## Remove my changes to the db.
+    db_purge
+    exit 0
+fi
+
+
+
+
+
+
 BACKUPDATE="$( date +%F-%H:%M:%S )"
 DMVERSION='@@VERSION@@'
 
