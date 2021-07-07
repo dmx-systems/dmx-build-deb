@@ -94,6 +94,7 @@ build-dmx:
   script:
     # - cd ${WORKDIR}
     - tree ${PWD}/
+    - PACKAGENAME="${PACKAGENAME}"
     - VERSION="$( cat ${WORKDIR}/dmx-version )"
     - JAVAVERSION=(${JAVAVERSION})
     - CONFIG=$(<${WORKDIR}/${DMX}-${VERSION}/conf/config.properties)
@@ -175,6 +176,7 @@ build-dmx-headless:
     DEBEMAIL: 'DMX Systems (DMX CI) <devops@dmx.systems>'
     JAVAVERSION: 'openjdk-8-jre-headless'
   script:
+    - PACKAGENAME="${PACKAGENAME}-headless"
     - VERSION="$( cat ${WORKDIR}/dmx-version )"
     - JAVAVERSION=(${JAVAVERSION})
     - CONFIG=$(<${WORKDIR}/${DMX}-${VERSION}/conf/config.properties)
@@ -205,7 +207,7 @@ build-dmx-headless:
     - CONTROL="$(<debian/control)"
     - echo -e "old control file:\n\n${CONTROL}"
     ## To replace all occurrences, use ${parameter//pattern/string}
-    - CONTROL=${CONTROL//@@PACKAGENAME@@/${PACKAGENAME}-headless}
+    - CONTROL=${CONTROL//@@PACKAGENAME@@/${PACKAGENAME}}
     - CONTROL=${CONTROL//@@VERSION@@/${VERSION}}
     - CONTROL=${CONTROL//@@JAVAVERSION@@/${JAVAVERSION}}
     - if [ "${PACKAGENAME}" == "dmx-headless" ]; then CONFLICTS='dmx-latest, dmx-latest-headless, dmx'; fi
@@ -230,7 +232,7 @@ build-dmx-headless:
     - git add debian/changelog
     - sleep 1
     - NUNC="$( date -R )"
-    - 'git commit --date="${NUNC}" -m"DMX debian package build from ${DMX}-${VERSION} - Package Version ${PACKAGEVERSION}+b${CI_PIPELINE_ID}" -m"Binaries from ${WEBDIR}/${ZIPFILE}" -m"Thanks: GitLab Team for providing great CI infrastructure!"'
+    - 'git commit --date="${NUNC}" -m"DMX debian package ${PACKAGENAME} build from ${DMX}-${VERSION} - Package Version ${PACKAGEVERSION}+b${CI_PIPELINE_ID}" -m"Binaries from ${WEBDIR}/${ZIPFILE}" -m"Thanks: GitLab Team for providing great CI infrastructure!"'
     - git log -1
     - gbp dch --distribution "${TARGET}" --ignore-branch --new-version "${VERSION}~${PACKAGEVERSION}deb+b${CI_PIPELINE_ID}" --commit --since=${LASTCOMMIT} --release --spawn-editor=never --full --meta
     ## - export GPG_TTY=$(tty) <= moved to .bashrc
@@ -247,6 +249,7 @@ test-default:
     - deb
   stage: test
   script:
+    - PACKAGENAME="${PACKAGENAME}"
     - COMMIT_VERSION="$( cat .git/COMMIT_EDITMSG | cut -d' ' -f4 )"
     - ls -la ../*
     - cat ../${PACKAGENAME}_${COMMIT_VERSION}_all.changes
@@ -263,11 +266,12 @@ test-headless:
     - deb
   stage: test
   script:
+    - PACKAGENAME="${PACKAGENAME}-headless"
     - COMMIT_VERSION="$( cat .git/COMMIT_EDITMSG | cut -d' ' -f4 )"
     - ls -la ../*
-    - cat ../${PACKAGENAME}-headless_${COMMIT_VERSION}_all.changes
-    - echo "Running test - lintian -i -I --show-overrides ../${PACKAGENAME}-headless_${COMMIT_VERSION}_all.changes"
-    - lintian -i -I --show-overrides ../${PACKAGENAME}-headless_${COMMIT_VERSION}_all.changes
+    - cat ../${PACKAGENAME}_${COMMIT_VERSION}_all.changes
+    - echo "Running test - lintian -i -I --show-overrides ../${PACKAGENAME}_${COMMIT_VERSION}_all.changes"
+    - lintian -i -I --show-overrides ../${PACKAGENAME}_${COMMIT_VERSION}_all.changes
 
 
 deploy-dev:
