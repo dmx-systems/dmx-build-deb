@@ -76,7 +76,7 @@ case "$1" in
     id -u dmx >/dev/null 2>&1 || useradd --system --user-group --home-dir '/var/lib/dmx' --shell '/bin/false' --comment 'DMX - The Context Machine' dmx
     if [ ! -d /var/lib/dmx ]; then
 	mkdir /var/lib/dmx
-	chown dmx:dmx /var/lib/dmx
+	#chown dmx:dmx /var/lib/dmx
     fi
     ## backup existing database
     if [ -d ${DBDIR} ]; then
@@ -90,11 +90,11 @@ case "$1" in
     else
         mkdir ${DBDIR}
     fi
-    chown dmx:dmx ${DBDIR}
+    # chown dmx:dmx ${DBDIR}
     chmod 750 ${DBDIR}
     touch ${DBDIR}/.dm-version.$DMVERSION
     if [ -d /etc/dmx ]; then
-	    chown root:dmx /etc/dmx
+	    # chown root:dmx /etc/dmx
 	    chmod 750 /etc/dmx
     fi
     ;;
