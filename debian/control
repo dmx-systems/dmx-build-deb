@@ -8,7 +8,8 @@ Homepage: https://dmx.berlin
 
 Package: @@PACKAGENAME@@
 Architecture: all
-Depends: @@JAVAVERSION@@, debconf (>= 0.5)
+Depends: @@JAVAVERSION@@
+Pre-Depends: debconf (>= 0.5)
 Breaks: deepamehta (<< 5.0)
 Conflicts: @@CONFLICTS@@
 Description: semantic web platform for knowledge management and collaboration
