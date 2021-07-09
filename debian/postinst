@@ -45,6 +45,7 @@ case "$1" in
         ## Get password from debconf-db
         db_get dmx/initial_admin_password || true
         INITIAL_ADMIN_PASSWORD="$RET"
+        echo "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD}"
         CONFIGFILE='/etc/dmx/config.properties'
         cp -a -f $CONFIGFILE $CONFIGFILE.tmp || true
         sed -i "s/^ *dmx\.security\.initial_admin_password =.*/dmx\.security\.initial_admin_password = $INITIAL_ADMIN_PASSWORD/" $CONFIGFILE || true
