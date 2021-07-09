@@ -27,7 +27,7 @@ case "$1" in
             rm -rf /var/cache/dmx || true
         fi
     ## remove dmx.desktop from autostart folder
-    ASDIRS="$(find /home/ -maxdepth 3 -type d -wholename "/home/*/.config/autostart")" || true
+    ASDIRS="$(find /home/ -maxdepth 3 -type d -wholename "/home/*/.config/autostart")"
     for homedir in ${ASDIRS}; do
         if [ -f ${homedir}/dmx.desktop ]; then
             rm ${homedir}/dmx.desktop || true
