@@ -46,7 +46,7 @@ case "$1" in
 esac
 
 if [ "$1" = purge ]; then
-    echo "if purge ..."
+    echo "if purge ..." >&2
     # deb-systemd-invoke stop dmx.service >/dev/null || true
     # deb-systemd-invoke disable dmx.service >/dev/null || true
     ### the logfile is a config parameter. We should read this in the future.
@@ -67,8 +67,8 @@ if [ "$1" = purge ]; then
     # deluser --system dmx >/dev/null || true
     #delgroup dmx >/dev/null || true
 
-    id -u dmx >/dev/null 2>&1 && deluser --system >/dev/null 2>&1 || true
-    id -g dmx >/dev/null 2>&1 && delgroup >/dev/null 2>&1 || true
+    id -u dmx >/dev/null 2>&1 && deluser --system dmx >/dev/null 2>&1 || true
+    id -g dmx >/dev/null 2>&1 && delgroup dmx >/dev/null 2>&1 || true
 
     echo "8" >&2
 
