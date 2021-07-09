@@ -38,6 +38,8 @@ echo "running $0 $1"
 case "$1" in
     configure)
 
+    echo "1"
+
     ## Change password only on initial installation
     if [ -z "$2" ]; then
         ## Get password from debconf-db
@@ -45,7 +47,7 @@ case "$1" in
         INITIAL_ADMIN_PASSWORD="$RET"
         CONFIGFILE='/etc/dmx/config.properties'
         cp -a -f $CONFIGFILE $CONFIGFILE.tmp || true
-        sed -i "s/^dmx\.security\.initial_admin_password =.*/dmx\.security\.initial_admin_password = $INITIAL_ADMIN_PASSWORD/" $CONFIGFILE || true
+        sed -i "s/^ *dmx\.security\.initial_admin_password =.*/dmx\.security\.initial_admin_password = $INITIAL_ADMIN_PASSWORD/" $CONFIGFILE || true
         db_clear || true
         echo "Successfuly changed dmx.security.initial_admin_password in /etc/dmx/config.properties."
     fi
@@ -79,6 +81,8 @@ case "$1" in
         mv ${FILEDIR}/dmx-tableview-command-1.3.0.jar "${FILEDIR}/.~outdated~/"
     fi
 
+    echo "2"
+
     ## Check if there are any files instead of links in $LINKDIR
     PLUGINFILES="$(find "${LINKDIR}/" -maxdepth 1 -name "*.jar" -type f)"
     for pf in ${PLUGINFILES}; do
@@ -98,6 +102,10 @@ case "$1" in
         fi
     done
 
+
+    echo "3"
+
+
     ## Get rid of pluginname-latest.jar files without version number
     ## The whole *-latest.jar should be removed, once they have all been terminated
     ##
@@ -115,6 +123,9 @@ case "$1" in
             ln -s "${latestfile}" "${LINKDIR}/${plugin_version}"
         fi
     done
+
+    echo "4"
+
     ## Step two: find -latest files in ${FILEDIR}
     PLUGINFILES="$(find "${FILEDIR}/" -maxdepth 1 -name "*-latest.jar" -type f)"
     for pf in ${PLUGINFILES}; do
@@ -127,6 +138,7 @@ case "$1" in
             mv "${FILEDIR}/${filename}" "${FILEDIR}/.~outdated~/"
         fi
     done
+
 
     ## Check if SNAPSHOT versions exist for released plugins
     PLUGINFILES="$(find "${LINKDIR}/" -maxdepth 1 -name "*-SNAPSHOT*.jar" -type l)"
@@ -147,6 +159,8 @@ case "$1" in
         fi
     done
 
+    echo "6"
+
     ## Remove old files
     OLDFILES="$(find "${FILEDIR}/" -maxdepth 1 -name "*.jar" -type f)"
     for of in ${OLDFILES}; do
@@ -159,6 +173,8 @@ case "$1" in
             mv "${of}" "${FILEDIR}/.~outdated~/${filename}"
         fi
     done
+
+    echo "7"
 
     ## Update symlinks
     SYMLINKS="$(find "${LINKDIR}/" -maxdepth 1 -name "*.jar" -type l)"      # use l for symlinks
