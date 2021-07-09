@@ -72,9 +72,9 @@ case "$1" in
     BACKUPDATE="$( date +%F-%H:%M:%S )"
     ## check if dmx is already running and stop it then
     # systemctl is-active --quiet dmx.service && deb-systemd-invoke stop dmx
-    if [ "$(systemctl is-active dmx.service)" ]; then
+    if [ "$(systemctl is-active 'dmx.service')" ]; then
 	# deb-systemd-invoke stop dmx.service >/dev/null 2>&1 || true
-	deb-systemd-invoke stop dmx.service >/dev/null 2>&1 || true
+	deb-systemd-invoke stop 'dmx.service' >/dev/null || true
     fi
     ## was there a previously installed DMX
     INSTALLED_VERSION="$( dpkg -s ${PACKAGE} 2>/dev/null | sed -n 's/^Version: //p' | cut -d'~' -f1 )"
