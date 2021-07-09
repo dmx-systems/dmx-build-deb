@@ -62,7 +62,11 @@ case "$1" in
     DBDIR='/var/lib/dmx/dmx-db'
     BACKUPDATE="$( date +%F-%H:%M:%S )"
     ## check if dmx is already running and stop it then
-    systemctl is-active --quiet dmx.service && deb-systemd-invoke stop dmx
+    # systemctl is-active --quiet dmx.service && deb-systemd-invoke stop dmx
+    if [ "$(deb-systemd-invoke is-active dmx.service)" ]; then
+	# deb-systemd-invoke stop dmx.service >/dev/null 2>&1 || true
+	deb-systemd-invoke stop dmx.service || true
+    fi
     ## was there a previously installed DMX
     INSTALLED_VERSION="$( dpkg -s ${PACKAGE} 2>/dev/null | sed -n 's/^Version: //p' | cut -d'~' -f1 )"
     PREVIOUSDBVERSION="$( if [ -d ${DBDIR} ]; then find ${DBDIR} -name ".dm-version.*" | cut -d'.' -f'3-' | sort -V | tail -n1; fi )"
