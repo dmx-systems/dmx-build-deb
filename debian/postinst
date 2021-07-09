@@ -234,19 +234,21 @@ case "$1" in
     chown dmx:dmx /var/log/dmx
     
     ## enable the service if not enabled
-    if [ "$(systemctl is-enabled dmx.service)" = "masked" ]; then
-        deb-systemd-invoke unmask dmx.service >/dev/null || true
+    # if [ "$(systemctl is-enabled dmx.service)" = "masked" ]; then
+    if [ "$(deb-systemd-invoke is-enabled dmx.service)" = "masked" ]; then
+        deb-systemd-invoke unmask dmx.service >/dev/null 2>&1 || true
     fi
-    if [ ! "$(systemctl is-enabled dmx.service)" ]; then
-        deb-systemd-invoke enable dmx.service >/dev/null || true
+    if [ ! "$(deb-systemd-invoke is-enabled dmx.service)" ]; then
+        deb-systemd-invoke enable dmx.service >/dev/null 2>&1 || true
     fi
     ## try to restart DMX if it is running
-    if [ "$(systemctl is-active dmx.service)" ]; then
-	deb-systemd-invoke restart dmx.service >/dev/null || true
+    if [ "$(deb-systemd-invoke is-active dmx.service)" ]; then
+	deb-systemd-invoke restart dmx.service >/dev/null 2>&1 || true
     else
-	deb-systemd-invoke start dmx.service >/dev/null || true
+	deb-systemd-invoke start dmx.service >/dev/null 2>&1 || true
     fi
     ;;
+
     abort-upgrade|abort-remove|abort-deconfigure)
     ;;
 
