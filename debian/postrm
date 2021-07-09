@@ -24,18 +24,18 @@ echo "running $0 $1"
 case "$1" in
     purge|remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
         if [ -d /var/cache/dmx ]; then
-            rm -rf /var/cache/dmx
+            rm -rf /var/cache/dmx || true
         fi
     ## remove dmx.desktop from autostart folder
-    ASDIRS="$(find /home/ -maxdepth 3 -type d -wholename "/home/*/.config/autostart")"
+    ASDIRS="$(find /home/ -maxdepth 3 -type d -wholename "/home/*/.config/autostart")" || true
     for homedir in ${ASDIRS}; do
         if [ -f ${homedir}/dmx.desktop ]; then
-            rm ${homedir}/dmx.desktop
+            rm ${homedir}/dmx.desktop || true
         fi
     done
     ## remove sudoers file
     if [ -f /etc/sudoers.d/42-systemctl_dmx ]; then
-        rm /etc/sudoers.d/42-systemctl_dmx
+        rm /etc/sudoers.d/42-systemctl_dmx || true
     fi
     ;;
 
@@ -46,14 +46,15 @@ case "$1" in
 esac
 
 if [ "$1" = purge ]; then
+    echo "if purge ..."
     # deb-systemd-invoke stop dmx.service >/dev/null || true
     # deb-systemd-invoke disable dmx.service >/dev/null || true
     ### the logfile is a config parameter. We should read this in the future.
     if [ -f /var/log/dmx/dmx.log ]; then
-	rm /var/log/dmx/*
+	rm /var/log/dmx/* || true
     fi
     if [ -d /usr/share/dmx/bundle-available/.~outdated~ ]; then
-        rm -r /usr/share/dmx/bundle-available/.~outdated~
+        rm -r /usr/share/dmx/bundle-available/.~outdated~ || true
     fi
     deluser --system dmx >/dev/null || true
 
