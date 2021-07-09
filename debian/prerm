@@ -5,7 +5,7 @@
 
 set -e
 
-echo "running $0 $1"
+echo "running $0 $1" >&2
 
 
 # summary of how this script can be called:
@@ -32,10 +32,10 @@ case "$1" in
 
     ## make sure /var/cache/dmx is empty
     if [ -d /var/cache/dmx/bundle-cache ]; then
-	    rm -rf /var/cache/dmx/bundle-cache
+	rm -rf /var/cache/dmx/bundle-cache
     fi
     if [ -d /var/cache/dmx/dmx-bundle-cache ]; then
-	    rm -rf /var/cache/dmx/dmx-bundle-cache
+	rm -rf /var/cache/dmx/dmx-bundle-cache
     fi
     ;;
 

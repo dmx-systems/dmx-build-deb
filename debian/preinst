@@ -5,7 +5,14 @@
 
 set -e
 
-echo "running $0 $1"
+
+## CAUTION! If commands in your hook script write to STDOUT,
+## you may need to redirect output to STDERR (>&2) or some other
+## place to avoid confusing debconf.  If you don't, it may cause
+## a mysterious error even if the hook script exits with a return 
+## status of zero!
+
+echo "running $0 $1" >&2
 
 
 # summary of how this script can be called:
@@ -32,9 +39,9 @@ case "$1" in
     SOCKET_STATUS="$( netstat -lp 2>/dev/null | grep -E 'Xorg|Xwayland' | grep 'X11' )" || true
     PROCESS_STATUS="$( pgrep 'Xorg|Xwayland' )" || true
 
-    echo "HEADLESS_PACKAGE=${HEADLESS_PACKAGE}"
-    echo "SOCKET_STATUS=${SOCKET_STATUS}"
-    echo "PROCESS_STATUS=${PROCESS_STATUS}"
+    echo "HEADLESS_PACKAGE=${HEADLESS_PACKAGE}" >&2
+    echo "SOCKET_STATUS=${SOCKET_STATUS}" >&2
+    echo "PROCESS_STATUS=${PROCESS_STATUS}" >&2
 
     ## Check system and ask user
     # if [ -z "${SOCKET_STATUS}" ] && [ -z "${PROCESS_STATUS}" ] && [ -z "${HEADLESS_PACKAGE}" ]; then
@@ -46,10 +53,10 @@ case "$1" in
 	db_go || true
 	db_get dmx/continue_installation || true
         ANSWER="$RET"
-	echo "continue_installation=<${ANSWER}>"
+	echo "continue_installation=<${ANSWER}>" >&2
 	if [ "${ANSWER}" != "ok" ]; then
     	    ## Remove the changes from the db.
-    	    echo "Aborting $1."
+    	    echo "Aborting $1." >&2
     	    db_purge || true
     	    ## Abort installation
     	    ## IMPORTANT: exit 0 will not cancel the installation process,
@@ -82,17 +89,13 @@ case "$1" in
             BACKUPDIR="${DBDIR}-preinst_${DMVERSION}-backup-$BACKUPDATE"
         fi
         cp -a ${DBDIR} ${BACKUPDIR}
-	echo "Your existing database has been backed-up (copied) to ${BACKUPDIR}."
+	echo "Your existing database has been backed-up (copied) to ${BACKUPDIR}." >&2
     else
         mkdir ${DBDIR}
     fi
     # chown dmx:dmx ${DBDIR}
     chmod 750 ${DBDIR}
     touch ${DBDIR}/.dm-version.$DMVERSION
-#    if [ -d /etc/dmx ]; then
-#	    # chown root:dmx /etc/dmx
-#	    chmod 750 /etc/dmx
-#    fi
     ;;
 
     abort-upgrade)

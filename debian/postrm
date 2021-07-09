@@ -5,7 +5,7 @@
 
 set -e
 
-echo "running $0 $1"
+echo "running $0 $1" >&2
 
 
 # summary of how this script can be called:
@@ -50,27 +50,27 @@ if [ "$1" = purge ]; then
     # deb-systemd-invoke stop dmx.service >/dev/null || true
     # deb-systemd-invoke disable dmx.service >/dev/null || true
     ### the logfile is a config parameter. We should read this in the future.
-    echo "1"
+    echo "1" >&2
     if [ -f /var/log/dmx/dmx.log ]; then
-        echo "2"
+        echo "2" >&2
 	rm /var/log/dmx/* || true
-        echo "3"
+        echo "3" >&2
     fi
-    echo "4"
+    echo "4" >&2
     if [ -d /usr/share/dmx/bundle-available/.~outdated~ ]; then
-        echo "5"
+        echo "5" >&2
         rm -r /usr/share/dmx/bundle-available/.~outdated~ || true
-        echo "6"
+        echo "6" >&2
     fi
 
-    echo "hier"
+    echo "7" >&2
     # deluser --system dmx >/dev/null || true
     #delgroup dmx >/dev/null || true
 
-    id -u dmx >/dev/null 2>&1 && deluser --system dmx || true
-    id -g dmx >/dev/null 2>&1 && delgroup dmx || true
+    id -u dmx >/dev/null 2>&1 && deluser --system dmx >&2 || true
+    id -g dmx >/dev/null 2>&1 && delgroup dmx >&2 || true
 
-    echo "oder hier"
+    echo "8" >&2
 
     # Source debconf library.
     . /usr/share/debconf/confmodule
