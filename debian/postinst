@@ -212,7 +212,14 @@ case "$1" in
 	chmod 440 /etc/sudoers.d/42-systemctl_dmx
     fi
 
-    ## Set permissions
+    ## add user
+    id -u dmx >/dev/null 2>&1 || useradd --system --user-group --home-dir '/var/lib/dmx' --shell '/bin/false' --comment 'DMX - The Context Machine' dmx
+    if [ ! -d /var/lib/dmx ]; then
+	mkdir /var/lib/dmx
+	#chown dmx:dmx /var/lib/dmx
+    fi
+
+    ## set permissions
     chmod 750 /etc/dmx
     chmod 640 /etc/dmx/config.properties
     chmod 640 /etc/dmx/logging.properties
@@ -236,6 +243,8 @@ case "$1" in
     ## try to restart DMX if it is running
     if [ "$(systemctl is-active dmx.service)" ]; then
 	deb-systemd-invoke restart dmx.service >/dev/null || true
+    else
+	deb-systemd-invoke start dmx.service >/dev/null || true
     fi
     ;;
     abort-upgrade|abort-remove|abort-deconfigure)
