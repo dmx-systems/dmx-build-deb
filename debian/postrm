@@ -67,8 +67,8 @@ if [ "$1" = purge ]; then
     # deluser --system dmx >/dev/null || true
     #delgroup dmx >/dev/null || true
 
-    id -u dmx >/dev/null 2>&1 && deluser --system dmx >&2 || true
-    id -g dmx >/dev/null 2>&1 && delgroup dmx >&2 || true
+    id -u dmx >/dev/null 2>&1 && deluser --system >/dev/null 2>&1 || true
+    id -g dmx >/dev/null 2>&1 && delgroup >/dev/null 2>&1 || true
 
     echo "8" >&2
 
