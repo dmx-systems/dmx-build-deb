@@ -5,6 +5,9 @@
 
 set -e
 
+echo "running $0 $1"
+
+
 # summary of how this script can be called:
 #        * <postinst> `configure' <most-recently-configured-version>
 #        * <old-postinst> `abort-upgrade' <new version>

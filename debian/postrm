@@ -5,6 +5,9 @@
 
 set -e
 
+echo "running $0 $1"
+
+
 # summary of how this script can be called:
 #        * <postrm> `remove'
 #        * <postrm> `purge'
@@ -17,8 +20,6 @@ set -e
 #          <overwriter-version>
 # for details, see http://www.debian.org/doc/debian-policy/ or
 # the debian-policy package
-
-echo "running postrm $1"
 
 case "$1" in
     purge|remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)

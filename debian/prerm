@@ -5,6 +5,9 @@
 
 set -e
 
+echo "running $0 $1"
+
+
 # summary of how this script can be called:
 #        * <prerm> `remove'
 #        * <old-prerm> `upgrade' <new-version>
@@ -16,7 +19,6 @@ set -e
 # for details, see http://www.debian.org/doc/debian-policy/ or
 # the debian-policy package
 
-echo "running prerm $1"
 
 case "$1" in
     # remove|upgrade|deconfigure)
