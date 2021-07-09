@@ -57,11 +57,12 @@ if [ "$1" = purge ]; then
         rm -r /usr/share/dmx/bundle-available/.~outdated~ || true
     fi
     deluser --system dmx >/dev/null || true
+    delgroup dmx >/dev/null || true
 
     # Source debconf library.
     . /usr/share/debconf/confmodule
     # Remove my changes to the db.
-    db_purge
+    db_purge || true
 fi
 
 # dh_installdeb will replace this with shell code automatically
