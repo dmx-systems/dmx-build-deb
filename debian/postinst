@@ -45,8 +45,7 @@ case "$1" in
         INITIAL_ADMIN_PASSWORD="$RET"
         CONFIGFILE='/etc/dmx/config.properties'
         cp -a -f $CONFIGFILE $CONFIGFILE.tmp || true
-        sed -e "s/^dmx\.security\.initial_admin_password =.*/dmx\.security\.initial_admin_password = $INITIAL_ADMIN_PASSWORD/" < $CONFIGFILE > $CONFIGFILE.tmp || true
-        mv -f $CONFIGFILE.tmp $CONFIGFILE || true
+        sed -i "s/^dmx\.security\.initial_admin_password =.*/dmx\.security\.initial_admin_password = $INITIAL_ADMIN_PASSWORD/" $CONFIGFILE || true
         db_clear || true
         echo "Successfuly changed dmx.security.initial_admin_password in /etc/dmx/config.properties."
     fi
