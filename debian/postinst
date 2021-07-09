@@ -42,7 +42,7 @@ case "$1" in
     ## Change password only on initial installation
     if [ -z "$2" ]; then
         ## Get password from debconf-db
-        db_get dmx/initial_admin_password
+        db_get dmx/initial_admin_password || true
         INITIAL_ADMIN_PASSWORD="$RET"
 
         cp -a -f $CONFIGFILE $CONFIGFILE.tmp
