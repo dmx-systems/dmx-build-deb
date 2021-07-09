@@ -54,7 +54,7 @@ case "$1" in
 	db_get dmx/continue_installation || true
         ANSWER="$RET"
 	echo "continue_installation=<${ANSWER}>" >&2
-	if [ "${ANSWER}" != "ok" ]; then
+	if [ "${ANSWER}" != "true" ]; then
     	    ## Remove the changes from the db.
     	    echo "Aborting $1." >&2
     	    db_purge || true
