@@ -45,7 +45,7 @@ case "$1" in
 	db_go
 	db_get dmx/continue_installation
 	echo "continue_installation=<$RET>"
-	if [ "$RET" != "true" ]; then
+	if [ "$RET" != "ok" ]; then
     	    ## Remove the changes from the db.
     	    echo "Aborting $1."
     	    db_purge
