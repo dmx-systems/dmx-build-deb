@@ -16,11 +16,13 @@ set -e
 # for details, see http://www.debian.org/doc/debian-policy/ or
 # the debian-policy package
 
+echo "running prerm $1"
 
 case "$1" in
-    remove|upgrade|deconfigure)
+    # remove|upgrade|deconfigure)
+    remove|deconfigure)
     if [ "$(systemctl is-active dmx.service)" ]; then
-        deb-systemd-invoke stop dmx.service >/dev/null || true
+        deb-systemd-invoke stop dmx.service >/dev/null 2>&1 || true
     fi
 
     ## make sure /var/cache/dmx is empty
@@ -29,6 +31,15 @@ case "$1" in
     fi
     if [ -d /var/cache/dmx/dmx-bundle-cache ]; then
 	    rm -rf /var/cache/dmx/dmx-bundle-cache
+    fi
+    ;;
+
+    purge)
+    if [ "$(systemctl is-active dmx.service)" ]; then
+        deb-systemd-invoke stop dmx.service >/dev/null 2>&1 || true
+    fi
+    if [ "$(deb-systemd-invoke is-enabled dmx.service)" ]; then
+        deb-systemd-invoke disable dmx.service >/dev/null 2>&1 || true
     fi
     ;;
 
