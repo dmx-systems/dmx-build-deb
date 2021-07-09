@@ -5,7 +5,7 @@
 
 set -e
 
-echo "running $0 $1" >&2
+echo "Running $0 $1 ..." >&2
 
 
 # summary of how this script can be called:
@@ -38,19 +38,19 @@ echo "running $0 $1" >&2
 case "$1" in
     configure)
 
-    echo "1" >&2
+    # echo "1" >&2
 
     ## Change password only on initial installation
     if [ -z "$2" ]; then
         ## Get password from debconf-db
         db_get dmx/initial_admin_password || true
         INITIAL_ADMIN_PASSWORD="$RET"
-        echo "INITIAL_ADMIN_PASSWORD=<${INITIAL_ADMIN_PASSWORD}>" >&2
+        # echo "INITIAL_ADMIN_PASSWORD=<${INITIAL_ADMIN_PASSWORD}>" >&2
         CONFIGFILE='/etc/dmx/config.properties'
         cp -a -f $CONFIGFILE $CONFIGFILE.tmp || true
         sed -i "s/^ *dmx\.security\.initial_admin_password =.*/dmx\.security\.initial_admin_password = $INITIAL_ADMIN_PASSWORD/" $CONFIGFILE || true
         db_clear || true
-        echo "Successfuly changed dmx.security.initial_admin_password in /etc/dmx/config.properties." >&2
+        # echo "Successfuly changed dmx.security.initial_admin_password in /etc/dmx/config.properties." >&2
     fi
 
     ### Start: Update plugin symlinks
@@ -82,7 +82,7 @@ case "$1" in
         mv ${FILEDIR}/dmx-tableview-command-1.3.0.jar "${FILEDIR}/.~outdated~/"
     fi
 
-    echo "2" >&2
+    # echo "2" >&2
 
     ## Check if there are any files instead of links in $LINKDIR
     PLUGINFILES="$(find "${LINKDIR}/" -maxdepth 1 -name "*.jar" -type f)"
@@ -104,7 +104,7 @@ case "$1" in
     done
 
 
-    echo "3" >&2
+    # echo "3" >&2
 
 
     ## Get rid of pluginname-latest.jar files without version number
@@ -125,7 +125,7 @@ case "$1" in
         fi
     done
 
-    echo "4" >&2
+    # echo "4" >&2
 
     ## Step two: find -latest files in ${FILEDIR}
     PLUGINFILES="$(find "${FILEDIR}/" -maxdepth 1 -name "*-latest.jar" -type f)"
@@ -160,7 +160,7 @@ case "$1" in
         fi
     done
 
-    echo "6" >&2
+    # echo "5" >&2
 
     ## Remove old files
     OLDFILES="$(find "${FILEDIR}/" -maxdepth 1 -name "*.jar" -type f)"
@@ -175,7 +175,7 @@ case "$1" in
         fi
     done
 
-    echo "7" >&2
+    # echo "6" >&2
 
     ## Update symlinks
     SYMLINKS="$(find "${LINKDIR}/" -maxdepth 1 -name "*.jar" -type l)"      # use l for symlinks

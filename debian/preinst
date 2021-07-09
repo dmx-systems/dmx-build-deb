@@ -12,7 +12,7 @@ set -e
 ## a mysterious error even if the hook script exits with a return 
 ## status of zero!
 
-echo "running $0 $1" >&2
+echo "Running $0 $1 ..." >&2
 
 
 # summary of how this script can be called:
@@ -39,9 +39,9 @@ case "$1" in
     SOCKET_STATUS="$( netstat -lp 2>/dev/null | grep -E 'Xorg|Xwayland' | grep 'X11' )" || true
     PROCESS_STATUS="$( pgrep 'Xorg|Xwayland' )" || true
 
-    echo "HEADLESS_PACKAGE=${HEADLESS_PACKAGE}" >&2
-    echo "SOCKET_STATUS=${SOCKET_STATUS}" >&2
-    echo "PROCESS_STATUS=${PROCESS_STATUS}" >&2
+    #echo "HEADLESS_PACKAGE=${HEADLESS_PACKAGE}" >&2
+    #echo "SOCKET_STATUS=${SOCKET_STATUS}" >&2
+    #echo "PROCESS_STATUS=${PROCESS_STATUS}" >&2
 
     ## Check system and ask user
     # if [ -z "${SOCKET_STATUS}" ] && [ -z "${PROCESS_STATUS}" ] && [ -z "${HEADLESS_PACKAGE}" ]; then
@@ -53,7 +53,7 @@ case "$1" in
 	db_go || true
 	db_get dmx/continue_installation || true
         ANSWER="$RET"
-	echo "continue_installation=<${ANSWER}>" >&2
+	# echo "continue_installation=<${ANSWER}>" >&2
 	if [ "${ANSWER}" != "true" ]; then
     	    ## Remove the changes from the db.
     	    echo "Aborting $1." >&2

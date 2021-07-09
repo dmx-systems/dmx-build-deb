@@ -13,12 +13,7 @@ Pre-Depends: debconf (>= 0.5)
 Breaks: deepamehta (<< 5.0)
 Conflicts: @@CONFLICTS@@
 Description: semantic web platform for knowledge management and collaboration
- DMX is a software platform for collaboration and knowledge management.
- Knowledge is represented in a semantic network and is handled collaboratively.
- DMX combines interdisciplinary research with the idea of free and open
- source software to generate a true benefit for workflow as well as for social
- processes. The DMX user interface is build according to research in
- cognitive psychology and accommodates the knowledge building process of the
- individual. Instead of handling information through applications, windows and
- files with DMX the user handles all kind of information directly and
- individually. DMX's user interface is completely based on concept maps.
+ DMX is a knowledge building platform for individuals and work groups. You can
+ author, map, explore and share networked information with meaningful relationships.
+ The DMX UI is designed to support memorization, retrieval, and collaboration.
+ It is completely based on Topic Maps.
