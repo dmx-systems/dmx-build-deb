@@ -42,13 +42,14 @@ case "$1" in
 	## prompt headless warning
 	db_input high dmx/headless_warning || true
 	db_input high dmx/continue_installation || true
-	db_go
-	db_get dmx/continue_installation
-	echo "continue_installation=<$RET>"
-	if [ "$RET" != "ok" ]; then
+	db_go || true
+	db_get dmx/continue_installation || true
+        ANSWER="$RET"
+	echo "continue_installation=<${ANSWER}>"
+	if [ "${ANSWER}" != "ok" ]; then
     	    ## Remove the changes from the db.
     	    echo "Aborting $1."
-    	    db_purge
+    	    db_purge || true
     	    ## Abort installation
     	    ## IMPORTANT: exit 0 will not cancel the installation process,
     	    ## but only exit from preinst and continue with installation.
