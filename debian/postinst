@@ -44,8 +44,8 @@ case "$1" in
     if [ -z "$2" ]; then
         ## Get password from debconf-db
         db_get dmx/initial_admin_password || true
-        INITIAL_ADMIN_PASSWORD="<$RET>"
-        echo "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD}" >&2
+        INITIAL_ADMIN_PASSWORD="$RET"
+        echo "INITIAL_ADMIN_PASSWORD=<${INITIAL_ADMIN_PASSWORD}>" >&2
         CONFIGFILE='/etc/dmx/config.properties'
         cp -a -f $CONFIGFILE $CONFIGFILE.tmp || true
         sed -i "s/^ *dmx\.security\.initial_admin_password =.*/dmx\.security\.initial_admin_password = $INITIAL_ADMIN_PASSWORD/" $CONFIGFILE || true
@@ -267,7 +267,7 @@ case "$1" in
 	deb-systemd-invoke restart dmx.service || true
     else
 	# deb-systemd-invoke start dmx.service >/dev/null 2>&1 || true
-	deb-systemd-invoke start dmx.service || true
+	systemctl start dmx.service || true
     fi
     ;;
 

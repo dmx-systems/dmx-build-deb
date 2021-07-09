@@ -74,7 +74,7 @@ case "$1" in
     # systemctl is-active --quiet dmx.service && deb-systemd-invoke stop dmx
     if [ "$(systemctl is-active dmx.service)" ]; then
 	# deb-systemd-invoke stop dmx.service >/dev/null 2>&1 || true
-	deb-systemd-invoke stop dmx.service || true
+	deb-systemd-invoke stop dmx.service >/dev/null 2>&1 || true
     fi
     ## was there a previously installed DMX
     INSTALLED_VERSION="$( dpkg -s ${PACKAGE} 2>/dev/null | sed -n 's/^Version: //p' | cut -d'~' -f1 )"
