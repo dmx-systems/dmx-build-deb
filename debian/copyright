@@ -2,11 +2,11 @@ Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: DMX - The Context Machine
 Upstream-Contact: Juergen Neumann <j.neumann@dmx.berlin>
 Source: https://git.dmx.systems/dmx-platform/dmx-platform
-Copyright: DMX Systems
+Copyright: DMX Systems <https://dmx.systems>
 
 Files: *
 Copyright: 2000-2018 Jörg-Richter <jri@dmx.berlin> et al.
-           2019-2021 DMX Systems
+           2019-2021 DMX Systems <https://dmx.systems>
 License: AGPL-3+
 
 Files: bundle/jersey*
@@ -30,11 +30,11 @@ Copyright: 2004-2021 QOS.ch
 License: MIT
 
 Files: debian/* 
-Copyright: 2021 DMX Systems
+Copyright: 2021 DMX Systems <https://dmx.systems>
 License: GPL-3
 
 Files: examples/* 
-Copyright: 2021 DMX Systems
+Copyright: 2021 DMX Systems <https://dmx.systems>
 License: GPL-3
 
 License: GPL-3

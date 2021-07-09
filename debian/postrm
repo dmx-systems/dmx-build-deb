@@ -56,8 +56,15 @@ if [ "$1" = purge ]; then
     if [ -d /usr/share/dmx/bundle-available/.~outdated~ ]; then
         rm -r /usr/share/dmx/bundle-available/.~outdated~ || true
     fi
-    deluser --system dmx >/dev/null || true
-    delgroup dmx >/dev/null || true
+
+    echo "hier"
+    # deluser --system dmx >/dev/null || true
+    #delgroup dmx >/dev/null || true
+
+    deluser --system dmx || true
+    delgroup dmx || true
+
+    echo "oder hier"
 
     # Source debconf library.
     . /usr/share/debconf/confmodule
