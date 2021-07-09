@@ -199,7 +199,7 @@ case "$1" in
     else
         DOCDIR=
     fi
-    ASDIRS="$(find /home/ -maxdepth 3 -type d -wholename "/home/*/.config/autostart")"
+    ASDIRS="$(find /home/ -maxdepth 3 -type d -wholename "/home/*/.config/autostart")" || true
     if [ -f ${DOCDIR}/examples/dmx.desktop.autostart ]; then
 	for homedir in ${ASDIRS}; do
             username="$(echo ${homedir} | cut -d'/' -f3)"
@@ -239,16 +239,20 @@ case "$1" in
     ## enable the service if not enabled
     # if [ "$(systemctl is-enabled dmx.service)" = "masked" ]; then
     if [ "$(deb-systemd-invoke is-enabled dmx.service)" = "masked" ]; then
-        deb-systemd-invoke unmask dmx.service >/dev/null 2>&1 || true
+        # deb-systemd-invoke unmask dmx.service >/dev/null 2>&1 || true
+        deb-systemd-invoke unmask dmx.service || true
     fi
     if [ ! "$(deb-systemd-invoke is-enabled dmx.service)" ]; then
-        deb-systemd-invoke enable dmx.service >/dev/null 2>&1 || true
+        # deb-systemd-invoke enable dmx.service >/dev/null 2>&1 || true
+        deb-systemd-invoke enable dmx.service || true
     fi
     ## try to restart DMX if it is running
     if [ "$(deb-systemd-invoke is-active dmx.service)" ]; then
-	deb-systemd-invoke restart dmx.service >/dev/null 2>&1 || true
+	# deb-systemd-invoke restart dmx.service >/dev/null 2>&1 || true
+	deb-systemd-invoke restart dmx.service || true
     else
-	deb-systemd-invoke start dmx.service >/dev/null 2>&1 || true
+	# deb-systemd-invoke start dmx.service >/dev/null 2>&1 || true
+	deb-systemd-invoke start dmx.service || true
     fi
     ;;
 
