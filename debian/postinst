@@ -5,7 +5,8 @@
 
 set -e
 
-echo "running $0 $1"
+## WARNING! Echoing anything here conflicts with debconf!
+#echo "running $0 $1"
 
 
 # summary of how this script can be called:
@@ -44,7 +45,7 @@ case "$1" in
     if [ -z "$2" ]; then
         ## Get password from debconf-db
         db_get dmx/initial_admin_password || true
-        INITIAL_ADMIN_PASSWORD="$RET"
+        INITIAL_ADMIN_PASSWORD="<$RET>"
         echo "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD}"
         CONFIGFILE='/etc/dmx/config.properties'
         cp -a -f $CONFIGFILE $CONFIGFILE.tmp || true
