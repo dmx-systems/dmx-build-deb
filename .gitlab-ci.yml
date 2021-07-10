@@ -42,7 +42,7 @@ fetch-binaries:
   only:
     refs:
       - master
-      - dev-5.2
+      - dev
   tags:
     - deb
   stage: download
@@ -85,7 +85,7 @@ build-dmx:
   only:
     refs:
       - master
-      - dev-5.2
+      - dev
   tags:
     - deb
   stage: build
@@ -164,7 +164,7 @@ build-dmx-headless:
   only:
     refs:
       - master
-      - dev-5.2
+      - dev
   tags:
     - deb
   stage: build
@@ -245,7 +245,7 @@ test-default:
   only:
     refs:
       - master
-      - dev-5.2
+      - dev
   tags:
     - deb
   stage: test
@@ -262,7 +262,7 @@ test-headless:
   only:
     refs:
       - master
-      - dev-5.2
+      - dev
   tags:
     - deb
   stage: test
@@ -278,7 +278,7 @@ test-headless:
 deploy-dev:
   only:
     refs:
-      - dev-5.2
+      - dev
   tags:
     - deb
   stage: deploy
