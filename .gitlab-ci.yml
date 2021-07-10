@@ -7,7 +7,6 @@ stages:
   - test
   - deploy
 
-
 variables:
   ## target distribution
   # TARGET="$(lsb_release -sc)"
@@ -23,13 +22,18 @@ variables:
 before_script:
   ## Workaround for https://gitlab.com/gitlab-org/gitlab-runner/-/issues/1809
   ## Using variables in variables does not work in GitLab
-  - echo "${CI_JOB_STAGE}"
+  - echo "before_script ${CI_JOB_STAGE}"
   - export PACKAGENAME="${DMX}-latest"    ## [ dmx | dmx-latest ]
   - export ZIPFILE="${PACKAGENAME}.zip"
   - export WORKDIR="../${CI_PROJECT_NAME}.TMP"
   - if [ ${CI_JOB_STAGE} == "download" ] && [ -d ${WORKDIR} ]; then rm -rf ${WORKDIR}; fi
   - if [ ! -d ${WORKDIR} ]; then mkdir ${WORKDIR}; fi
 
+
+after_script:
+  ## make sure to clean-up
+  - echo "after_script ${CI_JOB_STAGE}"
+  # rm -rf foobar
 
 fetch-binaries:
   only:
@@ -305,10 +309,10 @@ deploy-to-repo:
     - dput local ../${PACKAGENAME}*_*-*${CI_PIPELINE_ID}_*.changes
     - sleep 1
     - mini-dinstall --batch
-    ## add at least 5 sec to make sure packets were importet to repo
-    - sleep 5
+    ## add at least 10 sec to make sure packets were importet to repo
+    - sleep 10
     #- debc ${REPODIR}/ubuntu/${TARGET}/${PACKAGENAME}*_*-*${CI_PIPELINE_ID}_all.changes
-    - PACKAGES="$( find ${REPODIR}/ubuntu/${TARGET}/${PACKAGENAME}*_*-*${CI_PIPELINE_ID}_all.changes )"; for package in "${PACKAGES}"; do debc ${package}; done
+    - PACKAGES="$( find ${REPODIR}/ubuntu/${TARGET}/${PACKAGENAME}*_*-*${CI_PIPELINE_ID}_all.changes )"; for package in "${PACKAGES}"; do file ${package} && debc ${package}; done
     - cp ./README ${REPODIR}/
     - echo "cleaning up ..."
     - cd ..
