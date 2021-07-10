@@ -7,14 +7,16 @@ stages:
   - test
   - deploy
 
+
 variables:
   ## target distribution
-  # TARGET="$(lsb_release -sc)"
   TARGET: "xenial"
+  # TARGET="$(lsb_release -sc)"
   #TARGET: "unstable" # <= This does not work!
   #TARGET: "debian"   # <= This does not work!
   DMX: 'dmx'                              ## [ dmx | deepamehta ]
-  WEBDIR: 'https://download.dmx.systems/ci'
+  DMXVERSION: '5.2'                       ## [ 5.x | latest ]
+  PACKAGEVERSION: "1"
   DEBFULLNAME: 'DMX Systems (DMX CI)'
   DEBEMAIL: 'DMX Systems (DMX CI) <devops@dmx.systems>'
 
@@ -23,7 +25,7 @@ before_script:
   ## Workaround for https://gitlab.com/gitlab-org/gitlab-runner/-/issues/1809
   ## Using variables in variables does not work in GitLab
   - echo "before_script ${CI_JOB_STAGE}"
-  - export PACKAGENAME="${DMX}-latest"    ## [ dmx | dmx-latest ]
+  - export PACKAGENAME="${DMX}-${DMXVERSION}"    ## [ dmx | dmx-latest ]
   - export ZIPFILE="${PACKAGENAME}.zip"
   - export WORKDIR="../${CI_PROJECT_NAME}.TMP"
   - if [ ${CI_JOB_STAGE} == "download" ] && [ -d ${WORKDIR} ]; then rm -rf ${WORKDIR}; fi
@@ -34,7 +36,7 @@ after_script:
   ## make sure to clean-up and remove all packages to not spam the repo
   ## do this in an after script, because this is run at any time ignroing any fails 
   - echo "after_script ${CI_JOB_STAGE}"
-  - export PACKAGENAME="${DMX}-latest"    ## [ dmx | dmx-latest ]
+  - export PACKAGENAME="${DMX}-${DMXVERSION}"    ## [ dmx | dmx-latest ]
   - if [ "${CI_JOB_STAGE}" == "deploy" ]; then cd ..; WORKDIR="$( pwd )"; find ${WORKDIR}/*${PACKAGENAME}*_*-*${CI_PIPELINE_ID}_all.* -type f -exec rm -f {} \;;fi
 
 
@@ -78,7 +80,7 @@ fetch-binaries:
     - echo -e "To activate a plugin copy or link it to the bundles-deploy folder.\n" >>bin/bundle-available/about-this-directory.txt
     - echo -e "Find more information on DMX plugins at" >>bin/bundle-available/about-this-directory.txt
     - echo -e "https://git.dmx.systems/dmx-plugins" >>bin/bundle-available/about-this-directory.txt
-    - for plugin in "${PLUGINS[@]}"; do latest_version="$( wget -q -O - "${WEBCGI}/ci/${plugin}/${plugin}-latest.jar" )"; echo "Download latest version of ${plugin} [${latest_version}]"; wget -q "${latest_version}" -P bin/bundle-available/; done
+    - for plugin in "${PLUGINS[@]}"; do plugin_version="$( wget -q -O - "${WEBCGI}/ci/${plugin}/${plugin}-latest.jar" )"; echo "Download latest version of ${plugin} [${plugin_version}]"; wget -q "${plugin_version}" -P bin/bundle-available/; done
     - tree bin/bundle-available/ 
 
 
@@ -92,7 +94,6 @@ build-dmx:
     - deb
   stage: build
   variables:
-    PACKAGEVERSION: "1"
     JAVAVERSION: 'openjdk-8-jre'
   script:
     # - cd ${WORKDIR}
@@ -171,7 +172,6 @@ build-dmx-headless:
     - deb
   stage: build
   variables:
-    PACKAGEVERSION: "1"
     PLUGINS: "dmx-tableview dmx-geomaps dmx-mobile dmx-file-upload dmx-ldap"
     WEBCGI: 'https://download.dmx.systems/cgi-bin/v1/latest-version.cgi?'
     WEBDIR: 'https://download.dmx.systems/ci'
