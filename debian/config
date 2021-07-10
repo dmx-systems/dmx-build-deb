@@ -6,8 +6,7 @@ set -e
 # Source debconf library.
 . /usr/share/debconf/confmodule
 
-# Ask for password.
-
+## Ask for password.
 if [ ! -f /etc/dmx/config.properties ]; then
     RUN=''
     PW1=''

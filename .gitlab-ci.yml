@@ -2,6 +2,7 @@
 ## of the dmx core modules and adds the curated dmx plugins.  
 
 stages:
+  - download
   - build
   - test
   - deploy
@@ -10,37 +11,60 @@ stages:
 variables:
   ## target distribution
   # TARGET="$(lsb_release -sc)"
-  TARGET: "xenial"
+  #TARGET: "unstable" # <= This does not work!
+  #TARGET: "debian"   # <= This does not work!
   DMX: 'dmx'                              ## [ dmx | deepamehta ]
-  
+  DMXVERSION: '5.2'                       ## [ 5.x | latest ]
+  PACKAGEVERSION: "1"
+  TARGET: "xenial"
+  DEBFULLNAME: 'DMX Systems (DMX CI)'
+  DEBEMAIL: 'DMX Systems (DMX CI) <devops@dmx.systems>'
+
+
 before_script:
   ## Workaround for https://gitlab.com/gitlab-org/gitlab-runner/-/issues/1809
   ## Using variables in variables does not work in GitLab
-  - export PACKAGENAME="${DMX}"    ## [ dmx | dmx-latest ]
-  - export ZIPFILE="${PACKAGENAME}-${CI_COMMIT_TAG}.zip"
+  - echo "before_script ${CI_JOB_STAGE}"
+  - export PACKAGENAME="${DMX}-${DMXVERSION}"
+  - export ZIPFILE="${PACKAGENAME}.zip"
+  - export WORKDIR="../${CI_PROJECT_NAME}.TMP"
+  - if [ ${CI_JOB_STAGE} == "download" ] && [ -d ${WORKDIR} ]; then rm -rf ${WORKDIR}; fi
+  - if [ ! -d ${WORKDIR} ]; then mkdir ${WORKDIR}; fi
 
-build:
+
+after_script:
+  ## make sure to clean-up and remove all packages to not spam the repo
+  ## do this in an after script, because this is run at any time ignroing any fails 
+  - echo "after_script ${CI_JOB_STAGE}"
+  - export PACKAGENAME="${DMX}-${DMXVERSION}"    ## [ dmx | dmx-latest ]
+  - if [ "${CI_JOB_STAGE}" == "deploy" ]; then cd ..; WORKDIR="$( pwd )"; find ${WORKDIR}/*${PACKAGENAME}*_*-*${CI_PIPELINE_ID}_all.* -type f -exec rm -f {} \;;fi
+
+
+fetch-binaries:
   only:
     refs:
       - tags
   tags:
     - deb
-  stage: build
+  stage: download
   variables:
-    PLUGINS: "dmx-tableview dmx-geomaps dmx-mobile dmx-ldap dmx-cooking dmx-biblio"
-    WEBCGI: 'https://download.dmx.systems/cgi-bin/v1/stable-version.cgi?'
-    WEBDIR: 'https://download.dmx.systems'
-    DEBFULLNAME: 'GitLab Runner (DMX CI)'
-    DEBEMAIL: 'Gitlab Runner (DMX CI) <gitlab.runner@dmx.systems>'
+    WEBDIR: 'https://download.dmx.systems'                                 # <= stable
+    WEBCGI: 'https://download.dmx.systems/cgi-bin/v1/stable-version.cgi?'  # <= stable
+    PLUGINS: "dmx-tableview dmx-geomaps dmx-mobile dmx-ldap dmx-file-upload dmx-cooking dmx-biblio"
   script:
     - PLUGINS=(${PLUGINS})
+    - JAVAVERSION=(${JAVAVERSION})
     - pwd
     - echo "ZIPFILE = ${ZIPFILE}"
     - echo "Starting job ${CI_JOB_ID} in pipeline ${CI_PIPELINE_ID}"
-    - wget -q ${WEBDIR}/${ZIPFILE}
+    - echo "Download ${WEBDIR}/${ZIPFILE} to ${WORKDIR}"
+    - wget -q "${WEBDIR}/${ZIPFILE}" --directory-prefix "${WORKDIR}"
+    - cd ${WORKDIR}
+    - echo "Unzip $(file ${ZIPFILE})"
     - unzip -q ${ZIPFILE}
     - VERSION="$( ls -d dmx-* | grep -v ${ZIPFILE} | cut -d'-' -f2- )"
     - echo "VERSION=${VERSION}"
+    - echo "${VERSION}" >${WORKDIR}/dmx-version
     - rm -rf ${DMX}-${VERSION}/bundle/org.apache.felix.gogo.*
     - mkdir -p bin/bin bin/bundle bin/bundle-deploy bin/bundle-available etc/dmx
     - mv ${DMX}-${VERSION}/bin/* bin/bin/
@@ -54,26 +78,42 @@ build:
     - echo -e "To activate a plugin copy or link it to the bundles-deploy folder.\n" >>bin/bundle-available/about-this-directory.txt
     - echo -e "Find more information on DMX plugins at" >>bin/bundle-available/about-this-directory.txt
     - echo -e "https://git.dmx.systems/dmx-plugins" >>bin/bundle-available/about-this-directory.txt
-    - for plugin in "${PLUGINS[@]}"; do stable_version="$( wget -q -O - ${WEBCGI}${plugin} )"; wget -q ${stable_version} -P bin/bundle-available/; done
+    - for plugin in "${PLUGINS[@]}"; do plugin_version="$( wget -q -O - ${WEBCGI}${plugin} )"; wget -q ${plugin_version} -P bin/bundle-available/; done
     - tree bin/bundle-available/ 
-    - CONFIG=$(<${DMX}-${VERSION}/conf/config.properties)
-    - CONFIG=${CONFIG/dmx.security.anonymous_read_allowed = ALL/dmx.security.anonymous_read_allowed = NONE}
+
+
+build-dmx:
+  ## builds the default dmx (desktop) package
+  only:
+    refs:
+      - tags
+  tags:
+    - deb
+  stage: build
+  variables:
+    JAVAVERSION: 'openjdk-8-jre'
+  script:
+    # - cd ${WORKDIR}
+    - tree ${PWD}/
+    - PACKAGENAME="${PACKAGENAME}"
+    - VERSION="$( cat ${WORKDIR}/dmx-version )"
+    - JAVAVERSION=(${JAVAVERSION})
+    - CONFIG=$(<${WORKDIR}/${DMX}-${VERSION}/conf/config.properties)
+    # - CONFIG=${CONFIG/dmx.security.anonymous_read_allowed = ALL/dmx.security.anonymous_read_allowed = NONE}
     - CONFIG=${CONFIG/dmx.security.initial_admin_password = /dmx.security.initial_admin_password = YOUR_SECRET_PASSWORD_HERE}
-    - CONFIG=${CONFIG/dmx.filerepo.path = \//dmx.filerepo.path = \/var\/lib\/dmx\/dmx-filedir}
-    - CONFIG=${CONFIG/dmx.filerepo.per_workspace = false/dmx.filerepo.per_workspace = true}
+    # - CONFIG=${CONFIG/dmx.filerepo.path = \//dmx.filerepo.path = \/var\/lib\/dmx\/dmx-filedir}
+    # - CONFIG=${CONFIG/dmx.filerepo.per_workspace = false/dmx.filerepo.per_workspace = true}
     - CONFIG=${CONFIG/felix.fileinstall.dir = bundle-deploy/felix.fileinstall.dir = \/usr\/share\/dmx\/bundle-deploy}
     - CONFIG=${CONFIG/dmx.database.path = dmx-db/dmx.database.path = \/var\/lib\/dmx\/dmx-db}
     - CONFIG=${CONFIG/java.util.logging.config.file = conf\/logging.properties/java.util.logging.config.file = \/etc\/dmx\/logging.properties}
     - CONFIG=${CONFIG/org.osgi.framework.storage = bundle-cache/org.osgi.framework.storage = \/var\/cache\/dmx\/bundle-cache}
-    - echo "${CONFIG}" >etc/dmx/config.properties
-    - LOGGING=$(<${DMX}-${VERSION}/conf/logging.properties)
+    - echo "${CONFIG}" >${WORKDIR}/etc/dmx/config.properties
+    - LOGGING=$(<${WORKDIR}/${DMX}-${VERSION}/conf/logging.properties)
     - LOGGING=${LOGGING/handlers=java.util.logging.ConsoleHandler/\# handlers=java.util.logging.ConsoleHandler}
     - LOGGING=${LOGGING/java.util.logging.ConsoleHandler.level=ALL/\# java.util.logging.ConsoleHandler.level=ALL}
     - LOGGING=${LOGGING/\# handlers=java.util.logging.FileHandler/handlers=java.util.logging.FileHandler}
-    ## The next line should be removed once jri updated the source from deepamehta.log to dmx.log 
-    - LOGGING=${LOGGING/java.util.logging.FileHandler.pattern=deepamehta.log/java.util.logging.FileHandler.pattern=\/var\/log\/dmx\/dmx.log}
     - LOGGING=${LOGGING/java.util.logging.FileHandler.pattern=dmx.log/java.util.logging.FileHandler.pattern=\/var\/log\/dmx\/dmx.log}
-    - echo "${LOGGING}" >etc/dmx/logging.properties
+    - echo "${LOGGING}" >${WORKDIR}/etc/dmx/logging.properties
     ## add py4dmx example
     - git clone https://git.dmx.systems/dmx-contrib/py4dmx examples/py4dmx
     - rm -rf examples/py4dmx/.git*
@@ -88,33 +128,133 @@ build:
     ## To replace all occurrences, use ${parameter//pattern/string}
     - CONTROL=${CONTROL//@@PACKAGENAME@@/${PACKAGENAME}}
     - CONTROL=${CONTROL//@@VERSION@@/${VERSION}}
-    - if [ "${PACKAGENAME}" == "dmx" ]; then CONFLICTS='dmx-latest'; fi
-    - if [ "${PACKAGENAME}" == "dmx-latest" ]; then CONFLICTS='dmx'; fi
+    - CONTROL=${CONTROL//@@JAVAVERSION@@/${JAVAVERSION}}
+    - if [ "${PACKAGENAME}" == "dmx" ]; then CONFLICTS='dmx-latest, dmx-latest-headless, dmx-headless'; fi
+    - if [ "${PACKAGENAME}" == "dmx-latest" ]; then CONFLICTS='dmx, dmx-headless, dmx-latest-headless'; fi
     - CONTROL=${CONTROL/@@CONFLICTS@@/${CONFLICTS}}
     - echo -e "new control file:\n\n${CONTROL}"
     - echo "${CONTROL}" >debian/control
     ## The next two cp commands are relevant when overriding the package name in debian/rules
     - cp debian/dmx.service debian/${PACKAGENAME}.dmx.service
     - cp debian/dmx.logrotate debian/${PACKAGENAME}.dmx.logrotate
-    - pwd
-    - tree
-    - dch --controlmaint --create --package "${PACKAGENAME}" --newversion ${VERSION} --empty
-    - dch --controlmaint -v ${VERSION} "A Debian Package for DMX - The Context Machine"
-    - dch --controlmaint -v ${VERSION} "DMX is the successor of Jörg Richter's <jri@deepamehta.de> DeepaMehta project."
-    - dch --controlmaint -v ${VERSION} "Thanks to Silke <silke@silkemeyer.net> for the initial work on the debian package."
-    - dch --controlmaint -r --distribution "${TARGET}" ignored 
+    ## Remove the headless service (as we do build the default here)
+    - rm debian/dmx.service.headless
+    ## preserve files in ${WORKDIR} 
+    - cp -a ${WORKDIR}/bin ./
+    - cp -a ${WORKDIR}/etc ./
+    - tree ${PWD}
+    ## build packages
+    - dch --controlmaint --create --package "${PACKAGENAME}" --newversion "${VERSION}~0deb" --empty
+    - dch --controlmaint -v "${VERSION}~0deb" "A Debian Package for DMX - The Context Machine"
+    - dch --controlmaint -v "${VERSION}~0deb" "DMX is the successor of Jörg Richter's <jri@deepamehta.de> DeepaMehta project."
+    - dch --controlmaint -v "${VERSION}~0deb" "Thanks to Silke <silke@silkemeyer.net> for the initial work on the debian package."
+    - dch --controlmaint -r --distribution "${TARGET}" ignored
     - LASTCOMMIT="$( git rev-parse HEAD )"
     - git add debian/changelog
     - sleep 1
     - NUNC="$( date -R )"
-    - 'git commit --date="${NUNC}" -m"DMX debian package build from ${DMX}-${VERSION} - Build Pipeline ${CI_PIPELINE_ID}" -m"Binaries from ${WEBDIR}/${ZIPFILE}" -m"Thanks: GitLab Team for providing great CI infrastructure!"'
+    - 'git commit --date="${NUNC}" -m"DMX debian package build from ${DMX}-${VERSION} - Package Version ${PACKAGEVERSION}+b${CI_PIPELINE_ID}" -m"Binaries from ${WEBDIR}/${ZIPFILE}" -m"Thanks: GitLab Team for providing great CI infrastructure!"'
     - git log -1
-    - gbp dch --distribution "${TARGET}" --ignore-branch --new-version "${VERSION}-${CI_PIPELINE_ID}" --commit --since=${LASTCOMMIT} --release --spawn-editor=never --full --meta
+    - gbp dch --distribution "${TARGET}" --ignore-branch --new-version "${VERSION}~${PACKAGEVERSION}deb+b${CI_PIPELINE_ID}" --commit --since=${LASTCOMMIT} --release --spawn-editor=never --full --meta
     ## - export GPG_TTY=$(tty) <= moved to .bashrc
-    - dpkg-buildpackage -A -us --force-sign -k'gitlab.runner@dmx.systems'
+    - dpkg-buildpackage -A -us --force-sign -k'devops@dmx.systems'
     - tree
 
-test:
+
+build-dmx-headless:
+  ## builds the dmx-headless package
+  only:
+    refs:
+      - tags
+  tags:
+    - deb
+  stage: build
+  variables:
+    JAVAVERSION: 'openjdk-8-jre-headless'
+  script:
+    - PACKAGENAME="${PACKAGENAME}-headless"
+    - VERSION="$( cat ${WORKDIR}/dmx-version )"
+    - JAVAVERSION=(${JAVAVERSION})
+    - CONFIG=$(<${WORKDIR}/${DMX}-${VERSION}/conf/config.properties)
+    - CONFIG=${CONFIG/dmx.security.anonymous_read_allowed = ALL/dmx.security.anonymous_read_allowed = NONE}
+    - CONFIG=${CONFIG/dmx.security.initial_admin_password = /dmx.security.initial_admin_password = YOUR_SECRET_PASSWORD_HERE}
+    - CONFIG=${CONFIG/dmx.filerepo.path = \//dmx.filerepo.path = \/var\/lib\/dmx\/dmx-filedir}
+    - CONFIG=${CONFIG/dmx.filerepo.per_workspace = false/dmx.filerepo.per_workspace = true}
+    - CONFIG=${CONFIG/felix.fileinstall.dir = bundle-deploy/felix.fileinstall.dir = \/usr\/share\/dmx\/bundle-deploy}
+    - CONFIG=${CONFIG/dmx.database.path = dmx-db/dmx.database.path = \/var\/lib\/dmx\/dmx-db}
+    - CONFIG=${CONFIG/java.util.logging.config.file = conf\/logging.properties/java.util.logging.config.file = \/etc\/dmx\/logging.properties}
+    - CONFIG=${CONFIG/org.osgi.framework.storage = bundle-cache/org.osgi.framework.storage = \/var\/cache\/dmx\/bundle-cache}
+    - echo "${CONFIG}" >${WORKDIR}/etc/dmx/config.properties
+    - LOGGING=$(<${WORKDIR}/${DMX}-${VERSION}/conf/logging.properties)
+    - LOGGING=${LOGGING/handlers=java.util.logging.ConsoleHandler/\# handlers=java.util.logging.ConsoleHandler}
+    - LOGGING=${LOGGING/java.util.logging.ConsoleHandler.level=ALL/\# java.util.logging.ConsoleHandler.level=ALL}
+    - LOGGING=${LOGGING/\# handlers=java.util.logging.FileHandler/handlers=java.util.logging.FileHandler}
+    - LOGGING=${LOGGING/java.util.logging.FileHandler.pattern=dmx.log/java.util.logging.FileHandler.pattern=\/var\/log\/dmx\/dmx.log}
+    - echo "${LOGGING}" >${WORKDIR}/etc/dmx/logging.properties
+    ## add py4dmx example
+    - git clone https://git.dmx.systems/dmx-contrib/py4dmx examples/py4dmx
+    - rm -rf examples/py4dmx/.git*
+    ## patch debian files
+    - COPYRIGHT=$(<debian/copyright)
+    - echo "${COPYRIGHT/@@NUNC@@/$(date -R)}" >debian/copyright
+    - PREINST="$(<debian/preinst)"
+    - PREINST=${PREINST/DMVERSION=\'@@VERSION@@\'/DMVERSION=\'${VERSION}\'}
+    - echo "${PREINST}" >debian/preinst
+    - CONTROL="$(<debian/control)"
+    - echo -e "old control file:\n\n${CONTROL}"
+    ## To replace all occurrences, use ${parameter//pattern/string}
+    - CONTROL=${CONTROL//@@PACKAGENAME@@/${PACKAGENAME}}
+    - CONTROL=${CONTROL//@@VERSION@@/${VERSION}}
+    - CONTROL=${CONTROL//@@JAVAVERSION@@/${JAVAVERSION}}
+    - if [ "${PACKAGENAME}" == "dmx-headless" ]; then CONFLICTS='dmx-latest, dmx-latest-headless, dmx'; fi
+    - if [ "${PACKAGENAME}" == "dmx-latest-headless" ]; then CONFLICTS='dmx, dmx-headless, dmx-latest'; fi
+    - CONTROL=${CONTROL/@@CONFLICTS@@/${CONFLICTS}}
+    - echo -e "new control file:\n\n${CONTROL}"
+    - echo "${CONTROL}" >debian/control
+    ## The next two cp commands are relevant when overriding the package name in debian/rules
+    - cp debian/dmx.service debian/${PACKAGENAME}.dmx.service
+    - cp debian/dmx.logrotate debian/${PACKAGENAME}.dmx.logrotate
+    ## Move the headless service over the default (as we do build headless here)
+    - mv debian/dmx.service.headless debian/dmx.service
+    - cp -a ${WORKDIR}/bin ./
+    - cp -a ${WORKDIR}/etc ./
+    - tree ${PWD}
+    ## build packages
+    - dch --controlmaint --create --package "${PACKAGENAME}" --newversion "${VERSION}~0deb" --empty
+    - dch --controlmaint -v "${VERSION}~0deb" "A Debian Package for DMX - The Context Machine"
+    - dch --controlmaint -v "${VERSION}~0deb" "DMX is the successor of Jörg Richter's <jri@deepamehta.de> DeepaMehta project."
+    - dch --controlmaint -v "${VERSION}~0deb" "Thanks to Silke <silke@silkemeyer.net> for the initial work on the debian package."
+    - dch --controlmaint -r --distribution "${TARGET}" ignored
+    - LASTCOMMIT="$( git rev-parse HEAD )"
+    - git add debian/changelog
+    - sleep 1
+    - NUNC="$( date -R )"
+    - 'git commit --date="${NUNC}" -m"DMX debian package ${PACKAGENAME} build from ${DMX}-${VERSION} - Package Version ${PACKAGEVERSION}+b${CI_PIPELINE_ID}" -m"Binaries from ${WEBDIR}/${ZIPFILE}" -m"Thanks: GitLab Team for providing great CI infrastructure!"'
+    - git log -1
+    - gbp dch --distribution "${TARGET}" --ignore-branch --new-version "${VERSION}~${PACKAGEVERSION}deb+b${CI_PIPELINE_ID}" --commit --since=${LASTCOMMIT} --release --spawn-editor=never --full --meta
+    ## - export GPG_TTY=$(tty) <= moved to .bashrc
+    - dpkg-buildpackage -A -us --force-sign -k'devops@dmx.systems'
+    - tree
+
+
+test-default:
+  only:
+    refs:
+      - master
+      - dev
+  tags:
+    - deb
+  stage: test
+  script:
+    - PACKAGENAME="${PACKAGENAME}"
+    - COMMIT_VERSION="$( cat .git/COMMIT_EDITMSG | cut -d' ' -f4 )"
+    - ls -la ../${PACKAGENAME}_${COMMIT_VERSION}_all.*
+    - cat ../${PACKAGENAME}_${COMMIT_VERSION}_all.changes
+    - echo "Running test - lintian -i -I --show-overrides ../${PACKAGENAME}_${COMMIT_VERSION}_all.changes"
+    - lintian -i -I --show-overrides ../${PACKAGENAME}_${COMMIT_VERSION}_all.changes
+
+
+test-headless:
   only:
     refs:
       - tags
@@ -122,13 +262,15 @@ test:
     - deb
   stage: test
   script:
+    - PACKAGENAME="${PACKAGENAME}-headless"
     - COMMIT_VERSION="$( cat .git/COMMIT_EDITMSG | cut -d' ' -f4 )"
-    - ls -la ../*
+    - ls -la ../${PACKAGENAME}_${COMMIT_VERSION}_all.*
     - cat ../${PACKAGENAME}_${COMMIT_VERSION}_all.changes
     - echo "Running test - lintian -i -I --show-overrides ../${PACKAGENAME}_${COMMIT_VERSION}_all.changes"
     - lintian -i -I --show-overrides ../${PACKAGENAME}_${COMMIT_VERSION}_all.changes
 
-deploy:
+
+deploy-to-repo:
   only:
     refs:
       - tags
@@ -138,23 +280,20 @@ deploy:
   script:
     - LOCALDIR='/home/gitlab-runner/repos'
     - REPODIR='/var/www/download.dmx.systems/repos'
-    - echo "removing old packages ..."
-    - rm -f ${LOCALDIR}/${TARGET}/${PACKAGENAME}_*.{deb,changes,buildinfo}
-    - echo "adding ${PACKAGENAME}_*-${CI_PIPELINE_ID} to ${REPODIR} ..."
+    - echo "removing old packages from ${LOCALDIR}/${TARGET} ..."
+    - rm -f ${LOCALDIR}/${TARGET}/${PACKAGENAME}*_*.{deb,changes,buildinfo}
+    - echo "adding ${PACKAGENAME}*_*-${CI_PIPELINE_ID} to ${REPODIR} ..."
     - pwd
-    - dput local ../${PACKAGENAME}_*-${CI_PIPELINE_ID}_*.changes
+    - dput local ../${PACKAGENAME}*_*-*${CI_PIPELINE_ID}_*.changes
     - sleep 1
     - mini-dinstall --batch
+    ## add at least 1 sec to make sure packets were importet to repo
     - sleep 1
-    - debc ${REPODIR}/ubuntu/${TARGET}/${PACKAGENAME}_*-${CI_PIPELINE_ID}_all.changes
+    - PACKAGES="$( find ${REPODIR}/ubuntu/${TARGET}/${PACKAGENAME}*_*-*${CI_PIPELINE_ID}_all.changes )"
+    - for package in ${PACKAGES}; do file ${package} && debc --debs-dir ${REPODIR}/ubuntu/${TARGET}/ ${package}; done
     - cp ./README ${REPODIR}/
-    - echo "cleaning up ..."
-    - cd ..
-    - WORKDIR="$( pwd )"
-    - echo "cleaning up ${WORKDIR}/* ..."
-    - find . -type f -name "*${PACKAGENAME}_*" -exec rm -f {} \;
-    ## trigger pipeline to re-deploy docker image for dmx demo
-    # - MY_JOB_TOKEN="$(</home/gitlab-runner/.after-deb-repo.token)"
-    # - TRIGGER="$(curl --silent --write-out '%{http_code}' --output /dev/null --request POST --form token="${MY_JOB_TOKEN}" --form ref=master https://git.dmx.systems/api/v4/projects/17/trigger/pipeline)"
-    # - echo "${TRIGGER}"
-    # - if [ ${TRIGGER} -ne 201 ]; then echo "Failed to trigger subsequent project."; exit 1; fi
+    ## trigger pipeline to re-deploy docker image for dmx dev
+    #- MY_JOB_TOKEN="$(</home/gitlab-runner/.after-deb-repo.token)"
+    #- TRIGGER="$(curl --silent --write-out '%{http_code}' --output /dev/null --request POST --form token="${MY_JOB_TOKEN}" --form ref=master https://git.dmx.systems/api/v4/projects/17/trigger/pipeline)"
+    #- echo "${TRIGGER}"
+    #- if [ ${TRIGGER} -ne 201 ]; then echo "Failed to trigger subsequent project."; exit 1; fi

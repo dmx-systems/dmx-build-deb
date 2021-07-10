@@ -23,8 +23,7 @@
     AllowEncodedSlashes NoDecode
 
     <Proxy *>
-        Order deny,allow
-        Allow from all
+        Require all granted
     </Proxy>
 
     # This is the forwarding for the websockets. Always keep it the first rule.

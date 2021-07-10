@@ -5,6 +5,8 @@
 
 set -e
 
+echo "Running $0 $1 ..." >&2
+
 # summary of how this script can be called:
 #        * <prerm> `remove'
 #        * <old-prerm> `upgrade' <new-version>
@@ -16,19 +18,25 @@ set -e
 # for details, see http://www.debian.org/doc/debian-policy/ or
 # the debian-policy package
 
+## Source debconf library.
+. /usr/share/debconf/confmodule
 
 case "$1" in
-    remove|upgrade|deconfigure)
-    if [ "$(systemctl is-active dmx.service)" ]; then
-        deb-systemd-invoke stop dmx.service >/dev/null || true
+    remove|deconfigure)
+    ## stop and disable dmx.service
+    if [ "$(systemctl is-active 'dmx.service')" ]; then
+        deb-systemd-invoke stop 'dmx.service' >/dev/null || true
+    fi
+    if [ "$(deb-systemd-invoke is-enabled 'dmx.service')" ]; then
+        deb-systemd-invoke disable 'dmx.service' >/dev/null || true
     fi
 
     ## make sure /var/cache/dmx is empty
     if [ -d /var/cache/dmx/bundle-cache ]; then
-	    rm -rf /var/cache/dmx/bundle-cache
+	rm -rf /var/cache/dmx/bundle-cache
     fi
     if [ -d /var/cache/dmx/dmx-bundle-cache ]; then
-	    rm -rf /var/cache/dmx/dmx-bundle-cache
+	rm -rf /var/cache/dmx/dmx-bundle-cache
     fi
     ;;
 

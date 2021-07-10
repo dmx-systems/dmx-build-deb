@@ -1,8 +1,7 @@
 [Unit]
 Description=DMX - The Context Machine
 Documentation=https://docs.dmx.systems
-Requires=network.target
-After=graphical.target
+After=network.target
 
 
 [Service]
@@ -16,15 +15,13 @@ ExecStartPre=/bin/sh -c 'echo JAVA_EXEC="$$( update-alternatives \
     | grep java-8 \
     | grep java$ \
     | tail -n1 )">/var/run/dmx/environment.txt'
-# ExecStartPre=/bin/sleep 1
-# Environment=SYSTEMD_LOG_LEVEL=debug
 PIDFile=/var/run/dmx/dmx.pid
 WorkingDirectory=/usr/share/dmx
 SyslogIdentifier=DMX
 Environment=JAVA_XMS=128
 Environment=JAVA_XMX=256
-Environment=DISPLAY=:0
 EnvironmentFile=-/var/run/dmx/environment.txt
+
 ExecStart=/bin/sh -c '${JAVA_EXEC} \
     -Xms${JAVA_XMS}M \
     -Xmx${JAVA_XMX}M \
@@ -32,10 +29,9 @@ ExecStart=/bin/sh -c '${JAVA_EXEC} \
     -Dfelix.system.properties=file:/etc/dmx/config.properties \
     -Dfelix.config.properties=file:/etc/dmx/config.properties \
     -Dpidfile.path=/var/run/dmx/dmx.pid \
-    -Djava.awt.headless=false \
+    -Djava.awt.headless=true \
     -jar /usr/share/dmx/bin/felix.jar'
-Restart=always
-RestartSec=3
+
 
 [Install]
 WantedBy=multi-user.target

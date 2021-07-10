@@ -1,23 +1,26 @@
-DMX for Debian
-==============
+# DMX Debian package
 
+The DMX Debian package uses Linux’ File System Hierarchy Standard. You find the respective components in the directories listed below:
 
-+++ DMX is still under heavy development! +++
+- Configuration files: `/etc/dmx/`
+- Java files: `/usr/share/dmx/`
+- DMX database (and eventually file repo): `/var/lib/dmx/`
+- Log files: `/var/log/dmx/`
+- Bundle cache: `/var/cache/dmx/`
+- Examples: `/usr/share/doc/dmx/`
+- Systemd unit file: `/lib/systemd/system/dmx.service`
 
-DMX is under heavy development. While you can do productive work with it, DMX does not meet professional standards yet. At least there are lacks in a) security, b) robustness, and c) usability. Do not put sensitive data in DMX, in particular when you setup DMX for network access. Be aware that data loss may occur when you use DMX improperly. The DMX developers assume no liability for lost or compromised data. Please keep this in mind when using this software.
+## Configuration
 
-Thank you for your understanding!
+Please read the [DMX Admin Guide](https://dmx.readthedocs.io/en/stable/admin.html). By default, DMX is listening on localhost, port 8080. To change this setting, edit `/etc/dmx/config.properties`. Adjust the settings in /etc/dmx/config.properties and make sure your computer is protected by a firewall. **Important**: In a networked installation modify `dmx.filerepo.path`! We recommend to set it to a dedicated directory, e.g. `dmx.filerepo.path = /var/lib/dmx/dmx-filedir`.
 
-+++ Configuration +++
+`dpkg -P` dmx will remove all installed files but not delete your database and files in `/var/lib/dmx`.
 
-By default, DMX is listening on port 8080. To change this setting, edit /etc/dmx/config.properties. Adjust the settings in /etc/dmx/config.properties and make sure your computer is protected by a firewall.
+## Apache
 
-dpkg -P dmx will remove all installed files but not delete your database and files in /var/lib/dmx.
+See `/usr/share/doc/dmx/examples/dmx.apache` for a sample Apache2 config file. Our documentation contains more details about [Apache configuration](https://dmx.readthedocs.io/en/stable/admin.html#running-dmx-behind-an-apache-reverse-proxy).
 
-+++ Apache +++
+## Security
 
-See /usr/share/doc/dmx/examples/dmx.apache for a sample Apache2 config file (for details concerning Apache2 configuration see https://dmx.readthedocs.io/en/latest/admin.html#running-dmx-behind-an-apache-reverse-proxy).
+[Secure your installation](https://dmx.readthedocs.io/en/stable/admin.html#securing-dmx) with iptables.
 
-+++ Security +++
-
-To secure your installation with iptables see https://dmx.readthedocs.io/en/latest/admin.html#securing-dmx.

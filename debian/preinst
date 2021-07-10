@@ -5,6 +5,14 @@
 
 set -e
 
+## CAUTION! If commands in your hook script write to STDOUT,
+## you may need to redirect output to STDERR (>&2) or some other
+## place to avoid confusing debconf.  If you don't, it may cause
+## a mysterious error even if the hook script exits with a return 
+## status of zero!
+
+echo "Running $0 $1 ..." >&2
+
 # summary of how this script can be called:
 #        * <new-preinst> `install'
 #        * <new-preinst> `install' <old-version>
@@ -13,61 +21,72 @@ set -e
 # for details, see http://www.debian.org/doc/debian-policy/ or
 # the debian-policy package
 
-BACKUPDATE="$( date +%F-%H:%M:%S )"
-DMVERSION='@@VERSION@@'
-
-##  TODO: FIXME
-##  Backing up the db depends on the location of the db, which is a config parameter in config properties.
-##  So in the funture we have to read that!
-DBDIR='/var/lib/dmx/dmx-db'
-
-PREVIOUSVERSION="$( if [ -d ${DBDIR} ]; then find ${DBDIR} -name ".dm-version.*" | cut -d'.' -f'3-' | sort -V | tail -n1; fi )"
-
-## echo "running preinst $1"
-echo "Installing version ${DMVERSION}"
-
-if [ ! -z "${PREVIOUSVERSION}" ]; then
-    echo "Found previous db-version ${PREVIOUSVERSION}"
-fi
-
-## check if dmx is already running and stop it then
-systemctl is-active --quiet dmx.service && deb-systemd-invoke stop dmx
+## Source debconf library.
+. /usr/share/debconf/confmodule
 
 case "$1" in
-    install)
-        id -u dmx >/dev/null 2>&1 || useradd --system --user-group --home-dir '/var/lib/dmx' --shell '/bin/false' --comment 'DMX - The Context Machine' dmx
-        if [ ! -d /var/lib/dmx ]; then
-            mkdir /var/lib/dmx
-            chown dmx:dmx /var/lib/dmx
-        fi
-        if [ -d ${DBDIR} ]; then
-            if [ -f ${DBDIR}/.dm-version.${PREVIOUSVERSION} ]; then
-                mv ${DBDIR} ${DBDIR}-${PREVIOUSVERSION}-backup-$BACKUPDATE
-                mkdir ${DBDIR}
-                chown dmx:dmx ${DBDIR}
-                chmod 750 ${DBDIR}
-                touch ${DBDIR}/.dm-version.$DMVERSION
-                echo "Your existing database has been moved to /var/lib/dmx/dmx-db-${PREVIOUSVERSION}-backup-$BACKUPDATE."
-            fi
-        else
-            mkdir ${DBDIR}
-            chown dmx:dmx ${DBDIR}
-            chmod 750 ${DBDIR}
-            touch ${DBDIR}/.dm-version.$DMVERSION
-        fi
-        if [ -d /etc/dmx ]; then
-            chown root:dmx /etc/dmx
-            chmod 750 /etc/dmx
-        fi
-    ;;
+    install|upgrade)
+    ## Get the name and the version of the package
+    PACKAGE="${DPKG_MAINTSCRIPT_PACKAGE}"
+    DMVERSION='@@VERSION@@'
 
-    upgrade)
-        ## backup existing database
-        if [ -d ${DBDIR} ]; then
-            cp -a ${DBDIR} ${DBDIR}-${PREVIOUSVERSION}-backup-$BACKUPDATE
-            touch ${DBDIR}/.dm-version.$DMVERSION
-            echo "Your existing database has been copied to ${DBDIR}-${PREVIOUSVERSION}-backup-$BACKUPDATE."
+    ## Is this the headless package?
+    HEADLESS_PACKAGE="$( echo "${PACKAGE}" | grep 'headless' )" || true
+
+    ## Is this a desktop system?
+    SOCKET_STATUS="$( netstat -lp 2>/dev/null | grep -E 'Xorg|Xwayland' | grep 'X11' )" || true
+    PROCESS_STATUS="$( pgrep 'Xorg|Xwayland' )" || true
+
+    ## Check system and ask user
+    if [ -z "${SOCKET_STATUS}" ] && [ -z "${PROCESS_STATUS}" ] && [ -z "${HEADLESS_PACKAGE}" ]; then
+	## prompt headless warning
+	db_input critical dmx/headless_warning || true
+	db_go || true
+        db_clear || true
+	db_input critical dmx/continue_installation || true
+	db_go || true
+	db_get dmx/continue_installation || true
+        ANSWER="$RET"
+	if [ "${ANSWER}" != "true" ]; then
+    	    ## Remove the changes from the db.
+    	    echo "Aborting $1." >&2
+    	    db_purge || true
+    	    ## Abort installation
+    	    ## IMPORTANT: exit 0 will not cancel the installation process,
+    	    ## but only exit from preinst and continue with installation.
+    	    exit 1
+	fi
+    fi
+
+    ###  FIXME
+    ###  Backing up the db depends on the location of the db, which is a config parameter in config properties.
+    ###  So in the funture we have to read that!
+    DBDIR='/var/lib/dmx/dmx-db'
+    BACKUPDATE="$( date +%F-%H:%M:%S )"
+    ## check if dmx is already running and stop it then
+    if [ "$(systemctl is-active 'dmx.service')" ]; then
+	deb-systemd-invoke stop 'dmx.service' >/dev/null || true
+    fi
+    ## was there a previously installed DMX
+    INSTALLED_VERSION="$( dpkg -s ${PACKAGE} 2>/dev/null | sed -n 's/^Version: //p' | cut -d'~' -f1 )"
+    PREVIOUSDBVERSION="$( if [ -d ${DBDIR} ]; then find ${DBDIR} -name ".dm-version.*" | cut -d'.' -f'3-' | sort -V | tail -n1; fi )"
+    ## backup existing database
+    if [ -d ${DBDIR} ]; then
+        if [ -n "${PREVIOUSDBVERSION}" ]; then
+            BACKUPDIR="${DBDIR}-${PREVIOUSDBVERSION}-backup-$BACKUPDATE"
+        elif [ -n "${INSTALLED_VERSION}" ]; then
+            BACKUPDIR="${DBDIR}-${INSTALLEDDBVERSION}-backup-$BACKUPDATE"
+        else
+            BACKUPDIR="${DBDIR}-preinst_${DMVERSION}-backup-$BACKUPDATE"
         fi
+        cp -a ${DBDIR} ${BACKUPDIR}
+	echo "Your existing database has been backed-up (copied) to ${BACKUPDIR}." >&2
+    else
+        mkdir -p ${DBDIR}
+    fi
+    # chown dmx:dmx ${DBDIR}
+    chmod 750 ${DBDIR}
+    touch ${DBDIR}/.dm-version.$DMVERSION
     ;;
 
     abort-upgrade)

@@ -5,6 +5,8 @@
 
 set -e
 
+echo "Running $0 $1 ..." >&2
+
 # summary of how this script can be called:
 #        * <postrm> `remove'
 #        * <postrm> `purge'
@@ -18,13 +20,25 @@ set -e
 # for details, see http://www.debian.org/doc/debian-policy/ or
 # the debian-policy package
 
-# echo "running postrm $1"
+## Source debconf library.
+. /usr/share/debconf/confmodule
 
 case "$1" in
     purge|remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
         if [ -d /var/cache/dmx ]; then
-            rm -rf /var/cache/dmx
+            rm -rf /var/cache/dmx || true
         fi
+    ## remove dmx.desktop from autostart folder
+    ASDIRS="$(find /home/ -maxdepth 3 -type d -wholename "/home/*/.config/autostart")"
+    for homedir in ${ASDIRS}; do
+        if [ -f ${homedir}/dmx.desktop ]; then
+            rm ${homedir}/dmx.desktop || true
+        fi
+    done
+    ## remove sudoers file
+    if [ -f /etc/sudoers.d/42-systemctl_dmx ]; then
+        rm /etc/sudoers.d/42-systemctl_dmx || true
+    fi
     ;;
 
     *)
@@ -34,21 +48,20 @@ case "$1" in
 esac
 
 if [ "$1" = purge ]; then
-    deb-systemd-invoke stop dmx.service >/dev/null || true
-    deb-systemd-invoke disable dmx.service >/dev/null || true
-    ### the logfile is a config parameter. We should read this in the future.
     if [ -f /var/log/dmx/dmx.log ]; then
-	rm /var/log/dmx/*
+	rm /var/log/dmx/* || true
     fi
+    ## remove plugin backups ~outdated~ folder
     if [ -d /usr/share/dmx/bundle-available/.~outdated~ ]; then
-        rm -r /usr/share/dmx/bundle-available/.~outdated~
+        rm -r /usr/share/dmx/bundle-available/.~outdated~ || true
     fi
-    deluser --system dmx >/dev/null || true
-
-    # Source debconf library.
-    . /usr/share/debconf/confmodule
-    # Remove my changes to the db.
-    db_purge
+    ## remove symlinks from bundle-deploy folder
+    rm -rf /usr/share/dmx/bundle-deploy/* >/dev/null 2>&1 || true
+    ## remove system user and group
+    id -u dmx >/dev/null 2>&1 && deluser --system dmx >/dev/null 2>&1 || true
+    id -g dmx >/dev/null 2>&1 && delgroup dmx >/dev/null 2>&1 || true
+    ## Remove all changes from the db.
+    db_purge || true
 fi
 
 # dh_installdeb will replace this with shell code automatically
