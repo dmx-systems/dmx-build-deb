@@ -73,7 +73,7 @@ fetch-binaries:
     - echo -e "To activate a plugin copy or link it to the bundles-deploy folder.\n" >>bin/bundle-available/about-this-directory.txt
     - echo -e "Find more information on DMX plugins at" >>bin/bundle-available/about-this-directory.txt
     - echo -e "https://git.dmx.systems/dmx-plugins" >>bin/bundle-available/about-this-directory.txt
-    - for plugin in "${PLUGINS[@]}"; do latest_version="$( wget -q -O - "${WEBCGI}/ci/${plugin}/${plugin}-latest.jar" )"; echo "Download latest version of ${plugin} [${latest_version}]"; wget -q "${latest_version}" -P bin/bundle-available/; done    
+    - for plugin in "${PLUGINS[@]}"; do latest_version="$( wget -q -O - "${WEBCGI}/ci/${plugin}/${plugin}-latest.jar" )"; echo "Download latest version of ${plugin} [${latest_version}]"; wget -q "${latest_version}" -P bin/bundle-available/; done
     - tree bin/bundle-available/ 
 
 
@@ -169,7 +169,7 @@ build-dmx-headless:
   stage: build
   variables:
     PACKAGEVERSION: "1"
-    PLUGINS: "dmx-tableview dmx-geomaps dmx-mobile dmx-dita dmx-ldap"
+    PLUGINS: "dmx-tableview dmx-geomaps dmx-mobile dmx-file-upload dmx-ldap"
     WEBCGI: 'https://download.dmx.systems/cgi-bin/v1/latest-version.cgi?'
     WEBDIR: 'https://download.dmx.systems/ci'
     DEBFULLNAME: 'DMX Systems (DMX CI)'

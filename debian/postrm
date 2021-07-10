@@ -51,9 +51,13 @@ if [ "$1" = purge ]; then
     if [ -f /var/log/dmx/dmx.log ]; then
 	rm /var/log/dmx/* || true
     fi
+    ## remove plugin backups ~outdated~ folder
     if [ -d /usr/share/dmx/bundle-available/.~outdated~ ]; then
         rm -r /usr/share/dmx/bundle-available/.~outdated~ || true
     fi
+    ## remove symlinks from bundle-deploy folder
+    rm -rf /usr/share/dmx/bundle-deploy/* >/dev/null 2>&1 || true
+    ## remove system user and group
     id -u dmx >/dev/null 2>&1 && deluser --system dmx >/dev/null 2>&1 || true
     id -g dmx >/dev/null 2>&1 && delgroup dmx >/dev/null 2>&1 || true
     ## Remove all changes from the db.
