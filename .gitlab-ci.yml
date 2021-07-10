@@ -306,7 +306,8 @@ deploy-to-repo:
     - sleep 1
     - mini-dinstall --batch
     - sleep 1
-    - debc ${REPODIR}/ubuntu/${TARGET}/${PACKAGENAME}*_*-*${CI_PIPELINE_ID}_all.changes
+    #- debc ${REPODIR}/ubuntu/${TARGET}/${PACKAGENAME}*_*-*${CI_PIPELINE_ID}_all.changes
+    - PACKAGES="$( find ${REPODIR}/ubuntu/${TARGET}/${PACKAGENAME}*_*-*${CI_PIPELINE_ID}_all.changes )"; for package in "${PACKAGES}"; do debc "${package}"; done
     - cp ./README ${REPODIR}/
     - echo "cleaning up ..."
     - cd ..
