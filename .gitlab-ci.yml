@@ -88,7 +88,6 @@ build-dmx:
       - dev-5.2
   tags:
     - deb
-    - dmx
   stage: build
   variables:
     PACKAGEVERSION: "1"
@@ -168,7 +167,6 @@ build-dmx-headless:
       - dev-5.2
   tags:
     - deb
-    - dmx-headless
   stage: build
   variables:
     PACKAGEVERSION: "1"
@@ -250,7 +248,6 @@ test-default:
       - dev-5.2
   tags:
     - deb
-    - dmx
   stage: test
   script:
     - PACKAGENAME="${PACKAGENAME}"
@@ -268,7 +265,6 @@ test-headless:
       - dev-5.2
   tags:
     - deb
-    - dmx-headless
   stage: test
   script:
     - PACKAGENAME="${PACKAGENAME}-headless"
@@ -285,7 +281,6 @@ deploy-dev:
       - dev-5.2
   tags:
     - deb
-    - dev
   stage: deploy
   script:
     - PACKAGENAME="${PACKAGENAME}"
@@ -307,7 +302,6 @@ deploy-to-repo:
       - master
   tags:
     - deb
-    - master
   stage: deploy
   script:
     - LOCALDIR='/home/gitlab-runner/repos'
