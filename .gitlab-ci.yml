@@ -37,7 +37,7 @@ after_script:
   - cd ..
   - WORKDIR="$( pwd )"
   - echo "cleaning up ${WORKDIR}/* ..."
-  - find ${WORKDIR}/ -type f "*${PACKAGENAME}*_*-*${CI_PIPELINE_ID}_all.*" -exec rm -f {} \;
+  - find ${WORKDIR}/*${PACKAGENAME}*_*-*${CI_PIPELINE_ID}_all.* -type f -exec rm -f {} \;
 
 
 fetch-binaries:
