@@ -142,9 +142,11 @@ build-dmx:
     - cp debian/dmx.logrotate debian/${PACKAGENAME}.dmx.logrotate
     ## Remove the headless service (as we do build the default here)
     - rm debian/dmx.service.headless
+    ## Preserve files in ${WORKDIR}
     - cp -a ${WORKDIR}/bin ./
     - cp -a ${WORKDIR}/etc ./
     - tree ${PWD}
+    ## Build packages
     - dch --controlmaint --create --package "${PACKAGENAME}" --newversion "${VERSION}~0deb" --empty
     - dch --controlmaint -v "${VERSION}~0deb" "A Debian Package for DMX - The Context Machine"
     - dch --controlmaint -v "${VERSION}~0deb" "DMX is the successor of Jörg Richter's <jri@deepamehta.de> DeepaMehta project."
