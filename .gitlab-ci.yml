@@ -42,9 +42,6 @@ fetch-binaries:
   variables:
     PLUGINS: "dmx-tableview dmx-geomaps dmx-mobile dmx-dita dmx-ldap"
     WEBCGI: 'https://download.dmx.systems/cgi-bin/v1/latest-version.cgi?'
-    # WEBDIR: 'https://download.dmx.systems/ci'
-    # DEBFULLNAME: 'DMX Systems (DMX CI)'
-    # DEBEMAIL: 'DMX Systems (DMX CI) <devops@dmx.systems>'
   script:
     - PLUGINS=(${PLUGINS})
     - JAVAVERSION=(${JAVAVERSION})
@@ -52,7 +49,6 @@ fetch-binaries:
     - echo "ZIPFILE = ${ZIPFILE}"
     - echo "Starting job ${CI_JOB_ID} in pipeline ${CI_PIPELINE_ID}"
     - echo "Download ${WEBDIR}/${ZIPFILE} to ${WORKDIR}"
-    # - if [ -f ${WORKDIR}/${ZIPFILE} ]; then rm ${WORKDIR}/${ZIPFILE}; fi
     - wget -q "${WEBDIR}/${ZIPFILE}" --directory-prefix "${WORKDIR}"
     - cd ${WORKDIR}
     - echo "Unzip $(file ${ZIPFILE})"
@@ -88,8 +84,6 @@ build-dmx:
   stage: build
   variables:
     PACKAGEVERSION: "1"
-    # DEBFULLNAME: 'DMX Systems (DMX CI)'
-    # DEBEMAIL: 'DMX Systems (DMX CI) <devops@dmx.systems>'
     JAVAVERSION: 'openjdk-8-jre'
   script:
     # - cd ${WORKDIR}
