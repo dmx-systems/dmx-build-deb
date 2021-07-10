@@ -7,7 +7,6 @@ set -e
 
 echo "Running $0 $1 ..." >&2
 
-
 # summary of how this script can be called:
 #        * <postinst> `configure' <most-recently-configured-version>
 #        * <old-postinst> `abort-upgrade' <new version>
@@ -20,44 +19,39 @@ echo "Running $0 $1 ..." >&2
 # for details, see http://www.debian.org/doc/debian-policy/ or
 # the debian-policy package
 
-
-# Load config file, if it exists.
-
-### THIS DOES NOT WORK, BECAUSE DMX VARS CONTAIN '.'s.
-### if [ -e $CONFIGFILE ]; then
-###    . $CONFIGFILE || true
-### fi
-
-# Source debconf library.
+## Source debconf library.
 . /usr/share/debconf/confmodule
 
-### FIXME
-### various dirs can be configured via config.properties
-### the script should reflect this.
+## Load dmx config file, if it exists.
+##
+## THIS DOES NOT WORK, BECAUSE DMX VARS CONTAIN '.'s.
+## if [ -e $CONFIGFILE ]; then
+##    . $CONFIGFILE || true
+## fi
+
+## FIXME
+## various dirs can be configured via config.properties
+## the script should reflect this.
 
 case "$1" in
     configure)
-
-    # echo "1" >&2
-
     ## Change password only on initial installation
     if [ -z "$2" ]; then
         ## Get password from debconf-db
         db_get dmx/initial_admin_password || true
         INITIAL_ADMIN_PASSWORD="$RET"
-        # echo "INITIAL_ADMIN_PASSWORD=<${INITIAL_ADMIN_PASSWORD}>" >&2
         CONFIGFILE='/etc/dmx/config.properties'
         cp -a -f $CONFIGFILE $CONFIGFILE.tmp || true
         sed -i "s/^ *dmx\.security\.initial_admin_password =.*/dmx\.security\.initial_admin_password = $INITIAL_ADMIN_PASSWORD/" $CONFIGFILE || true
-        db_clear || true
-        # echo "Successfuly changed dmx.security.initial_admin_password in /etc/dmx/config.properties." >&2
+        db_clear dmx/initial_admin_password || true
+        db_clear dmx/initial_admin_password_again || true
     fi
 
     ### Start: Update plugin symlinks
     LINKDIR='/usr/share/dmx/bundle-deploy'
     FILEDIR='/usr/share/dmx/bundle-available'
 
-    ## Create backup dir
+    ## Create plugin backup dir
     if [ ! -d "${FILEDIR}/.~outdated~" ]; then
         mkdir "${FILEDIR}/.~outdated~"
     fi
@@ -82,8 +76,6 @@ case "$1" in
         mv ${FILEDIR}/dmx-tableview-command-1.3.0.jar "${FILEDIR}/.~outdated~/"
     fi
 
-    # echo "2" >&2
-
     ## Check if there are any files instead of links in $LINKDIR
     PLUGINFILES="$(find "${LINKDIR}/" -maxdepth 1 -name "*.jar" -type f)"
     for pf in ${PLUGINFILES}; do
@@ -103,10 +95,6 @@ case "$1" in
         fi
     done
 
-
-    # echo "3" >&2
-
-
     ## Get rid of pluginname-latest.jar files without version number
     ## The whole *-latest.jar should be removed, once they have all been terminated
     ##
@@ -124,9 +112,6 @@ case "$1" in
             ln -s "${latestfile}" "${LINKDIR}/${plugin_version}"
         fi
     done
-
-    # echo "4" >&2
-
     ## Step two: find -latest files in ${FILEDIR}
     PLUGINFILES="$(find "${FILEDIR}/" -maxdepth 1 -name "*-latest.jar" -type f)"
     for pf in ${PLUGINFILES}; do
@@ -139,7 +124,6 @@ case "$1" in
             mv "${FILEDIR}/${filename}" "${FILEDIR}/.~outdated~/"
         fi
     done
-
 
     ## Check if SNAPSHOT versions exist for released plugins
     PLUGINFILES="$(find "${LINKDIR}/" -maxdepth 1 -name "*-SNAPSHOT*.jar" -type l)"
@@ -160,9 +144,7 @@ case "$1" in
         fi
     done
 
-    # echo "5" >&2
-
-    ## Remove old files
+    ## Remove old plugin files
     OLDFILES="$(find "${FILEDIR}/" -maxdepth 1 -name "*.jar" -type f)"
     for of in ${OLDFILES}; do
         ## extract plugin name
@@ -175,9 +157,7 @@ case "$1" in
         fi
     done
 
-    # echo "6" >&2
-
-    ## Update symlinks
+    ## Update plugin symlinks
     SYMLINKS="$(find "${LINKDIR}/" -maxdepth 1 -name "*.jar" -type l)"      # use l for symlinks
     for sl in ${SYMLINKS}; do
         ## extract plugin name
@@ -197,7 +177,6 @@ case "$1" in
             fi
         fi
     done
-
     ### End: Update plugin symlinks
 
     ## make sure cache dir exits
@@ -251,11 +230,8 @@ case "$1" in
     chown dmx:dmx /var/log/dmx
     
     ## unmask and enable the service if not enabled
-    # if [ "$(systemctl is-enabled dmx.service)" = "masked" ]; then
-    # if [ "$(deb-systemd-invoke is-enabled dmx.service)" = "masked" ]; then
     deb-systemd-helper unmask 'dmx.service' >/dev/null || true
     if [ ! "$(deb-systemd-helper --quiet is-enabled 'dmx.service')" ]; then
-        # deb-systemd-invoke enable dmx.service >/dev/null 2>&1 || true
         deb-systemd-helper enable 'dmx.service' >/dev/null || true
     fi
 
@@ -266,10 +242,8 @@ case "$1" in
 
     ## try to restart DMX if it is running
     if [ "$(systemctl is-active 'dmx.service')" ]; then
-	# deb-systemd-invoke restart dmx.service >/dev/null 2>&1 || true
 	deb-systemd-invoke restart 'dmx.service' >/dev/null || true
     else
-	# deb-systemd-invoke start dmx.service >/dev/null 2>&1 || true
 	deb-systemd-invoke start 'dmx.service' >/dev/null || true
     fi
     ;;

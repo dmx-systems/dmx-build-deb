@@ -5,7 +5,6 @@
 
 set -e
 
-
 ## CAUTION! If commands in your hook script write to STDOUT,
 ## you may need to redirect output to STDERR (>&2) or some other
 ## place to avoid confusing debconf.  If you don't, it may cause
@@ -13,7 +12,6 @@ set -e
 ## status of zero!
 
 echo "Running $0 $1 ..." >&2
-
 
 # summary of how this script can be called:
 #        * <new-preinst> `install'
@@ -28,7 +26,7 @@ echo "Running $0 $1 ..." >&2
 
 case "$1" in
     install|upgrade)
-    ## Get the name of the package
+    ## Get the name and the version of the package
     PACKAGE="${DPKG_MAINTSCRIPT_PACKAGE}"
     DMVERSION='@@VERSION@@'
 
@@ -39,21 +37,16 @@ case "$1" in
     SOCKET_STATUS="$( netstat -lp 2>/dev/null | grep -E 'Xorg|Xwayland' | grep 'X11' )" || true
     PROCESS_STATUS="$( pgrep 'Xorg|Xwayland' )" || true
 
-    #echo "HEADLESS_PACKAGE=${HEADLESS_PACKAGE}" >&2
-    #echo "SOCKET_STATUS=${SOCKET_STATUS}" >&2
-    #echo "PROCESS_STATUS=${PROCESS_STATUS}" >&2
-
     ## Check system and ask user
-    # if [ -z "${SOCKET_STATUS}" ] && [ -z "${PROCESS_STATUS}" ] && [ -z "${HEADLESS_PACKAGE}" ]; then
-    if [ -n "${SOCKET_STATUS}" ] && [ -n "${PROCESS_STATUS}" ] && [ -z "${HEADLESS_PACKAGE}" ]; then
+    if [ -z "${SOCKET_STATUS}" ] && [ -z "${PROCESS_STATUS}" ] && [ -z "${HEADLESS_PACKAGE}" ]; then
 	## prompt headless warning
-	db_input high dmx/headless_warning || true
+	db_input critical dmx/headless_warning || true
+	db_go || true
         db_clear || true
-	db_input high dmx/continue_installation || true
+	db_input critical dmx/continue_installation || true
 	db_go || true
 	db_get dmx/continue_installation || true
         ANSWER="$RET"
-	# echo "continue_installation=<${ANSWER}>" >&2
 	if [ "${ANSWER}" != "true" ]; then
     	    ## Remove the changes from the db.
     	    echo "Aborting $1." >&2
@@ -71,9 +64,7 @@ case "$1" in
     DBDIR='/var/lib/dmx/dmx-db'
     BACKUPDATE="$( date +%F-%H:%M:%S )"
     ## check if dmx is already running and stop it then
-    # systemctl is-active --quiet dmx.service && deb-systemd-invoke stop dmx
     if [ "$(systemctl is-active 'dmx.service')" ]; then
-	# deb-systemd-invoke stop dmx.service >/dev/null 2>&1 || true
 	deb-systemd-invoke stop 'dmx.service' >/dev/null || true
     fi
     ## was there a previously installed DMX

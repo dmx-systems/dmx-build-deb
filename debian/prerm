@@ -7,7 +7,6 @@ set -e
 
 echo "Running $0 $1 ..." >&2
 
-
 # summary of how this script can be called:
 #        * <prerm> `remove'
 #        * <old-prerm> `upgrade' <new-version>
@@ -19,12 +18,14 @@ echo "Running $0 $1 ..." >&2
 # for details, see http://www.debian.org/doc/debian-policy/ or
 # the debian-policy package
 
+## Source debconf library.
+. /usr/share/debconf/confmodule
 
 case "$1" in
-    # remove|upgrade|deconfigure)
     remove|deconfigure)
+    ## stop and disable dmx.service
     if [ "$(systemctl is-active 'dmx.service')" ]; then
-        deb-systemd-invoke stop dmx.service >/dev/null || true
+        deb-systemd-invoke stop 'dmx.service' >/dev/null || true
     fi
     if [ "$(deb-systemd-invoke is-enabled 'dmx.service')" ]; then
         deb-systemd-invoke disable 'dmx.service' >/dev/null || true

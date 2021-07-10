@@ -12,7 +12,7 @@ Depends: @@JAVAVERSION@@
 Pre-Depends: debconf (>= 0.5)
 Breaks: deepamehta (<< 5.0)
 Conflicts: @@CONFLICTS@@
-Description: semantic web platform for knowledge management and collaboration
+Description: DMX - semantic web platform for knowledge management and collaboration
  DMX is a knowledge building platform for individuals and work groups. You can
  author, map, explore and share networked information with meaningful relationships.
  The DMX UI is designed to support memorization, retrieval, and collaboration.

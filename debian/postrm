@@ -7,7 +7,6 @@ set -e
 
 echo "Running $0 $1 ..." >&2
 
-
 # summary of how this script can be called:
 #        * <postrm> `remove'
 #        * <postrm> `purge'
@@ -20,6 +19,9 @@ echo "Running $0 $1 ..." >&2
 #          <overwriter-version>
 # for details, see http://www.debian.org/doc/debian-policy/ or
 # the debian-policy package
+
+## Source debconf library.
+. /usr/share/debconf/confmodule
 
 case "$1" in
     purge|remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
@@ -46,35 +48,15 @@ case "$1" in
 esac
 
 if [ "$1" = purge ]; then
-    # echo "if purge ..." >&2
-    # deb-systemd-invoke stop dmx.service >/dev/null || true
-    # deb-systemd-invoke disable dmx.service >/dev/null || true
-    ### the logfile is a config parameter. We should read this in the future.
-    # echo "1" >&2
     if [ -f /var/log/dmx/dmx.log ]; then
-        # echo "2" >&2
 	rm /var/log/dmx/* || true
-        # echo "3" >&2
     fi
-    # echo "4" >&2
     if [ -d /usr/share/dmx/bundle-available/.~outdated~ ]; then
-        # echo "5" >&2
         rm -r /usr/share/dmx/bundle-available/.~outdated~ || true
-        # echo "6" >&2
     fi
-
-    # echo "7" >&2
-    # deluser --system dmx >/dev/null || true
-    #delgroup dmx >/dev/null || true
-
     id -u dmx >/dev/null 2>&1 && deluser --system dmx >/dev/null 2>&1 || true
     id -g dmx >/dev/null 2>&1 && delgroup dmx >/dev/null 2>&1 || true
-
-    # echo "8" >&2
-
-    # Source debconf library.
-    . /usr/share/debconf/confmodule
-    # Remove my changes to the db.
+    ## Remove all changes from the db.
     db_purge || true
 fi
 
