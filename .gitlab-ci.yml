@@ -15,7 +15,7 @@ variables:
   #TARGET: "unstable" # <= This does not work!
   #TARGET: "debian"   # <= This does not work!
   DMX: 'dmx'                              ## [ dmx | deepamehta ]
-  DMXVERSION: '5.2'                       ## [ 5.x | latest ]
+  DMXVERSION: 'latest'                    ## [ 5.x | latest ]
   PACKAGEVERSION: "1"
   DEBFULLNAME: 'DMX Systems (DMX CI)'
   DEBEMAIL: 'DMX Systems (DMX CI) <devops@dmx.systems>'
