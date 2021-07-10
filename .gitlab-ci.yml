@@ -31,9 +31,14 @@ before_script:
 
 
 after_script:
-  ## make sure to clean-up
+  ## make sure to clean-up and remove all packages to not spam the repo
+  ## do this in an after script, because this is run at any time ignroing any fails 
   - echo "after_script ${CI_JOB_STAGE}"
-  # rm -rf foobar
+  - cd ..
+  - WORKDIR="$( pwd )"
+  - echo "cleaning up ${WORKDIR}/* ..."
+  - find ${WORKDIR}/ -type f "*${PACKAGENAME}*_*-*${CI_PIPELINE_ID}_all.*" -exec rm -f {} \;
+
 
 fetch-binaries:
   only:
@@ -309,10 +314,10 @@ deploy-to-repo:
     - dput local ../${PACKAGENAME}*_*-*${CI_PIPELINE_ID}_*.changes
     - sleep 1
     - mini-dinstall --batch
-    ## add at least 10 sec to make sure packets were importet to repo
-    - sleep 10
+    ## add at least 1 sec to make sure packets were importet to repo
+    - sleep 1
     #- debc ${REPODIR}/ubuntu/${TARGET}/${PACKAGENAME}*_*-*${CI_PIPELINE_ID}_all.changes
-    - PACKAGES="$( find ${REPODIR}/ubuntu/${TARGET}/${PACKAGENAME}*_*-*${CI_PIPELINE_ID}_all.changes )"; for package in "${PACKAGES}"; do file ${package} && debc ${package}; done
+    - PACKAGES="$( find ${REPODIR}/ubuntu/${TARGET}/${PACKAGENAME}*_*-*${CI_PIPELINE_ID}_all.deb )"; for package in "${PACKAGES}"; do file ${package} && debc ${package}; done
     - cp ./README ${REPODIR}/
     - echo "cleaning up ..."
     - cd ..
