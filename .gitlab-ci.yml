@@ -313,9 +313,10 @@ deploy-to-repo:
     - dput local ../${PACKAGENAME}*_*-*${CI_PIPELINE_ID}_*.changes
     - sleep 1
     - mini-dinstall --batch
-    ## add at least 2 sec to make sure packets were importet to repo
-    - sleep 2
-    - PACKAGES="$( find ${REPODIR}/ubuntu/${TARGET}/${PACKAGENAME}*_*-*${CI_PIPELINE_ID}_all.changes )"; for package in "${PACKAGES}"; do file ${package} && debc --debs-dir ${REPODIR}/ubuntu/${TARGET}/ ${package}; done
+    ## add at least 1 sec to make sure packets were importet to repo
+    - sleep 1
+    - PACKAGES="$( find ${REPODIR}/ubuntu/${TARGET}/${PACKAGENAME}*_*-*${CI_PIPELINE_ID}_all.changes )"
+    - for package in ${PACKAGES}; do file ${package} && debc --debs-dir ${REPODIR}/ubuntu/${TARGET}/ ${package}; done
     - cp ./README ${REPODIR}/
     ## trigger pipeline to re-deploy docker image for dmx dev
     - MY_JOB_TOKEN="$(</home/gitlab-runner/.after-deb-repo.token)"
