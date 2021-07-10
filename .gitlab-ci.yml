@@ -1,5 +1,5 @@
-## The master branch builds the latest development snapshots 
-## of the dmx core modules and adds the curated dmx plugins.  
+## The master branch builds the latest development snapshots
+## of the dmx core modules and adds the curated dmx plugins.
 
 stages:
   - download
@@ -88,6 +88,7 @@ build-dmx:
       - dev-5.2
   tags:
     - deb
+    - dmx
   stage: build
   variables:
     PACKAGEVERSION: "1"
@@ -167,6 +168,7 @@ build-dmx-headless:
       - dev-5.2
   tags:
     - deb
+    - dmx-headless
   stage: build
   variables:
     PACKAGEVERSION: "1"
@@ -248,11 +250,12 @@ test-default:
       - dev-5.2
   tags:
     - deb
+    - dmx
   stage: test
   script:
     - PACKAGENAME="${PACKAGENAME}"
     - COMMIT_VERSION="$( cat .git/COMMIT_EDITMSG | cut -d' ' -f4 )"
-    - ls -la ../*
+    - ls -la ../${PACKAGENAME}_${COMMIT_VERSION}_all.*
     - cat ../${PACKAGENAME}_${COMMIT_VERSION}_all.changes
     - echo "Running test - lintian -i -I --show-overrides ../${PACKAGENAME}_${COMMIT_VERSION}_all.changes"
     - lintian -i -I --show-overrides ../${PACKAGENAME}_${COMMIT_VERSION}_all.changes
@@ -265,11 +268,12 @@ test-headless:
       - dev-5.2
   tags:
     - deb
+    - dmx-headless
   stage: test
   script:
     - PACKAGENAME="${PACKAGENAME}-headless"
     - COMMIT_VERSION="$( cat .git/COMMIT_EDITMSG | cut -d' ' -f4 )"
-    - ls -la ../*
+    - ls -la ../${PACKAGENAME}_${COMMIT_VERSION}_all.*
     - cat ../${PACKAGENAME}_${COMMIT_VERSION}_all.changes
     - echo "Running test - lintian -i -I --show-overrides ../${PACKAGENAME}_${COMMIT_VERSION}_all.changes"
     - lintian -i -I --show-overrides ../${PACKAGENAME}_${COMMIT_VERSION}_all.changes
@@ -281,6 +285,7 @@ deploy-dev:
       - dev-5.2
   tags:
     - deb
+    - dev
   stage: deploy
   script:
     - PACKAGENAME="${PACKAGENAME}"
@@ -302,6 +307,7 @@ deploy-to-repo:
       - master
   tags:
     - deb
+    - master
   stage: deploy
   script:
     - LOCALDIR='/home/gitlab-runner/repos'
@@ -315,14 +321,8 @@ deploy-to-repo:
     - mini-dinstall --batch
     ## add at least 2 sec to make sure packets were importet to repo
     - sleep 2
-    #- debc ${REPODIR}/ubuntu/${TARGET}/${PACKAGENAME}*_*-*${CI_PIPELINE_ID}_all.changes
-    - PACKAGES="$( find ${REPODIR}/ubuntu/${TARGET}/${PACKAGENAME}*_*-*${CI_PIPELINE_ID}_all.changes )"; for package in "${PACKAGES}"; do file ${package} && debc --debs-dir ${REPODIR}/ubuntu/${TARGET}/${package}; done
+    - PACKAGES="$( find ${REPODIR}/ubuntu/${TARGET}/${PACKAGENAME}*_*-*${CI_PIPELINE_ID}_all.changes )"; for package in "${PACKAGES}"; do file ${package} && debc --debs-dir ${REPODIR}/ubuntu/${TARGET}/ ${package}; done
     - cp ./README ${REPODIR}/
-    #- echo "cleaning up ..."
-    #- cd ..
-    #- WORKDIR="$( pwd )"
-    #- echo "cleaning up ${WORKDIR}/* ..."
-    #- find . -type f -name "*${PACKAGENAME}*_*" -exec rm -f {} \;
     ## trigger pipeline to re-deploy docker image for dmx dev
     - MY_JOB_TOKEN="$(</home/gitlab-runner/.after-deb-repo.token)"
     - TRIGGER="$(curl --silent --write-out '%{http_code}' --output /dev/null --request POST --form token="${MY_JOB_TOKEN}" --form ref=master https://git.dmx.systems/api/v4/projects/17/trigger/pipeline)"
