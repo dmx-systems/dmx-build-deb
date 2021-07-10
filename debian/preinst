@@ -82,7 +82,7 @@ case "$1" in
         cp -a ${DBDIR} ${BACKUPDIR}
 	echo "Your existing database has been backed-up (copied) to ${BACKUPDIR}." >&2
     else
-        mkdir ${DBDIR}
+        mkdir -p ${DBDIR}
     fi
     # chown dmx:dmx ${DBDIR}
     chmod 750 ${DBDIR}

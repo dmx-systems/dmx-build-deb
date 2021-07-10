@@ -1,4 +1,4 @@
-# DMX for Debian
+# DMX Debian package
 
 The DMX Debian package uses Linux’ File System Hierarchy Standard. You find the respective components in the directories listed below:
 
@@ -12,15 +12,15 @@ The DMX Debian package uses Linux’ File System Hierarchy Standard. You find th
 
 ## Configuration
 
-Please read the [DMX Admin Guide](https://dmx.readthedocs.io/en/latest/admin.html). By default, DMX is listening on localhost, port 8080. To change this setting, edit `/etc/dmx/config.properties`. Adjust the settings in /etc/dmx/config.properties and make sure your computer is protected by a firewall. **Important**: In a networked installation modify `dmx.filerepo.path`! We recommend to set it to a dedicated directory, e.g. `dmx.filerepo.path = /var/lib/dmx/dmx-filedir`.
+Please read the [DMX Admin Guide](https://dmx.readthedocs.io/en/stable/admin.html). By default, DMX is listening on localhost, port 8080. To change this setting, edit `/etc/dmx/config.properties`. Adjust the settings in /etc/dmx/config.properties and make sure your computer is protected by a firewall. **Important**: In a networked installation modify `dmx.filerepo.path`! We recommend to set it to a dedicated directory, e.g. `dmx.filerepo.path = /var/lib/dmx/dmx-filedir`.
 
 `dpkg -P` dmx will remove all installed files but not delete your database and files in `/var/lib/dmx`.
 
 ## Apache
 
-See `/usr/share/doc/dmx/examples/dmx.apache` for a sample Apache2 config file. Our documentation contains more details about [Apache configuration](https://dmx.readthedocs.io/en/latest/admin.html#running-dmx-behind-an-apache-reverse-proxy).
+See `/usr/share/doc/dmx/examples/dmx.apache` for a sample Apache2 config file. Our documentation contains more details about [Apache configuration](https://dmx.readthedocs.io/en/stable/admin.html#running-dmx-behind-an-apache-reverse-proxy).
 
 ## Security
 
-[Secure your installation](https://dmx.readthedocs.io/en/latest/admin.html#securing-dmx) with iptables.
+[Secure your installation](https://dmx.readthedocs.io/en/stable/admin.html#securing-dmx) with iptables.
 
