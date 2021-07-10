@@ -308,7 +308,7 @@ deploy-to-repo:
     ## add at least 5 sec to make sure packets were importet to repo
     - sleep 5
     #- debc ${REPODIR}/ubuntu/${TARGET}/${PACKAGENAME}*_*-*${CI_PIPELINE_ID}_all.changes
-    - PACKAGES="$( find ${REPODIR}/ubuntu/${TARGET}/${PACKAGENAME}*_*-*${CI_PIPELINE_ID}_all.changes )"; for package in "${PACKAGES}"; do debc "${package}"; done
+    - PACKAGES="$( find ${REPODIR}/ubuntu/${TARGET}/${PACKAGENAME}*_*-*${CI_PIPELINE_ID}_all.changes )"; for package in "${PACKAGES}"; do debc ${package}; done
     - cp ./README ${REPODIR}/
     - echo "cleaning up ..."
     - cd ..
