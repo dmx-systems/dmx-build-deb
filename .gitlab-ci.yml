@@ -47,8 +47,10 @@ fetch-binaries:
     - deb
   stage: download
   variables:
-    PLUGINS: "dmx-tableview dmx-geomaps dmx-mobile dmx-dita dmx-ldap"
-    WEBCGI: 'https://download.dmx.systems/cgi-bin/v1/latest-version.cgi?'
+  variables:
+    WEBDIR: 'https://download.dmx.systems/ci'                              # <= stable|latest
+    WEBCGI: 'https://download.dmx.systems/cgi-bin/v1/latest-version.cgi?'  # <= stable|latest
+    PLUGINS: "dmx-tableview dmx-geomaps dmx-mobile dmx-ldap dmx-file-upload dmx-cooking dmx-biblio"
   script:
     - PLUGINS=(${PLUGINS})
     - JAVAVERSION=(${JAVAVERSION})
