@@ -1,16 +1,27 @@
-dmx-build-deb builds Debian packages from DMX binary files
-and loads them into the public repository at DMX Systems.
+DMX deb packages (e.g. for Debian and Ubuntu) are build from DMX binary files.
+They are freely available from our public repository at https://download.dmx.systems/repos/ubuntu/.
 
+# Packages
+ * `dmx` - the stable standard (default desktop) package for DMX
+ * `dmx-headless` - the stable headless (mutliuser web-hosting) package for DMX
+ * `dmx-latest` - the latest unstable standard (default desktop) package for DMX
+ * `dmx-headless-latest` - the latest unstable headless (mutliuser web-hosting) package for DMX
 
-Install DMX from Debian/Ubuntu repo:
-====================================
+# Compatibility
+ * Ubuntu 20.04
+ * Ubuntu 18.04
+ * Ubuntu 16.04
+ * Debian 10 => Not out of the box, since DMX requires openjdk-8-jre, which can be only be installed manually.
+ * Debian 9
+ * Debian 8
 
+# Installation
 
-automatic:
+## automatic:
 
    ~$ curl -sS https://download.dmx.systems/repos/dmx-install.sh | sudo bash
 
-manual:
+## manual:
 
  1. Add file /etc/apt/sources.list.d/dmx-repo.list
    ~$ sudo bash -c 'echo "deb https://download.dmx.systems/repos/ubuntu/ xenial/" >/etc/apt/sources.list.d/dmx-repo.list'
@@ -30,23 +41,22 @@ manual:
  6. Browse to the local instance
     http://localhost:8080/systems.dmx.webclient/
 
-
-Known Issues:
+# Known Issues
  * DMX is still in an early beta stage and clearly needs further improvement.
  * There are lacks in a) security, b) robustness, and c) usability.
 
-Documentation, Help and Feedback:
+# Documentation, Help and Feedback
  * Check https://docs.dmx.systems to learn more about DMX.
  * Join https://forum.dmx.systems to help us improve.
 
-Copyright + Licensing: 
- * Copyright 2019 DMX Systems <https://dmx.systems>
+# Copyright + Licensing 
+ * Copyright 2021 DMX Systems <https://dmx.systems>
  * dmx-build-deb is available freely under the GNU General Public License, GPL version 3 or later.
  * DMX is available freely under the GNU Affero General Public License, AGPL version 3 or later.
 
-Disclaimer:
+# Disclaimer
  * DMX Systems assumes no liability for lost or compromised data.
 
-Source code:
+# Source code
  * https://git.dmx.systems/dmx-platform/dmx-build-deb
  * https://github.com/dmx-systems/dmx-build-deb
