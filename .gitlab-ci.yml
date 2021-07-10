@@ -35,10 +35,7 @@ after_script:
   ## do this in an after script, because this is run at any time ignroing any fails 
   - echo "after_script ${CI_JOB_STAGE}"
   - export PACKAGENAME="${DMX}-latest"    ## [ dmx | dmx-latest ]
-  - cd ..
-  - WORKDIR="$( pwd )"
-  - echo "cleaning up ${WORKDIR}/* ..."
-  - find ${WORKDIR}/*${PACKAGENAME}*_*-*${CI_PIPELINE_ID}_all.* -type f -exec rm -f {} \; || true
+  - if [ "${CI_JOB_STAGE}" == "deploy" ]; then cd ..; WORKDIR="$( pwd )"; find ${WORKDIR}/*${PACKAGENAME}*_*-*${CI_PIPELINE_ID}_all.* -type f -exec rm -f {} \;;fi
 
 
 fetch-binaries:
