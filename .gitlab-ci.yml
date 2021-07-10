@@ -174,11 +174,6 @@ build-dmx-headless:
     - deb
   stage: build
   variables:
-    PLUGINS: "dmx-tableview dmx-geomaps dmx-mobile dmx-file-upload dmx-ldap"
-    WEBCGI: 'https://download.dmx.systems/cgi-bin/v1/latest-version.cgi?'
-    WEBDIR: 'https://download.dmx.systems/ci'
-    DEBFULLNAME: 'DMX Systems (DMX CI)'
-    DEBEMAIL: 'DMX Systems (DMX CI) <devops@dmx.systems>'
     JAVAVERSION: 'openjdk-8-jre-headless'
   script:
     - PACKAGENAME="${PACKAGENAME}-headless"
