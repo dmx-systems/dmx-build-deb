@@ -34,10 +34,11 @@ after_script:
   ## make sure to clean-up and remove all packages to not spam the repo
   ## do this in an after script, because this is run at any time ignroing any fails 
   - echo "after_script ${CI_JOB_STAGE}"
+  - export PACKAGENAME="${DMX}-latest"    ## [ dmx | dmx-latest ]
   - cd ..
   - WORKDIR="$( pwd )"
   - echo "cleaning up ${WORKDIR}/* ..."
-  - find ${WORKDIR}/*${PACKAGENAME}*_*-*${CI_PIPELINE_ID}_all.* -type f -exec rm -f {} \;
+  - find ${WORKDIR}/*${PACKAGENAME}*_*-*${CI_PIPELINE_ID}_all.* -type f -exec rm -f {} \; || true
 
 
 fetch-binaries:
@@ -285,6 +286,7 @@ deploy-dev:
     - deb
   stage: deploy
   script:
+    - PACKAGENAME="${PACKAGENAME}"
     - COMMIT_VERSION="$( cat .git/COMMIT_EDITMSG | cut -d' ' -f4 )"
     - echo "${PACKAGENAME}_${COMMIT_VERSION}"
     - cp ../${PACKAGENAME}_${COMMIT_VERSION}_all.deb ./
