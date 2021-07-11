@@ -306,21 +306,22 @@ deploy-to-repo:
     - deb
   stage: deploy
   script:
+    - VERSION="$( cat ${WORKDIR}/dmx-version )"
+    - COMMIT_VERSION="$( cat .git/COMMIT_EDITMSG | cut -d' ' -f4 )"
     - LOCALDIR='/home/gitlab-runner/repos'
     - REPODIR='/var/www/download.dmx.systems/repos'
     - echo "removing old packages from ${LOCALDIR}/${TARGET} ..."
-    ## remove all older versions (${PACKAGENAME}*_...)
-    - rm -f ${LOCALDIR}/${TARGET}/${PACKAGENAME}*_${VERSION}~${PACKAGEVERSION}deb+b${CI_PIPELINE_ID}_all.{deb,changes,buildinfo}
-    - echo "adding ${PACKAGENAME}*_*-${CI_PIPELINE_ID} to ${REPODIR} ..."
-    - pwd
+    ## remove all older builds of (${PACKAGENAME}*_${VERSION}~*_all)
+    - rm -f ${LOCALDIR}/${TARGET}/${PACKAGENAME}*_${VERSION}~*_all.{deb,changes,buildinfo}
+    - echo "adding ${PACKAGENAME}*_${COMMIT_VERSION} to ${REPODIR} ..."
     ## add all newer versions (${PACKAGENAME}*_...)
-    - dput local ../${PACKAGENAME}*_${VERSION}~${PACKAGEVERSION}deb+b${CI_PIPELINE_ID}_all.changes
+    - dput local ../${PACKAGENAME}*_${COMMIT_VERSION}_all.changes
     - sleep 1
     - mini-dinstall --batch
     ## add at least 1 sec to make sure packets were importet to repo
     - sleep 1
     ## check all newer versions (${PACKAGENAME}*_...)
-    - PACKAGES="$( find ${REPODIR}/ubuntu/${TARGET}/${PACKAGENAME}*_${VERSION}~${PACKAGEVERSION}deb+b${CI_PIPELINE_ID}_all.changes )"
+    - PACKAGES="$( find ${REPODIR}/ubuntu/${TARGET}/${PACKAGENAME}*_${COMMIT_VERSION}_all.changes )"
     - for package in ${PACKAGES}; do file ${package} && debc --debs-dir ${REPODIR}/ubuntu/${TARGET}/ ${package}; done
     - cp ./README ${REPODIR}/
     ## trigger pipeline to re-deploy docker image for dmx dev
