@@ -24,7 +24,7 @@ before_script:
   ## Workaround for https://gitlab.com/gitlab-org/gitlab-runner/-/issues/1809
   ## Using variables in variables does not work in GitLab
   - echo "before_script ${CI_JOB_STAGE}"
-  - if [ -n "$( echo ${PACKAGESOURCE} | grep '-latest' )" ]; then PACKAGENAME='dmx-latest'; else PACKAGENAME='dmx'; fi
+  - if [ -n "$( echo ${PACKAGESOURCE} | grep '\-latest' )" ]; then PACKAGENAME='dmx-latest'; else PACKAGENAME='dmx'; fi
   - export PACKAGENAME="${PACKAGENAME}"
   - export ZIPFILE="${PACKAGESOURCE}.zip"
   - export WORKDIR="../${CI_PROJECT_NAME}.TMP"
