@@ -78,6 +78,7 @@ fetch-binaries:
     - echo -e "To activate a plugin copy or link it to the bundles-deploy folder.\n" >>bin/bundle-available/about-this-directory.txt
     - echo -e "Find more information on DMX plugins at" >>bin/bundle-available/about-this-directory.txt
     - echo -e "https://git.dmx.systems/dmx-plugins" >>bin/bundle-available/about-this-directory.txt
+    ## download _stable_ plugins
     - for plugin in "${PLUGINS[@]}"; do plugin_version="$( wget -q -O - ${WEBCGI}${plugin} )"; wget -q ${plugin_version} -P bin/bundle-available/; done
     - tree bin/bundle-available/ 
 
@@ -216,9 +217,6 @@ build-dmx-headless:
     - cp debian/dmx.logrotate debian/${PACKAGENAME}.dmx.logrotate
     ## Move the headless service over the default (as we do build headless here)
     - mv debian/dmx.service.headless debian/dmx.service
-    ## The next two cp commands are relevant when overriding the package name in debian/rules
-    - cp debian/dmx.service debian/${PACKAGENAME}.dmx.service
-    - cp debian/dmx.logrotate debian/${PACKAGENAME}.dmx.logrotate
     ## Preserver files in ${WORKDIR}
     - cp -a ${WORKDIR}/bin ./
     - cp -a ${WORKDIR}/etc ./
