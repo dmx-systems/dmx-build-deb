@@ -301,7 +301,7 @@ deploy-dev:
 deploy-to-repo:
   only:
     refs:
-      - tags
+      - master
   tags:
     - deb
   stage: deploy
