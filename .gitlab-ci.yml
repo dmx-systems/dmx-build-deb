@@ -283,11 +283,11 @@ deploy-to-repo:
     - COMMIT_VERSION="$( cat .git/COMMIT_EDITMSG | cut -d' ' -f4 )"
     - LOCALDIR='/home/gitlab-runner/repos'
     - REPODIR='/var/www/download.dmx.systems/repos'
+    ## remove all older builds
     - echo "removing old packages from ${LOCALDIR}/${TARGET} ..."
-    ## remove all older builds of (${PACKAGENAME}*_*_all)
-    - rm -f ${LOCALDIR}/${TARGET}/${PACKAGENAME}*_*_all.{deb,changes,buildinfo}
-    - echo "adding ${PACKAGENAME}*_${COMMIT_VERSION} to ${REPODIR} ..."
+    - rm -f ${LOCALDIR}/${TARGET}/${PACKAGENAME}*_${VERSION}~*_all.{deb,changes,buildinfo}
     ## add all newer versions (${PACKAGENAME}*_...)
+    - echo "adding ${PACKAGENAME}*_${COMMIT_VERSION} to ${REPODIR} ..."
     - dput local ../${PACKAGENAME}*_${COMMIT_VERSION}_all.changes
     - sleep 1
     - mini-dinstall --batch
