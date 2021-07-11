@@ -36,7 +36,7 @@ after_script:
   ## make sure to clean-up and remove all packages to not spam the repo
   ## do this in an after script, because this is run at any time ignroing any fails 
   - echo "after_script ${CI_JOB_STAGE}"
-  - if [ -n "$( echo ${PACKAGESOURCE} | grep '-latest' )" ]; then PACKAGENAME='dmx-latest'; else PACKAGENAME='dmx'; fi
+  - if [ -n "$( echo ${PACKAGESOURCE} | grep '\-latest' )" ]; then PACKAGENAME='dmx-latest'; else PACKAGENAME='dmx'; fi
   - export PACKAGENAME="${PACKAGENAME}"
   - if [ "${CI_JOB_STAGE}" == "deploy" ]; then cd ..; WORKDIR="$( pwd )"; find ${WORKDIR}/${PACKAGENAME}*_${VERSION}~${PACKAGEVERSION}deb+b${CI_PIPELINE_ID}_all.* -type f -exec rm -f {} \;;fi
 
