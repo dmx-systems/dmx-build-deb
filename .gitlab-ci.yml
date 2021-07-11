@@ -38,7 +38,7 @@ after_script:
   - echo "after_script ${CI_JOB_STAGE}"
   - if [ -n "$( echo ${PACKAGESOURCE} | grep '-latest' )" ]; then PACKAGENAME='dmx-latest'; else PACKAGENAME='dmx'; fi
   - export PACKAGENAME="${PACKAGENAME}"
-  - if [ "${CI_JOB_STAGE}" == "deploy" ]; then cd ..; WORKDIR="$( pwd )"; find ${WORKDIR}/${PACKAGENAME}_${VERSION}~${PACKAGEVERSION}deb+b${CI_PIPELINE_ID}_all.* -type f -exec rm -f {} \;;fi
+  - if [ "${CI_JOB_STAGE}" == "deploy" ]; then cd ..; WORKDIR="$( pwd )"; find ${WORKDIR}/${PACKAGENAME}*_${VERSION}~${PACKAGEVERSION}deb+b${CI_PIPELINE_ID}_all.* -type f -exec rm -f {} \;;fi
 
 
 fetch-binaries:
