@@ -95,7 +95,6 @@ build-dmx:
   variables:
     JAVAVERSION: 'openjdk-8-jre'
   script:
-    # - cd ${WORKDIR}
     - tree ${PWD}/
     - PACKAGENAME="${PACKAGENAME}"
     - VERSION="$( cat ${WORKDIR}/dmx-version )"
