@@ -25,7 +25,7 @@ before_script:
   ## Workaround for https://gitlab.com/gitlab-org/gitlab-runner/-/issues/1809
   ## Using variables in variables does not work in GitLab
   - echo "before_script ${CI_JOB_STAGE}"
-  - export PACKAGENAME="${DMX}-${DMXVERSION}"    ## [ dmx | dmx-latest ]
+  - export PACKAGENAME="${DMX}-${DMXVERSION}"
   - export ZIPFILE="${PACKAGENAME}.zip"
   - export WORKDIR="../${CI_PROJECT_NAME}.TMP"
   - if [ ${CI_JOB_STAGE} == "download" ] && [ -d ${WORKDIR} ]; then rm -rf ${WORKDIR}; fi
