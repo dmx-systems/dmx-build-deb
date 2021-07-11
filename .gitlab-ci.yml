@@ -280,6 +280,7 @@ deploy-to-repo:
     - deb
   stage: deploy
   script:
+    - VERSION="$( cat ${WORKDIR}/dmx-version )"
     - COMMIT_VERSION="$( cat .git/COMMIT_EDITMSG | cut -d' ' -f4 )"
     - LOCALDIR='/home/gitlab-runner/repos'
     - REPODIR='/var/www/download.dmx.systems/repos'
