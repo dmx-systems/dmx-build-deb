@@ -66,12 +66,12 @@ fetch-binaries:
     - VERSION="$( ls -d dmx-* | grep -v ${ZIPFILE} | cut -d'-' -f2- )"
     - echo "VERSION=${VERSION}"
     - echo "${VERSION}" >${WORKDIR}/dmx-version
-    - rm -rf ${DMX}-${VERSION}/bundle/org.apache.felix.gogo.*
+    - rm -rf dmx-${VERSION}/bundle/org.apache.felix.gogo.*
     - mkdir -p bin/bin bin/bundle bin/bundle-deploy bin/bundle-available etc/dmx
-    - mv ${DMX}-${VERSION}/bin/* bin/bin/
-    - mv ${DMX}-${VERSION}/bundle/* bin/bundle/
-    - mv ${DMX}-${VERSION}/bundle-deploy/* bin/bundle-deploy/
-    - mv ${DMX}-${VERSION}/*.txt ./
+    - mv dmx-${VERSION}/bin/* bin/bin/
+    - mv dmx-${VERSION}/bundle/* bin/bundle/
+    - mv dmx-${VERSION}/bundle-deploy/* bin/bundle-deploy/
+    - mv dmx-${VERSION}/*.txt ./
     ## add plugins
     - echo -e "About the bundle-available directory" >bin/bundle-available/about-this-directory.txt
     - echo -e "------------------------------------\n" >>bin/bundle-available/about-this-directory.txt
@@ -99,7 +99,7 @@ build-dmx:
     - PACKAGENAME="${PACKAGENAME}"
     - VERSION="$( cat ${WORKDIR}/dmx-version )"
     - JAVAVERSION=(${JAVAVERSION})
-    - CONFIG=$(<${WORKDIR}/${DMX}-${VERSION}/conf/config.properties)
+    - CONFIG=$(<${WORKDIR}/dmx-${VERSION}/conf/config.properties)
     # - CONFIG=${CONFIG/dmx.security.anonymous_read_allowed = ALL/dmx.security.anonymous_read_allowed = NONE}
     - CONFIG=${CONFIG/dmx.security.initial_admin_password = /dmx.security.initial_admin_password = YOUR_SECRET_PASSWORD_HERE}
     # - CONFIG=${CONFIG/dmx.filerepo.path = \//dmx.filerepo.path = \/var\/lib\/dmx\/dmx-filedir}
@@ -109,7 +109,7 @@ build-dmx:
     - CONFIG=${CONFIG/java.util.logging.config.file = conf\/logging.properties/java.util.logging.config.file = \/etc\/dmx\/logging.properties}
     - CONFIG=${CONFIG/org.osgi.framework.storage = bundle-cache/org.osgi.framework.storage = \/var\/cache\/dmx\/bundle-cache}
     - echo "${CONFIG}" >${WORKDIR}/etc/dmx/config.properties
-    - LOGGING=$(<${WORKDIR}/${DMX}-${VERSION}/conf/logging.properties)
+    - LOGGING=$(<${WORKDIR}/dmx-${VERSION}/conf/logging.properties)
     - LOGGING=${LOGGING/handlers=java.util.logging.ConsoleHandler/\# handlers=java.util.logging.ConsoleHandler}
     - LOGGING=${LOGGING/java.util.logging.ConsoleHandler.level=ALL/\# java.util.logging.ConsoleHandler.level=ALL}
     - LOGGING=${LOGGING/\# handlers=java.util.logging.FileHandler/handlers=java.util.logging.FileHandler}
@@ -154,7 +154,7 @@ build-dmx:
     - git add debian/changelog
     - sleep 1
     - NUNC="$( date -R )"
-    - 'git commit --date="${NUNC}" -m"DMX debian package build from ${DMX}-${VERSION} - Package Version ${PACKAGEVERSION}+b${CI_PIPELINE_ID}" -m"Binaries from ${WEBDIR}/${ZIPFILE}" -m"Thanks: GitLab Team for providing great CI infrastructure!"'
+    - 'git commit --date="${NUNC}" -m"DMX debian package build from dmx-${VERSION} - Package Version ${PACKAGEVERSION}+b${CI_PIPELINE_ID}" -m"Binaries from ${WEBDIR}/${ZIPFILE}" -m"Thanks: GitLab Team for providing great CI infrastructure!"'
     - git log -1
     - gbp dch --distribution "${TARGET}" --ignore-branch --new-version "${VERSION}~${PACKAGEVERSION}deb+b${CI_PIPELINE_ID}" --commit --since=${LASTCOMMIT} --release --spawn-editor=never --full --meta
     ## - export GPG_TTY=$(tty) <= moved to .bashrc
@@ -176,7 +176,7 @@ build-dmx-headless:
     - PACKAGENAME="${PACKAGENAME}-headless"
     - VERSION="$( cat ${WORKDIR}/dmx-version )"
     - JAVAVERSION=(${JAVAVERSION})
-    - CONFIG=$(<${WORKDIR}/${DMX}-${VERSION}/conf/config.properties)
+    - CONFIG=$(<${WORKDIR}/dmx-${VERSION}/conf/config.properties)
     - CONFIG=${CONFIG/dmx.security.anonymous_read_allowed = ALL/dmx.security.anonymous_read_allowed = NONE}
     - CONFIG=${CONFIG/dmx.security.initial_admin_password = /dmx.security.initial_admin_password = YOUR_SECRET_PASSWORD_HERE}
     - CONFIG=${CONFIG/dmx.filerepo.path = \//dmx.filerepo.path = \/var\/lib\/dmx\/dmx-filedir}
@@ -186,7 +186,7 @@ build-dmx-headless:
     - CONFIG=${CONFIG/java.util.logging.config.file = conf\/logging.properties/java.util.logging.config.file = \/etc\/dmx\/logging.properties}
     - CONFIG=${CONFIG/org.osgi.framework.storage = bundle-cache/org.osgi.framework.storage = \/var\/cache\/dmx\/bundle-cache}
     - echo "${CONFIG}" >${WORKDIR}/etc/dmx/config.properties
-    - LOGGING=$(<${WORKDIR}/${DMX}-${VERSION}/conf/logging.properties)
+    - LOGGING=$(<${WORKDIR}/dmx-${VERSION}/conf/logging.properties)
     - LOGGING=${LOGGING/handlers=java.util.logging.ConsoleHandler/\# handlers=java.util.logging.ConsoleHandler}
     - LOGGING=${LOGGING/java.util.logging.ConsoleHandler.level=ALL/\# java.util.logging.ConsoleHandler.level=ALL}
     - LOGGING=${LOGGING/\# handlers=java.util.logging.FileHandler/handlers=java.util.logging.FileHandler}
@@ -231,7 +231,7 @@ build-dmx-headless:
     - git add debian/changelog
     - sleep 1
     - NUNC="$( date -R )"
-    - 'git commit --date="${NUNC}" -m"DMX debian package ${PACKAGENAME} build from ${DMX}-${VERSION} - Package Version ${PACKAGEVERSION}+b${CI_PIPELINE_ID}" -m"Binaries from ${WEBDIR}/${ZIPFILE}" -m"Thanks: GitLab Team for providing great CI infrastructure!"'
+    - 'git commit --date="${NUNC}" -m"DMX debian package ${PACKAGENAME} build from dmx-${VERSION} - Package Version ${PACKAGEVERSION}+b${CI_PIPELINE_ID}" -m"Binaries from ${WEBDIR}/${ZIPFILE}" -m"Thanks: GitLab Team for providing great CI infrastructure!"'
     - git log -1
     - gbp dch --distribution "${TARGET}" --ignore-branch --new-version "${VERSION}~${PACKAGEVERSION}deb+b${CI_PIPELINE_ID}" --commit --since=${LASTCOMMIT} --release --spawn-editor=never --full --meta
     ## - export GPG_TTY=$(tty) <= moved to .bashrc
