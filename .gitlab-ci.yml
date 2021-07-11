@@ -217,7 +217,7 @@ build-dmx-headless:
     - cp debian/dmx.logrotate debian/${PACKAGENAME}.dmx.logrotate
     ## Move the headless service over the default (as we do build headless here)
     - mv debian/dmx.service.headless debian/dmx.service
-    ## Preserver files in ${WORKDIR}
+    ## Preserve files in ${WORKDIR}
     - cp -a ${WORKDIR}/bin ./
     - cp -a ${WORKDIR}/etc ./
     - tree ${PWD}
