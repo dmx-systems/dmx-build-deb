@@ -306,13 +306,12 @@ deploy-to-repo:
     - deb
   stage: deploy
   script:
-    - VERSION="$( cat ${WORKDIR}/dmx-version )"
     - COMMIT_VERSION="$( cat .git/COMMIT_EDITMSG | cut -d' ' -f4 )"
     - LOCALDIR='/home/gitlab-runner/repos'
     - REPODIR='/var/www/download.dmx.systems/repos'
     - echo "removing old packages from ${LOCALDIR}/${TARGET} ..."
-    ## remove all older builds of (${PACKAGENAME}*_${VERSION}~*_all)
-    - rm -f ${LOCALDIR}/${TARGET}/${PACKAGENAME}*_${VERSION}~*_all.{deb,changes,buildinfo}
+    ## remove all older builds of (${PACKAGENAME}*_*_all)
+    - rm -f ${LOCALDIR}/${TARGET}/${PACKAGENAME}*_*_all.{deb,changes,buildinfo}
     - echo "adding ${PACKAGENAME}*_${COMMIT_VERSION} to ${REPODIR} ..."
     ## add all newer versions (${PACKAGENAME}*_...)
     - dput local ../${PACKAGENAME}*_${COMMIT_VERSION}_all.changes
