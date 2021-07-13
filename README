@@ -41,6 +41,10 @@ They are freely available from our public repository at https://download.dmx.sys
  6. Browse to the local instance
     http://localhost:8080/systems.dmx.webclient/
 
+# Upgrading from DMX 5.1 or earlier to DMX 5.2 on headless hosts systems (e.g. a public webserver)
+   When upgrading to DMX 5.2 on a non-desktop system, you should manually remove the existing DMX package with `sudo apt remove dmx`.
+   Then install the package for headless systems with `sudo apt install dmx-headless`. Your data and config files will be preserved.
+
 # Known Issues
  * DMX is still in an early beta stage and clearly needs further improvement.
  * There are lacks in a) security, b) robustness, and c) usability.
