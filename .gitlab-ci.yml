@@ -138,11 +138,11 @@ build-dmx:
     - CONTROL=${CONTROL/@@CONFLICTS@@/${CONFLICTS}}
     - echo -e "new control file:\n\n${CONTROL}"
     - echo "${CONTROL}" >debian/control
+    ## Remove the headless service (as we do build the default here)
+    - rm debian/dmx.service.headless
     ## The next two cp commands are relevant when overriding the package name in debian/rules
     - cp debian/dmx.service debian/${PACKAGENAME}.dmx.service
     - cp debian/dmx.logrotate debian/${PACKAGENAME}.dmx.logrotate
-    ## Remove the headless service (as we do build the default here)
-    - rm debian/dmx.service.headless
     ## Preserve files in ${WORKDIR}
     - cp -a ${WORKDIR}/bin ./
     - cp -a ${WORKDIR}/etc ./
@@ -216,11 +216,11 @@ build-dmx-headless:
     - CONTROL=${CONTROL/@@CONFLICTS@@/${CONFLICTS}}
     - echo -e "new control file:\n\n${CONTROL}"
     - echo "${CONTROL}" >debian/control
+    ## Move the headless service over the default (as we do build headless here)
+    - mv debian/dmx.service.headless debian/dmx.service
     ## The next two cp commands are relevant when overriding the package name in debian/rules
     - cp debian/dmx.service debian/${PACKAGENAME}.dmx.service
     - cp debian/dmx.logrotate debian/${PACKAGENAME}.dmx.logrotate
-    ## Move the headless service over the default (as we do build headless here)
-    - mv debian/dmx.service.headless debian/dmx.service
     ## Preserve files in ${WORKDIR}
     - cp -a ${WORKDIR}/bin ./
     - cp -a ${WORKDIR}/etc ./
