@@ -235,7 +235,7 @@ build-dmx-headless:
     - git add debian/changelog
     - sleep 1
     - NUNC="$( date -R )"
-    - 'git commit --date="${NUNC}" -m"DMX debian package ${PACKAGENAME} build from dmx-${VERSION} - Package Version ${PACKAGEVERSION}+b${CI_PIPELINE_ID}" -m"Binaries from ${WEBDIR}/${ZIPFILE}" -m"Thanks: GitLab Team for providing great CI infrastructure!"'
+    - 'git commit --date="${NUNC}" -m"DMX debian package ${PACKAGENAME} build from dmx-${VERSION} - Package Version ${PACKAGEVERSION}deb+b${CI_PIPELINE_ID}" -m"Binaries from ${WEBDIR}/${ZIPFILE}" -m"Thanks: GitLab Team for providing great CI infrastructure!"'
     - git log -1
     - gbp dch --distribution "${TARGET}" --ignore-branch --new-version "${VERSION}~${PACKAGEVERSION}deb+b${CI_PIPELINE_ID}" --commit --since=${LASTCOMMIT} --release --spawn-editor=never --full --meta
     ## - export GPG_TTY=$(tty) <= moved to .bashrc
