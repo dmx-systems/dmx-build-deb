@@ -5,7 +5,7 @@
 
 set -e
 
-echo "Running $0 $1 ..." >&2
+echo "Running $0 $1 $2 ..." >&2
 
 # summary of how this script can be called:
 #        * <prerm> `remove'
@@ -30,7 +30,16 @@ case "$1" in
     if [ "$(deb-systemd-invoke is-enabled 'dmx.service')" ]; then
         deb-systemd-invoke disable 'dmx.service' >/dev/null || true
     fi
+    ## make sure /var/cache/dmx is empty
+    if [ -d /var/cache/dmx/bundle-cache ]; then
+	rm -rf /var/cache/dmx/bundle-cache
+    fi
+    if [ -d /var/cache/dmx/dmx-bundle-cache ]; then
+	rm -rf /var/cache/dmx/dmx-bundle-cache
+    fi
+    ;;
 
+    upgrade)
     ## make sure /var/cache/dmx is empty
     if [ -d /var/cache/dmx/bundle-cache ]; then
 	rm -rf /var/cache/dmx/bundle-cache
