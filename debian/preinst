@@ -11,7 +11,7 @@ set -e
 ## a mysterious error even if the hook script exits with a return 
 ## status of zero!
 
-echo "Running $0 $1 ..." >&2
+echo "Running $0 $1 $2 ..." >&2
 
 # summary of how this script can be called:
 #        * <new-preinst> `install'

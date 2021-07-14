@@ -5,7 +5,7 @@
 
 set -e
 
-echo "Running $0 $1 ..." >&2
+echo "Running $0 $1 $2 ..." >&2
 
 # summary of how this script can be called:
 #        * <postrm> `remove'
