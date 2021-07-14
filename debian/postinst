@@ -5,7 +5,7 @@
 
 set -e
 
-echo "Running $0 $1 ..." >&2
+echo "Running $0 $1 $2 ..." >&2
 
 # summary of how this script can be called:
 #        * <postinst> `configure' <most-recently-configured-version>
@@ -35,8 +35,9 @@ echo "Running $0 $1 ..." >&2
 
 case "$1" in
     configure)
-    ## Change password only on initial installation
+    Run only on initial installation
     if [ -z "$2" ]; then
+        ## Change password 
         ## Get password from debconf-db
         db_get dmx/initial_admin_password || true
         INITIAL_ADMIN_PASSWORD="$RET"
@@ -228,14 +229,19 @@ case "$1" in
     chown dmx:dmx /var/cache/dmx
     chown dmx:dmx /var/log/dmx
     
-    ## unmask and enable the service if not enabled
+    ## unmask the service
     deb-systemd-helper unmask 'dmx.service' >/dev/null || true
+    ## if the service is still not unmasked, make sure it really gets unmasked
+    if [ "$(systemctl is-enabled 'dmx.service')" == "masked" ]; then
+        systemctl unmask 'dmx.service' >/dev/null || true
+    fi
+    ## enable the service if not enabled
     if [ ! "$(deb-systemd-helper --quiet is-enabled 'dmx.service')" ]; then
         deb-systemd-helper enable 'dmx.service' >/dev/null || true
     fi
     ## if the service is still not enable, make sure it really gets enabled
-    if [ "$(systemctl is-enabled 'dmx.service')" == "masked" ]; then
-        systemctl unmask 'dmx.service' >/dev/null || true
+    if [ "$(systemctl is-enabled 'dmx.service')" == "disabled" ]; then
+        systemctl enable 'dmx.service' >/dev/null || true
     fi
     ## reload daemon setup
     if [ -d /run/systemd/system ]; then
