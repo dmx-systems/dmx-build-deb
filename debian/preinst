@@ -64,7 +64,7 @@ case "$1" in
     DBDIR='/var/lib/dmx/dmx-db'
     BACKUPDATE="$( date +%F-%H:%M:%S )"
     ## check if dmx is already running and stop it then
-    if [ "$(systemctl is-active 'dmx.service')" ]; then
+    if [ "$(systemctl is-active 'dmx.service')" = "active" ]; then
 	deb-systemd-invoke stop 'dmx.service' >/dev/null || true
     fi
     ## was there a previously installed DMX
