@@ -232,6 +232,7 @@ case "$1" in
     deb-systemd-helper unmask 'dmx.service' >/dev/null || true
     ## if the service is still not unmasked, make sure it really gets unmasked
     if [ "$(systemctl is-enabled 'dmx.service')" = "masked" ]; then
+        echo "unmasking dmx.service" >&2
         systemctl unmask 'dmx.service' >/dev/null || true
     fi
     ## enable the service if not enabled
@@ -240,6 +241,7 @@ case "$1" in
     fi
     ## if the service is still not enable, make sure it really gets enabled
     if [ "$(systemctl is-enabled 'dmx.service')" = "disabled" ]; then
+        echo "enabling dmx.service" >&2
         systemctl enable 'dmx.service' >/dev/null || true
     fi
     ## reload daemon setup
