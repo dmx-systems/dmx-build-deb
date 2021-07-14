@@ -35,7 +35,7 @@ echo "Running $0 $1 $2 ..." >&2
 
 case "$1" in
     configure)
-    Run only on initial installation
+    ## Run only on initial installation
     if [ -z "$2" ]; then
         ## Change password 
         ## Get password from debconf-db
