@@ -45,6 +45,11 @@ They are freely available from our public repository at https://download.dmx.sys
    When upgrading to DMX 5.2 on a non-desktop system, you should manually remove the existing DMX package with `sudo apt remove dmx`.
    Then install the package for headless systems with `sudo apt install dmx-headless`. Your data and config files will be preserved.
 
+# Plugins
+  The /usr/share/dmx/bundle-available directory contains a set of selected DMX plugins. To activate a plugin copy or link it to the
+  /usr/share/dmx/bundle-deploy folder. Alternatively you may use the 'dmxenplug' or 'dmxdisplug' scripts. You may can find more
+  information on DMX plugins at "https://git.dmx.systems/dmx-plugins".
+
 # Known Issues
  * DMX is still in an early beta stage and clearly needs further improvement.
  * There are lacks in a) security, b) robustness, and c) usability.
