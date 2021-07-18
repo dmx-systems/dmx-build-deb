@@ -1,0 +1,126 @@
+#!/bin/bash
+#
+#  dmxenplug - enable a DMX plugin
+#
+#  Copyright 2021 DMX Systems <https://dmx.systems>
+#  Written by Juergen Neumann <juergen@dmx.berlin>
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#  MA 02110-1301, USA.
+#
+
+AVAILDIR='/usr/share/dmx/bundle-available'
+DEPLOYDIR='/usr/share/dmx/bundle-deploy'
+
+help() {
+    cat <<EOM
+
+DESCRIPTION: $(basename "$0") - Enable a DMX plugin.
+
+USAGE: $(basename "$0") <plugin name>
+
+OPTIONS:
+  -h|--help        display this help
+
+EXAMPLES:
+  $ sudo $(basename "$0") dmx-plugin
+  INFO: DMX plugin recently|already enabled: dmx-plugin
+
+EOM
+}
+
+
+pre_check() {
+    if [ "$(whoami)" != "root" ] || [ $(id -u) -ne 0 ]; then
+        echo -e "\nERROR! You must be root to run $(basename $0). Try 'sudo $(basename $0) $1'.\n"
+        exit 1
+    fi
+    if [ ! -d ${AVAILDIR} ]; then
+        echo "ERROR! ${AVAILDIR} not found."
+        exit 1
+    fi
+    if [ ! -d ${DEPLOYDIR} ]; then
+        echo "ERROR! ${DEPLOYDIR} not found."
+        exit 1
+    fi
+}
+
+
+backup_db() {
+    ## backup the db so that one can restore to old version before plugin was enabled
+    BACKUPDATE="$( date +%F-%H:%M:%S )"
+    ###  FIXME
+    ###  Backing up the db depends on the location of the db, which is a config parameter in config properties.
+    ###  So in the funture we have to read that!
+    DBDIR='/var/lib/dmx/dmx-db'
+    if [ -d ${DBDIR} ]; then
+        DMVERSION="$( if [ -d ${DBDIR} ]; then find ${DBDIR} -name ".dm-version.*" | cut -d'.' -f'3-' | sort -V | tail -n1; fi )"
+        ##
+        cp -a ${DBDIR} ${DBDIR}-${DMVERSION}-backup-$BACKUPDATE
+        echo "INFO: Your existing database has been backed-up (copied) to /var/lib/dmx/dmx-db-${DMVERSION}-backup-$BACKUPDATE."
+    else
+        echo "ERROR! Could not create dmx-db backup. ${DBDIR} not found."
+        exit 1
+    fi
+}
+
+
+enable_plugin() {
+    plugin="$1"
+    ## move files
+    if [ -n "$(find ${DEPLOYDIR}/ -maxdepth 1 -type f -name "${plugin}*.jar" )" ]; then
+        PLUGINFILES="$(find ${DEPLOYDIR}/ -maxdepth 1 -type f -name "${plugin}*.jar" )"
+        for pluginfile in ${PLUGINFILES}; do
+            echo "INFO: Moving existing plugin file ${pluginfile} to ${AVAILDIR}."
+            mv ${pluginfile} ${AVAILDIR}/
+        done
+    fi
+    ## get latest pluginfile
+    pluginfile="$(find ${AVAILDIR}/ -maxdepth 1 -type f -name "${plugin}*.jar" | sort -V | tail -n1)"
+    ## remove existing link
+    if [ -n "$(find ${DEPLOYDIR}/ -maxdepth 1 -type l -name "${plugin}*.jar" )" ]; then
+        PLUGINLINKS="$(find ${DEPLOYDIR}/ -maxdepth 1 -type l -name "${plugin}*.jar" )"
+        for pluginlink in ${PLUGINLINKS}; do
+            if [ "$( file --brief ${pluginlink} )" != "symbolic link to ${pluginfile}" ]; then
+                echo "INFO: Removing outdated symlink ${pluginlink}."
+                rm ${pluginlink}
+            fi
+        done
+    fi
+    ## create link
+    filename="$( basename ${pluginfile} )"
+    if [ ! -L ${DEPLOYDIR}/${filename} ]; then
+        backup_db
+        ln --symbolic ${pluginfile} ${DEPLOYDIR}/${filename}
+        echo "INFO: DMX plugin recently enabled: ${plugin}"
+    else
+        echo "INFO: DMX plugin already enabled: ${plugin}"
+    fi
+    ## final test
+    if [ "$( file --brief ${DEPLOYDIR}/${filename} )" != "symbolic link to ${pluginfile}" ]; then
+        echo "ERROR! something went wrong."
+        exit 1
+    fi
+}
+
+## action
+if [ "$1" ] && [ "$1" != "-h" ] && [ "$1" != "--help" ]; then
+    pre_check "$1"
+    enable_plugin "$1"
+else
+    help
+fi
+
+exit 0

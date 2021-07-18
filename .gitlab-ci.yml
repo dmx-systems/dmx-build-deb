@@ -76,7 +76,8 @@ fetch-binaries:
     - echo -e "About the bundle-available directory" >bin/bundle-available/about-this-directory.txt
     - echo -e "------------------------------------\n" >>bin/bundle-available/about-this-directory.txt
     - echo -e "This directory contains a set of selected DMX plugins.\n" >>bin/bundle-available/about-this-directory.txt
-    - echo -e "To activate a plugin copy or link it to the bundles-deploy folder.\n" >>bin/bundle-available/about-this-directory.txt
+    - echo -e "To activate a plugin copy or link it to the bundle-deploy folder.\n" >>bin/bundle-available/about-this-directory.txt
+    - echo -e "Alternatively you may use the 'dmxenplug' or 'dmxdisplug' scripts.\n" >>bin/bundle-available/about-this-directory.txt
     - echo -e "Find more information on DMX plugins at" >>bin/bundle-available/about-this-directory.txt
     - echo -e "https://git.dmx.systems/dmx-plugins" >>bin/bundle-available/about-this-directory.txt
     ## download _stable_ plugins

@@ -16,6 +16,10 @@ Please read the [DMX Admin Guide](https://dmx.readthedocs.io/en/stable/admin.htm
 
 `dpkg -P` dmx will remove all installed files but not delete your database and files in `/var/lib/dmx`.
 
+## Plugins
+
+The /usr/share/dmx/bundle-available directory contains a set of selected DMX plugins. To activate a plugin copy or link it to the /usr/share/dmx/bundle-deploy folder. Alternatively you may use the `dmxenplug` or `dmxdisplug` scripts. You may can find more information on DMX plugins at "https://git.dmx.systems/dmx-plugins".
+
 ## Apache
 
 See `/usr/share/doc/dmx/examples/dmx.apache` for a sample Apache2 config file. Our documentation contains more details about [Apache configuration](https://dmx.readthedocs.io/en/stable/admin.html#running-dmx-behind-an-apache-reverse-proxy).
