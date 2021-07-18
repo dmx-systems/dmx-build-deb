@@ -93,7 +93,7 @@ enable_plugin() {
     if [ -n "$(find ${DEPLOYDIR}/ -maxdepth 1 -type l -name "${plugin}*.jar" )" ]; then
         PLUGINLINKS="$(find ${DEPLOYDIR}/ -maxdepth 1 -type l -name "${plugin}*.jar" )"
         for pluginlink in ${PLUGINLINKS}; do
-            if [ "$( file --brief ${pluginlink} )" != "symbolic link to ${pluginfile}" ]; then
+            if [ "$( readlink ${pluginlink} )" != "${pluginfile}" ]; then
                 echo "INFO: Removing outdated symlink ${pluginlink}."
                 rm ${pluginlink}
             fi
@@ -109,7 +109,7 @@ enable_plugin() {
         echo "INFO: DMX plugin already enabled: ${plugin}"
     fi
     ## final test
-    if [ "$( file --brief ${DEPLOYDIR}/${filename} )" != "symbolic link to ${pluginfile}" ]; then
+    if [ "$( readlink ${filename} )" != "${pluginfile}" ]; then
         echo "ERROR! something went wrong."
         exit 1
     fi

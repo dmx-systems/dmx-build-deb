@@ -74,7 +74,7 @@ disable_plugin() {
     if [ -n "$(find ${DEPLOYDIR}/ -maxdepth 1 -type l -name "${plugin}*.jar" )" ]; then
         PLUGINLINKS="$( find ${DEPLOYDIR}/ -maxdepth 1 -type l -name "${plugin}*.jar" )"
         for pluginlink in ${PLUGINLINKS}; do
-            if [ "$( file --brief ${pluginlink} )" != "symbolic link to ${pluginfile}" ]; then
+            if [ "$( readlink ${pluginlink} )" != "${pluginfile}" ]; then
                 echo "INFO: Removing existing symlink ${pluginlink}."
                 rm ${pluginlink}
             else
