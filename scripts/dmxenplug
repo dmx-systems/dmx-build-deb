@@ -109,7 +109,7 @@ enable_plugin() {
         echo "INFO: DMX plugin already enabled: ${plugin}"
     fi
     ## final test
-    if [ "$( readlink ${filename} )" != "${pluginfile}" ]; then
+    if [ "$( readlink ${DEPLOYDIR}/${filename} )" != "${pluginfile}" ]; then
         echo "ERROR! something went wrong."
         exit 1
     fi
