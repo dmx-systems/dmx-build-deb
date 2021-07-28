@@ -3,5 +3,5 @@ bin/bin/* /usr/share/dmx/bin
 bin/bundle/* /usr/share/dmx/bundle
 bin/bundle-deploy/* /usr/share/dmx/bundle-deploy
 bin/bundle-available/* /usr/share/dmx/bundle-available
-dmxenplug /usr/sbin
-dmxdisplug /usr/sbin
+scripts/dmxenplug /usr/sbin
+scripts/dmxdisplug /usr/sbin
