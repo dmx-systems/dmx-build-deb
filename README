@@ -4,8 +4,8 @@ They are freely available from our public repository at https://download.dmx.sys
 # Packages
  * `dmx` - the stable standard (default desktop) package for DMX
  * `dmx-headless` - the stable headless (mutliuser web-hosting) package for DMX
- * `dmx-latest` - the latest unstable standard (default desktop) package for DMX
- * `dmx-headless-latest` - the latest unstable headless (mutliuser web-hosting) package for DMX
+ * `dmx-latest` - the latest unstable standard (default desktop) package for DMX build from SNAPSHOT - not for production
+ * `dmx-headless-latest` - the latest unstable headless (mutliuser web-hosting) package for DMX build from SNAPSHOT - not for production
 
 # Compatibility
  * Ubuntu 20.04
