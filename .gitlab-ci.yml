@@ -14,7 +14,7 @@ variables:
   # TARGET="$(lsb_release -sc)"
   #TARGET: "unstable" # <= This does not work!
   #TARGET: "debian"   # <= This does not work!
-  PACKAGESOURCE: "dmx-5.2"                        # <= [ dmx-5.x | dmx-latest ]
+  PACKAGESOURCE: "dmx-5.2.1"                        # <= [ dmx-5.x | dmx-latest ]
   PACKAGEVERSION: "1"
   DEBFULLNAME: 'DMX Systems (DMX CI)'
   DEBEMAIL: 'DMX Systems (DMX CI) <devops@dmx.systems>'
