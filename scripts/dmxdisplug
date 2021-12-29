@@ -60,6 +60,8 @@ pre_check() {
 
 disable_plugin() {
     plugin="$1"
+    ## strip all extensions
+    plugin="${plugin%%.*}"
     ## move files
     if [ -n "$(find ${DEPLOYDIR}/ -maxdepth 1 -type f -name "${plugin}*.jar" )" ]; then
         PLUGINFILES="$(find ${DEPLOYDIR}/ -maxdepth 1 -type f -name "${plugin}*.jar" )"
